@@ -1,0 +1,87 @@
+<<<<<<< .mine
+<!DOCTYPE html><html><head><meta charset=utf-8><title>首页</title><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=format-detection content="telephone=no"><meta name=format-detection content="email=no"><meta name=apple-mobile-web-app-capable content=yes><meta name=apple-mobile-web-app-status-bar-style content=black><meta name=full-screen content=yes><meta name=browsermode content=application><meta name=x5-orientation content=portrait><meta name=x5-fullscreen content=true><meta name=x5-page-mode content=app><meta name=viewport content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,minimal-ui"><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic"><link href=http://cdn.bootcss.com/material-design-icons/3.0.1/iconfont/material-icons.min.css rel=stylesheet><link href=./static/css/app.9fb5b19560eb2b0c8ae9e1bc474001ed.css rel=stylesheet></head><body><div id=app></div><script type=text/javascript src=./static/js/manifest.14ad40bc06d84906d31b.js></script><script type=text/javascript src=./static/js/vendor.e01c4aa606aac4deadde.js></script><script type=text/javascript src=./static/js/app.064df4db046bb319ec5e.js></script></body><script src="http://api.map.baidu.com/api?v=2.0&ak=abcs"></script></html><script>var geolocation = new BMap.Geolocation();
+  var gc = new BMap.Geocoder();
+  geolocation.getCurrentPosition(function (r) { //定位结果对象会传递给r变量
+    if (this.getStatus() == BMAP_STATUS_SUCCESS) { //通过Geolocation类的getStatus()可以判断是否成功定位。
+      var pt = r.point;
+      var longitude = pt.lng
+      var latitude = pt.lat
+      window.localStorage.setItem('lon', longitude) // 经度
+      window.localStorage.setItem('lat', latitude) // 纬度
+      gc.getLocation(pt, function (rs) {
+        var addComp = rs.addressComponents;
+        var baidu_city = addComp.city;
+      });
+    } else {
+
+      switch (this.getStatus()) {
+        case 2:
+          alert('位置结果未知 获取位置失败.');
+          break;
+        case 3:
+          alert('导航结果未知 获取位置失败..');
+          break;
+        case 4:
+          alert('非法密钥 获取位置失败.');
+          break;
+        case 5:
+          alert('对不起,非法请求位置  获取位置失败.');
+          break;
+        case 6:
+          alert('对不起,当前 没有权限 获取位置失败.');
+          break;
+        case 7:
+          alert('对不起,服务不可用 获取位置失败.');
+          break;
+        case 8:
+          alert('对不起,请求超时 获取位置失败.');
+          break;
+      }
+    }
+  }, {
+    enableHighAccuracy: true
+  })</script>
+=======
+<!DOCTYPE html><html><head><meta charset=utf-8><title>I美</title><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=format-detection content="telephone=no"><meta name=format-detection content="email=no"><meta name=apple-mobile-web-app-capable content=yes><meta name=apple-mobile-web-app-status-bar-style content=black><meta name=full-screen content=yes><meta name=browsermode content=application><meta name=x5-orientation content=portrait><meta name=x5-fullscreen content=true><meta name=x5-page-mode content=app><meta http-equiv=Cache-Control content="no-cache, no-store, must-revalidate"><meta http-equiv=Pragma content=no-cache><meta http-equiv=Expires content=0><meta name=viewport content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,minimal-ui"><link rel=stylesheet href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic"><link href=http://cdn.bootcss.com/material-design-icons/3.0.1/iconfont/material-icons.min.css rel=stylesheet><script src="http://api.map.baidu.com/api?ak=KpDHwE2VjMXILCkuQ4Cyu7LghaO7Mnim&v=2.0&services=false"></script><script>// 使用rem布局
+    ;
+    (function (doc, win, undefined) {
+      var docEl = doc.documentElement,
+        resizeEvt = 'orientationchange' in win ? 'orientationchange' : 'resize',
+        recalc = function () {
+          var clientWidth = docEl.clientWidth;
+          if (clientWidth === undefined) return;
+          docEl.style.fontSize = 20 * (clientWidth / 320) + 'px';
+        };
+      if (doc.addEventListener === undefined) return;
+      win.addEventListener(resizeEvt, recalc, false);
+      doc.addEventListener('DOMContentLoaded', recalc, false)
+    })(document, window);</script><link href=./static/css/app.5c8f5eb45f4d13d7019cdff454e69840.css rel=stylesheet></head><body><div id=app></div><script type=text/javascript src=./static/js/manifest.1e4fa279188cc56a95bb.js></script><script type=text/javascript src=./static/js/vendor.5525147cb83156ee7ee3.js></script><script type=text/javascript src=./static/js/app.be4c3f1d0ff0bc15ec5a.js></script></body></html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+>>>>>>> .theirs

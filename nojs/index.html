@@ -1,13 +1,88 @@
-﻿<html>
-<body>
-<form action="http://127.0.0.1:8081/process_post" method="POST">
-    First Name: <input type="text" name="first_name">  <br>
+<!DOCTYPE html>
+<html>
 
-    Last Name: <input type="text" name="last_name">
-    <input type="submit" value="Submit">
-</form>
+<head>
+  <meta charset="utf-8">
+  <title>首页</title>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="format-detection" content="email=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="full-screen" content="yes">
+  <meta name="browsermode" content="application">
+  <meta name="x5-orientation" content="portrait">
+  <meta name="x5-fullscreen" content="true">
+  <meta name="x5-page-mode" content="app">
+  <!--清除缓存-->
+  <!--<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+  <meta http-equiv="Pragma" content="no-cache"/>
+  <meta http-equiv="Expires" content="0"/>-->
+
+  <meta name="viewport"
+        content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no,minimal-ui">
+  <!--字体-->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
+  <!--字体图标-->
+  <link href="http://cdn.bootcss.com/material-design-icons/3.0.1/iconfont/material-icons.min.css" rel="stylesheet">
+
+  <!--百度地图-->
+  <!--<script src="http://api.map.baidu.com/api?v=2.0&ak=abcs"></script>-->
+
+</head>
+
+<body>
+<div id="app"></div>
+<!-- built files will be auto injected -->
 </body>
+<!--百度地图-->
+<script src="http://api.map.baidu.com/api?v=2.0&ak=KpDHwE2VjMXILCkuQ4Cyu7LghaO7Mnim"></script>
+
+</html>
 <script>
+  window.onload = function () {
+    var geolocation = new BMap.Geolocation();
+    //  var gc = new BMap.Geocoder();
+    geolocation.getCurrentPosition(function (r) {    //定位结果对象会传递给r变量
+      if (this.getStatus() == BMAP_STATUS_SUCCESS) { //通过Geolocation类的getStatus()可以判断是否成功定位。
+        var pt = r.point;
+        var longitude = pt.lng;
+        var latitude = pt.lat;
+        window.localStorage.setItem('lon', longitude);// 经度
+        window.localStorage.setItem('lat', latitude) // 纬度
+//      gc.getLocation(pt, function (rs) {
+//        var addComp = rs.addressComponents;
+//        var baidu_city = addComp.city;
+//      });
+      } else {
+
+        switch (this.getStatus()) {
+          case 2:
+            alert('位置结果未知 获取位置失败.');
+            break;
+          case 3:
+            alert('导航结果未知 获取位置失败..');
+            break;
+          case 4:
+            alert('非法密钥 获取位置失败.');
+            break;
+          case 5:
+            alert('对不起,非法请求位置  获取位置失败.');
+            break;
+          case 6:
+            alert('对不起,当前 没有权限 获取位置失败.');
+            break;
+          case 7:
+            alert('对不起,服务不可用 获取位置失败.');
+            break;
+          case 8:
+            alert('对不起,请求超时 获取位置失败.');
+            break;
+        }
+      }
+    }, {
+      enableHighAccuracy: true
+    })
+  }
 
 </script>
-</html>

@@ -17,8 +17,13 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({ dest: '/tmp/'}).array('image'));
 
-app.get('/index.htm', function (req, res) {
+/*配置路由*/
+app.get('/', function (req, res) {
     res.sendFile( __dirname + "/" + "index.html" );
+})
+
+app.get('/jquery-2.0.0.min.js', function (req, res) {
+    res.sendFile( __dirname + "/" + "js/jquery-2.0.0.min.js" );
 })
 
 app.get('/process_get', function (req, res) {

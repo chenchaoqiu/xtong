@@ -4,10 +4,9 @@ var fs = require('fs'); /*文件上传这个也要*/
 /*文件上传multer*/
 var multer = require('multer');
 /*这个body-parser是post提交的前提*/
-var bodyParser = require('body-parser');
+var bodyParser = require('body-parser');//
+// /*配置路由*/
 var router = require('./router.js');
-new router(app,'/','view/index.html');
-new router(app,'/jquery-2.0.0.min.js','view/js/jquery-2.0.0.min.js');
 
 // 创建 application/x-www-form-urlencoded 编码解析   post
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
@@ -20,13 +19,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({ dest: '/tmp/'}).array('image'));
 
 // /*配置路由*/
-// app.get('/', function (req, res) {
-//     res.sendFile( __dirname + "/" + "index.html" );
-// })
+new router(app,'/','view/index.html');
+new router(app,'/jquery-2.0.0.min.js','view/js/jquery-2.0.0.min.js');
 
-// app.get('/jquery-2.0.0.min.js', function (req, res) {
-//     res.sendFile( __dirname + "/" + "js/jquery-2.0.0.min.js" );
-// })
 
 app.get('/process_get', function (req, res) {
     /*get 方式输出输入*/

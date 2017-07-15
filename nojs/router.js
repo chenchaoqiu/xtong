@@ -4,8 +4,3 @@
     })
 }
 module.exports = add;
-// module.exports = function (app,a,b) {
-//     app.get(a, function (req, res) {
-//         res.sendFile( __dirname + '/' + b );
-//     })
-// }

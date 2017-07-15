@@ -12,7 +12,7 @@ var router = require('./router.js');
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 /*打开静态文件夹或文件*/
-app.use(express.static('public'));
+app.use(express.static('view/public'));
 
 /*上传文件*/
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -20,7 +20,7 @@ app.use(multer({ dest: '/tmp/'}).array('image'));
 
 // /*配置路由*/
 new router(app,'/','view/index.html');
-new router(app,'/jquery-2.0.0.min.js','view/js/jquery-2.0.0.min.js');
+// new router(app,'/jquery-2.0.0.min.js','view/js/jquery-2.0.0.min.js');
 
 
 app.get('/process_get', function (req, res) {

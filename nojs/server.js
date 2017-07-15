@@ -5,7 +5,9 @@ var fs = require('fs'); /*文件上传这个也要*/
 var multer = require('multer');
 /*这个body-parser是post提交的前提*/
 var bodyParser = require('body-parser');
-
+var router = require('./router.js');
+new router(app,'/','view/index.html');
+new router(app,'/jquery-2.0.0.min.js','view/js/jquery-2.0.0.min.js');
 
 // 创建 application/x-www-form-urlencoded 编码解析   post
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
@@ -17,14 +19,14 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(multer({ dest: '/tmp/'}).array('image'));
 
-/*配置路由*/
-app.get('/', function (req, res) {
-    res.sendFile( __dirname + "/" + "index.html" );
-})
+// /*配置路由*/
+// app.get('/', function (req, res) {
+//     res.sendFile( __dirname + "/" + "index.html" );
+// })
 
-app.get('/jquery-2.0.0.min.js', function (req, res) {
-    res.sendFile( __dirname + "/" + "js/jquery-2.0.0.min.js" );
-})
+// app.get('/jquery-2.0.0.min.js', function (req, res) {
+//     res.sendFile( __dirname + "/" + "js/jquery-2.0.0.min.js" );
+// })
 
 app.get('/process_get', function (req, res) {
     /*get 方式输出输入*/
@@ -39,12 +41,12 @@ app.get('/process_get', function (req, res) {
 
 app.post('/process_post', urlencodedParser, function (req, res) {
     /*post 方式输出输入*/
-    // 输出 JSON 格式
     var response = {
         "first_name":req.body.first_name,
         "last_name":req.body.last_name
     };
     console.log(response);
+    // 输出 JSON 格式
     res.end(JSON.stringify(response));
 })
 
@@ -53,8 +55,8 @@ app.post('/file_upload', function (req, res) {
     console.log(req.files[0]);  // 上传的文件信息
 
     var des_file = __dirname + "/" + req.files[0].originalname;
-    fs.readFile( req.files[0].path, function (err, data) {
-        fs.writeFile(des_file, data, function (err) {
+    fs.readFile( req.files[0].path, function (err, data){
+        fs.writeFile(des_file, data, function (err){
             if( err ){
                 console.log( err );
             }else{

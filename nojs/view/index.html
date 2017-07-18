@@ -17,6 +17,16 @@
 </form>
 </body>
 <script>
-
+    $(function () {
+        $.ajax({
+            type:'GET',
+            url:'/process_get',
+            data:{first_name:4,last_name:5},
+            dataType:'',
+            success:function (data) {
+                console.log(data);
+            }
+        });
+    })
 </script>
 </html>

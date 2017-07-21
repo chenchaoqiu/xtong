@@ -197,6 +197,7 @@ var pages=function (name) {
                     return false;
                 } else {
                     This.clickfn(zhib - 1);
+                    name.read(zhib - 1);
                 }
             });
             $(this.page).on('click', '.you', function () {
@@ -207,6 +208,7 @@ var pages=function (name) {
                     return false;
                 } else {
                     This.clickfn(zhib + 1);
+                    name.read(zhib + 1);
                 }
             });
             $(this.page).on('click', this.pagetab, function () {
@@ -215,6 +217,7 @@ var pages=function (name) {
                     return false;
                 } else {
                     This.clickfn($(this).text());
+                    name.read($(this).text());
                 }
             });
             $(this.page).on('click', this.pagebutton, function () {
@@ -227,6 +230,7 @@ var pages=function (name) {
                     $(this).siblings('input[type="text"]').val(this.datalength - 2);
                 } else {
                     This.clickfn(zhib);
+                    name.read(zhib);
                 }
             })
         },
@@ -272,7 +276,8 @@ var pages=function (name) {
             this.readfn();
             this.click();
             this.dataxy(1);
-            this.clickfn(e)
+            this.clickfn(e);
+            name.read(e);
         }
     };
 

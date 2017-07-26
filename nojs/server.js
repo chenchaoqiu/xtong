@@ -1,7 +1,21 @@
 ﻿var express = require('express');
 var app = express();
 var fs = require('fs'); /*文件上传这个也要*/
+var mysql = require('mysql');
 
+var connection = mysql.createConnection({
+    host     : 'localhost',
+    user     : 'root',
+    password : '123456',
+    database : 'test'
+});
+
+connection.connect();
+
+connection.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
+    // if (error) throw error;
+    // console.log('The solution is: ', results[0].solution);
+});
 /*文件上传multer*/
 var multer = require('multer');
 

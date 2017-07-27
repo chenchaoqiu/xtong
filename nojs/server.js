@@ -3,19 +3,6 @@ var app = express();
 var fs = require('fs'); /*文件上传这个也要*/
 var mysql = require('mysql');
 
-var connection = mysql.createConnection({
-    host     : 'localhost',
-    user     : 'root',
-    password : '123456',
-    database : 'test'
-});
-
-connection.connect();
-
-connection.query('SELECT 1 + 1 AS solution', function (error, results, fields) {
-    // if (error) throw error;
-    // console.log('The solution is: ', results[0].solution);
-});
 /*文件上传multer*/
 var multer = require('multer');
 
@@ -25,12 +12,13 @@ var bodyParser = require('body-parser');
 // 创建 application/x-www-form-urlencoded 编码解析   post
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
+//连入数据库
+var db = require('./data/db/db.js')(app,mysql,urlencodedParser);
 /*引入cookie*/
 var cookieParser = require('cookie-parser');
 
 // /*配置路由*/
 var router = require('./router/router.js')(app);
-
 
 /*打开静态文件夹或文件*/
 app.use(express.static('view/public'));

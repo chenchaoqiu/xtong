@@ -1,24 +1,25 @@
 /*
-*read()方法加载页码，实现分页功能；（加载框架）
-*pageID 框架id或class    （必填）
-*pageSize 数据页数    （必填）
-*size 当前页码      （必填）
-*pagebuttonhtml 设置跳转页码的HTML，pagebutton 跳转页码的button
-*跳转页码格式 ：如果要跳转页码，请把跳转页码的html写在这里类似‘<div><input type="text" ><button id="button">确定</button></div>’
-*pagenone 省略号HTML
-*pageleft 左按钮HTML
-*pageright 右按钮HTML
-*pagecur   当前页显示状态一半HTML，另一半是pagehtmlright；pagehtmlleft 页码条数一半HTML，另一半也是pagehtmlright
-* */
+ *read()方法加载页码，实现分页功能；（加载框架）（必填）
+ *pageID 框架id或class    （必填）
+ *pageSize 数据页数    （必填）
+ *size 当前页码      （必填）
+ *pagebuttonhtml 设置跳转页码的HTML，pagebutton 跳转页码的button
+ *跳转页码格式 ：如果要跳转页码，请把跳转页码的html写在这里类似‘<div><input type="text" ><button id="button">确定</button></div>’
+ *pagenone 省略号HTML
+ *pageleft 左按钮HTML
+ *pageright 右按钮HTML
+ *pagecur   当前页显示状态一半HTML，另一半是pagehtmlright；pagehtmlleft 页码条数一半HTML，另一半也是pagehtmlright
+ * */
 window.onready=function(){
-    new pages({
-        pageID:'#pages',
-        pageSize:20,
-        size:1
-    });
-}
+    // new pages({
+    //     pageID:'#pages',
+    //     pageSize:pagessieze.zsize,
+    //     size:pagessieze.number
+    // },{sie:1});
+};
 
-var pages=function (name) {
+// var pagessieze={};
+var pages=function (name,objsize) {
     var page = {
         page: '.page', /*框架id*/
         pagebutton: '#button', /*如果有指定数值，这个就是input框兄弟的ID*/
@@ -187,8 +188,14 @@ var pages=function (name) {
             }
         },
         click: function () {
+            // if(pagessieze.lo==undefined){
+            //     pagessieze.lo=false;
+            // }else{
+            //     return false;
+            // }
             var This = this;
             /*按钮绑定点击事件*/
+
             $(this.page).on('click', '.zuo', function () {
                 /*左事件*/
                 var zhib = parseInt($('.cur').text());
@@ -202,13 +209,16 @@ var pages=function (name) {
             });
             $(this.page).on('click', '.you', function () {
                 /*右事件*/
+                // This.datalength=pagessieze.zsize;
                 var zhib = parseInt($('.cur').text());
                 if (zhib == This.datalength - 2) {
                     alert('已经是最后一页了！');
                     return false;
                 } else {
-                    This.clickfn(zhib + 1);
-                    name.read(zhib + 1);
+                    setTimeout(function () {
+                        This.clickfn(zhib + 1);
+                        name.read(zhib + 1);
+                    },100);
                 }
             });
             $(this.page).on('click', this.pagetab, function () {
@@ -221,6 +231,7 @@ var pages=function (name) {
                 }
             });
             $(this.page).on('click', this.pagebutton, function () {
+                /*选跳事件*/
                 var zhib = $(this).siblings('input[type="text"]').val();
                 if (zhib < 1) {
                     alert('页数不能等于1！');
@@ -236,6 +247,7 @@ var pages=function (name) {
         },
         clickfn: function (e) {
             /*按钮点击运行方法,只要运行体*/
+            // this.datalength=pagessieze.zsize;
             if (this.datalength < 10) {
                 this.maxlistfn(e);
                 this.dataxy(e);
@@ -273,14 +285,17 @@ var pages=function (name) {
             return index1;
         },
         read: function (e) {
+            $(this.page).off('click','.you');
+            $(this.page).off('click','.zuo');
+            $(this.page).off('click',this.pagetab);
+            $(this.page).off('click',this.pagebutton);
             this.readfn();
             this.click();
             this.dataxy(1);
             this.clickfn(e);
-            name.read(e);
+            name.read();
         }
     };
-
     page.page = name.pageID;
     page.datalength = name.pageSize;
     page.pagebuttonhtml = name.pagebuttonhtml != undefined ? name.pagebuttonhtml : page.pagebuttonhtml;

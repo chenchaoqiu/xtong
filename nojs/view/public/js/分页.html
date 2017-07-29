@@ -25,10 +25,13 @@
 		<div class="page" id="page"></div>
 	 </body>
 	<script>
-		new pages({
-			pageID:'#page',
-			pageSize:20,
-			size:1
-		});
+        new pages({
+            pageID:'#page',
+            size:1,
+            pageSize:20,
+            read:function (w) {
+                console.log(w)
+            }
+        });
 	</script>
 </html>

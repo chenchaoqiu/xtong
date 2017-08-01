@@ -13,7 +13,7 @@
             "name" : "mohit",
             "password" : "password4",
             "profession" : "teacher",
-            "id": 4
+            "id": 5
         }
     };
     app.get('/addUser', function (req, res) {

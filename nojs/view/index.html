@@ -15,18 +15,20 @@
     <br />
     <input type="submit" value="上传文件" />
 </form>
+<button type="button" onclick="sle()">提交</button>
 </body>
 <script>
-    $(function () {
+    function sle() {
         $.ajax({
-            type:'GET',
-            url:'/process_get',
+            type:'POST',
+            url:'/mongodbget',
             data:{first_name:4,last_name:5},
             dataType:'',
             success:function (data) {
                 console.log(data);
             }
         });
-    })
+    }
+
 </script>
 </html>

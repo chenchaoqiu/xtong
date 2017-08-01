@@ -1,33 +1,7 @@
 ﻿var express = require('express');
 var app = express();
-var fs = require('fs'); /*文件上传这个也要*/
+var fs = require('fs');
 var mysql = require('mysql');
-var MongoClient = require('mongodb').MongoClient;
-var DB_CONN_STR = 'mongodb://localhost:27017/runoob'; // 数据库为 runoob
-
-var insertData = function(db, callback) {
-    //连接到表 site
-    var collection = db.collection('site');
-    //插入数据
-    var data = [{"name":"菜鸟教程","url":"www.runoob.com"},{"name":"菜鸟工具","url":"c.runoob.com"}];
-    collection.insert(data, function(err, result) {
-        if(err)
-        {
-            console.log('Error:'+ err);
-            return;
-        }
-        console.log('加入成功！')
-        callback(result);
-    });
-}
-
-MongoClient.connect(DB_CONN_STR, function(err, db) {
-    console.log("连接成功！");
-    insertData(db, function(result) {
-        console.log(result);
-        db.close();
-    });
-});
 
 /*文件上传multer*/
 var multer = require('multer');
@@ -40,14 +14,15 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false });
 
 //连入数据库
 var db = require('./data/db/db.js')(app,mysql,urlencodedParser);
-/*引入cookie*/
-var cookieParser = require('cookie-parser');
 
 // /*配置路由*/
 var router = require('./router/router.js')(app);
 
 /*打开静态文件夹或文件*/
 app.use(express.static('view/public'));
+
+//操作本地文件
+var file=require('./File/file.js')(app,fs);
 
 /*上传文件*/
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -65,52 +40,7 @@ app.get('/process_get', function (req, res) {
     res.end(JSON.stringify(response));
 });
 
-/*读取数据*/
-app.get('/listuser',function (req, res) {
-    fs.readFile(__dirname + '/' + 'json/users.json','utf8',function (err, data) {
-        console.log(data);
-        res.end(JSON.stringify(data));
-    })
-})
-/*添加数据*/
-var user = {
-    "user4" : {
-        "name" : "mohit",
-        "password" : "password4",
-        "profession" : "teacher",
-        "id": 4
-    }
-};
-app.get('/addUser', function (req, res) {
-    // 读取已存在的数据
-    fs.readFile( __dirname + "/" + "json/users.json", 'utf8', function (err, data) {
-        data = JSON.parse( data );
-        data["user4"] = user["user4"];
-        console.log( data );
-        res.end( JSON.stringify(data));
-    });
-});
 
-/*显示用户详情*/
-app.get('/cksl/:id', function (req, res) {
-    // 首先我们读取已存在的用户
-    fs.readFile( __dirname + "/" + "json/users.json", 'utf8', function (err, data) {
-        data = JSON.parse( data );
-        var user = data["user" + req.params.id]
-        console.log( user );
-        res.end( JSON.stringify(user));
-    });
-});
-
-/*删除用户*/
-app.get('/deleteUser/:id', function (req, res) {
-    fs.readFile( __dirname + "/" + "json/users.json", 'utf8', function (err, data) {
-        data = JSON.parse( data );
-        delete data["user" + req.params.id];
-        console.log( data );
-        res.end( JSON.stringify(data));
-    });
-});
 
 app.post('/process_post', urlencodedParser, function (req, res) {
     /*post 方式输出输入*/
@@ -143,6 +73,9 @@ app.post('/file_upload', function (req, res) {
         });
     });
 })
+
+/*引入cookie*/
+var cookieParser = require('cookie-parser');
 
 /*cookies 管理*/
 app.use(cookieParser());

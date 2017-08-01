@@ -27,7 +27,7 @@
 
 
    /*插入数据库*/
-   app.get('/mongodbset',function (req, res) {
+   app.post('/mongodbset',urlencodedParser,function (req, res) {
 
        var insertData = function(db, callback) {
            //连接到表 site
@@ -51,13 +51,12 @@
            insertData(db, function(result) {
                console.log(result);
                db.close();
-               res.end(JSON.stringify(result));
            });
        });
    });
 
    /*查询数据库*/
-   app.get('/mongodbget',function (req, res) {
+    app.post('/mongodbget', urlencodedParser, function (req, res) {
        var selectData = function(db, callback) {
            //连接到表
            var collection = db.collection('site');
@@ -85,7 +84,7 @@
    });
 
    /*更新数据库*/
-   app.get('/mongodbnews',function (req, res) {
+   app.post('/mongodbnews',urlencodedParser,function (req, res) {
        var updateData = function(db, callback) {
            //连接到表
            var collection = db.collection('site');
@@ -107,13 +106,12 @@
            updateData(db, function(result) {
                // console.log(result.result.n);
                db.close();
-               res.end(JSON.stringify(result));
            });
        });
    });
 
    /*删除数据库*/
-   app.get('/mongodbDelete',function (req, res) {
+   app.post('/mongodbDelete',urlencodedParser,function (req, res) {
        var delData = function(db, callback) {
            //连接到表
            var collection = db.collection('site');
@@ -134,7 +132,6 @@
            delData(db, function(result) {
                console.log(result);
                db.close();
-               res.end(JSON.stringify(result));
            });
        });
    })

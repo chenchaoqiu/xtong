@@ -18,18 +18,18 @@
 <h3>文件上传：</h3>
 选择多个文件上传: <br />
 <form action="/message" method="post" enctype="multipart/form-data">
-    <input type="file" name="uuu" size="50" multiple/>
+    <input type="file" id="upfile" name="uuu" size="50"/>
     <br />
     <input type="submit" value="上传文件" />
 </form>
-<button type="button" onclick="sle()">提交</button>
+<button id="upJQuery" type="button">提交</button>
 </body>
 <script>
     function sle() {
         $.ajax({
             type:'POST',
-            url:'/mongodbget',
-            data:{first_name:4,last_name:5},
+            url:'/message',
+            data:{file_name:true},
             dataType:'',
             success:function (data) {
                 console.log(data);

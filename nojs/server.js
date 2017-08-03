@@ -5,34 +5,8 @@ var mysql = require('mysql');
 var formidable = require('formidable');
 var formParse=new formidable.IncomingForm();
 
-app.post('/message', function (req,resp) {
-    formParse.uploadDir='./';//缓存地址
-    formParse.multiples=true;//设置为多文件上传
-    formParse.keepExtensions=true;//是否包含文件后缀
-    var files=[];
-    //文件都将保存在files数组中
-    formParse.on('file', function (filed,file) {
-        files.push([filed,file]);
-    })
-    formParse.parse(req,function(error,fields,files) {
-        if (error) {
-            console.log("error" + error.message);
-            return;
-        }
-        //files.uuu[k]里保存着用户所上传的文件
-        for(var k=0;k<files.uuu.length;k++){
-            var fileName=files.uuu[k].name;
-            /*修改文件名称*/
-            var fileUrl= __dirname + "/" +fileName.split('.')[0]+new Date().getTime()+'.'+fileName.split('.')[1];
-            var useUrl= __dirname + "/" +fileName.split('.')[0]+new Date().getTime()+'.'+fileName.split('.')[1];
-            console.log(fileName)
-            fs.renameSync(files.uuu[k].path,fileUrl);
-        }
-
-    });
-
-
-});
+/*打开静态文件夹或文件*/
+app.use(express.static('./nojs/view/public'));
 
 /*文件上传multer*/
 var multer = require('multer');
@@ -49,8 +23,49 @@ var db = require('./data/db/db.js')(app,mysql,urlencodedParser);
 // /*配置路由*/
 var router = require('./router/router.js')(app);
 
-/*打开静态文件夹或文件*/
-app.use(express.static('view/public'));
+app.post('/message', urlencodedParser, function (req,resp) {
+    formParse.uploadDir='./';//缓存地址
+    formParse.multiples=true;//设置为多文件上传
+    formParse.keepExtensions=true;//是否包含文件后缀
+    //文件都将保存在files数组中
+    var files=[],size=0;
+    formParse.on('file', function (filed,file) {
+        files.push([filed,file]);
+    })
+    formParse.parse(req,function(error,fields,files) {
+        if (error) {
+            console.log("error" + error.message);
+            return;
+        }
+        size++;
+        if(size==1&&files.uuu.length!=undefined){
+            //files.uuu[k]里保存着用户所上传的文件
+            for(var k=0;k<files.uuu.length;k++){
+                var fileName=files.uuu[k].name;
+                /*修改文件名称*/
+                // var fileUrl= __dirname + "/" +fileName.split('.')[0]+new Date().getTime()+'.'+fileName.split('.')[1];
+                var fileUrl=__dirname + "/" +new Date().getTime()+fileName;
+                fs.renameSync(files.uuu[k].path,fileUrl);
+            }
+            files=[];
+        }else if(size==1&&files.uuu.name!=''){
+            var fileUrl=__dirname + "/" +new Date().getTime()+files.uuu.name;
+            fs.renameSync(files.uuu.path,fileUrl);
+        }
+        resp.end('55')
+        return;
+    });
+});
+app.post('/process_post', urlencodedParser, function (req, res) {
+    /*post 方式输出输入*/
+    var response = {
+        "first_name":req.body.first_name,
+        "last_name":req.body.last_name
+    };
+    console.log(response);
+    // 输出 JSON 格式
+    res.end(JSON.stringify(response));
+})
 
 //操作本地文件
 var file=require('./File/file.js')(app,fs);
@@ -72,17 +87,6 @@ app.get('/process_get', function (req, res) {
 });
 
 
-
-app.post('/process_post', urlencodedParser, function (req, res) {
-    /*post 方式输出输入*/
-    var response = {
-        "first_name":req.body.first_name,
-        "last_name":req.body.last_name
-    };
-    console.log(response);
-    // 输出 JSON 格式
-    res.end(JSON.stringify(response));
-})
 
 
 

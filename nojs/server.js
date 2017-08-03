@@ -1,4 +1,5 @@
 ﻿var express = require('express');
+var upload = require('multer')({ dest: 'uploads/' });
 var app = express();
 var fs = require('fs');
 var mysql = require('mysql');

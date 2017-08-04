@@ -24,8 +24,40 @@ var db = require('./data/db/db.js')(app,mysql,urlencodedParser);
 // /*配置路由*/
 var router = require('./router/router.js')(app);
 
-app.post('/message', urlencodedParser, function (req,resp) {
-    formParse.uploadDir='./';//缓存地址
+app.post('/ajaxfile', urlencodedParser, function (request,response) {
+    /*ajax 提交的ie10下不支持*/
+    formParse.uploadDir='./uploads/';//缓存地址
+    formParse.multiples=true;//设置为多文件上传
+    formParse.keepExtensions=true;//是否包含文件后缀
+    formParse.maxFieldsSize = 50 * 1024 * 1024;
+    var size,arry=[];
+    formParse.parse(request, function(err, fields, files) {
+        clearTimeout(size);
+        size=setTimeout(function () {
+        for(var k in files){
+            arry.push(k);
+            if(arry.length==1){
+                for(var i in files[k]){
+                    if(files[k][i]!=null){
+                        var fileUrl=__dirname + "/uploads/" +new Date().getTime()+files[k][i].name;
+                        fs.rename(files[k][i].path,fileUrl);
+                    }else{
+                        var fileUrl=__dirname + "/uploads/" +new Date().getTime()+files[k].name;
+                        fs.rename(files[k].path,fileUrl);
+                        return;
+                    }
+
+                }
+            }
+            files[k]=''
+        }
+        },1000);
+        response.end('55');
+    });
+});
+app.post('/fromfile', urlencodedParser, function (req,resp) {
+    /*from 提交的浏览器都支持*/
+    formParse.uploadDir='./uploads/';//缓存地址
     formParse.multiples=true;//设置为多文件上传
     formParse.keepExtensions=true;//是否包含文件后缀
     //文件都将保存在files数组中
@@ -45,15 +77,18 @@ app.post('/message', urlencodedParser, function (req,resp) {
                 var fileName=files.uuu[k].name;
                 /*修改文件名称*/
                 // var fileUrl= __dirname + "/" +fileName.split('.')[0]+new Date().getTime()+'.'+fileName.split('.')[1];
-                var fileUrl=__dirname + "/" +new Date().getTime()+fileName;
+                var fileUrl=__dirname + "/uploads/" +new Date().getTime()+fileName;
+                console.log(fileUrl)
                 fs.renameSync(files.uuu[k].path,fileUrl);
             }
-            files=[];
         }else if(size==1&&files.uuu.name!=''){
-            var fileUrl=__dirname + "/" +new Date().getTime()+files.uuu.name;
+            var fileUrl=__dirname + "/uploads/" +new Date().getTime()+files.uuu.name;
             fs.renameSync(files.uuu.path,fileUrl);
         }
-        resp.end('55')
+        files=[];
+        resp.end('<html><meta http-equiv="content-Type" content="text/html;charset=utf-8"/>' +
+            '<script charset="UTF-8">setTimeout(function(){location.href="/"},10)</script>' +
+            '</html>')
         return;
     });
 });

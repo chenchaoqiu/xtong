@@ -29,8 +29,8 @@
 <input onclick="filel()" id="uploadpic" type="button" value=" 上 传 ">
 </body>
 <script>
-    var datapic=new FormData();
     function filel() {
+        var datapic=new FormData();
 //        datapic.delete('myfile')
         for(var k=0;k<document.getElementById("addpic").files.length;k++)
         {
@@ -48,8 +48,7 @@
             processData: false,
             success:function(result){
                 //处理函数
-                console.log(result)
-//                $('#addpic').val('');
+//                if(result){location.href='/'}
             }
         });
     }

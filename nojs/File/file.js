@@ -74,6 +74,48 @@
         });
     });
 
+    /*读取下载文件*/
+    var path = require('path');
+    app.get('/files', function(req, res, next) {
+        // 显示服务器文件
+        // 文件目录
+        var filePath = path.join(__dirname, '/' + "../uploads/");
+        fs.readdir(filePath, function(err, results){
+            if(err) {console.log(err)};
+            if(results.length>0) {
+                var files = [];
+                results.forEach(function(file){
+                    if(fs.statSync(path.join(filePath, file)).isFile()){
+                        files.push(file);
+                    }
+                })
+                // res.render('files', {files:files});
+                res.end(JSON.stringify(files))
+            } else {
+                res.end('当前目录下没有文件');
+            }
+        });
+    });
+    /*下载文件*/
+    app.get('/filesa/:fileName', function(req, res, next) {
+        // 实现文件下载
+        var fileName = '/' + "../uploads/"+req.params.fileName;
+        var filePath = path.join(__dirname, fileName);
+        var stats = fs.statSync(filePath);
+        if(stats.isFile()){
+            res.set({
+                'Content-Type': 'application/octet-stream',
+                'Content-Disposition': 'attachment; filename='+fileName,
+                'Content-Length': stats.size
+            });
+            fs.createReadStream(filePath).pipe(res);
+        } else {
+            res.end('404');
+        }
+    });
+
+
+
     /*读取数据*/
     app.get('/listuser',function (req, res) {
         fs.readFile(__dirname + '/' + '../json/users.json','utf8',function (err, data) {

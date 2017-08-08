@@ -1,4 +1,4 @@
-﻿module.exports = function (app,fs,urlencodedParser) {
+﻿module.exports = function (app,fs,urlencodedParser,request) {
     /*上传文件
     * 整合ajax，form上传，可以兼容ie所有，也可以兼容ie10以上的筛选；
     * * */
@@ -74,6 +74,8 @@
         });
     });
 
+    /*-----------------------------------------------上传文件分割线-----------------------------------------------------*/
+
     /*读取下载文件*/
     var path = require('path');
     app.get('/files', function(req, res, next) {
@@ -96,8 +98,9 @@
             }
         });
     });
-    /*下载文件*/
-    app.get('/filesa/:fileName', function(req, res, next) {
+    /*-----------------------------------------------读取下载文件分割线-----------------------------------------------------*/
+    /*从服务器上 下载文件*/
+    app.get('/fileXload/:fileName', function(req, res, next) {
         // 实现文件下载
         var fileName = '/' + "../uploads/"+req.params.fileName;
         var filePath = path.join(__dirname, fileName);
@@ -113,8 +116,25 @@
             res.end('404');
         }
     });
+    /*从网上 下载文件,只能用异步方式做,用链接方式不可行*/
+    app.get('/fileSload',function (req, res) {
+        var img_src = req.query.name; //获取图片的url
+        console.log(img_src)
+        //采用request模块，向服务器发起一次请求，获取图片资源
+        request.head(img_src,function(err,res,body){
+            if(err){
+                console.log(err);
+            }
+        });
 
+        var img_filename = 'mu.jpg';
 
+        //通过流的方式，把图片写到本地/image目录下，并用新闻的标题和图片的标题作为图片的名称。
+        request(img_src).pipe(fs.createWriteStream('G:/'+ img_filename));
+        res.end('js')
+    })
+
+/*-----------------------------------------------下载文件分割线-----------------------------------------------------*/
 
     /*读取数据*/
     app.get('/listuser',function (req, res) {

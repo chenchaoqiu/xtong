@@ -3,6 +3,8 @@ var upload = require('multer')({ dest: 'uploads/' });
 var app = express();
 var fs = require('fs');
 var mysql = require('mysql');
+var opn=require('opn');
+var request = require('request');
 
 /*打开静态文件夹或文件*/
 app.use(express.static(__dirname+'/view/public'));
@@ -33,7 +35,7 @@ app.post('/process_post', urlencodedParser, function (req, res) {
 })
 
 //操作本地文件,文件上传
-var file=require('./File/file.js')(app,fs,urlencodedParser);
+var file=require('./File/file.js')(app,fs,urlencodedParser,request);
 
 /*上传文件*/
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -92,7 +94,7 @@ var server = app.listen(8081, function () {
 /*配置服务器*/
     var host = server.address().address
     var port = server.address().port
-
+    opn('http://localhost:8081');
     console.log("应用实例，访问地址为 http://%s:%s", host, port)
 
 })

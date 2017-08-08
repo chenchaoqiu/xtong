@@ -29,7 +29,6 @@
 <input onclick="filel()" id="uploadpic" type="button" value=" 上 传 ">
 <p>-----------------------------------------------------------------------------------------</p>
 <ul id="xiazai">
-    <li></li>
 </ul>
 </body>
 <script>
@@ -58,10 +57,10 @@
     }
 
     $('#xiazai').on('click','li',function () {
-        if($(this).text()==''){
-            return;
-        }
-        location.href='/filesa/'+$(this).text();
+//        if($(this).text()==''){
+//            return;
+//        }
+        location.href='/fileXload/'+$(this).text();
     });
 
     function sle() {

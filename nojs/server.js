@@ -77,7 +77,7 @@ app.post('/file_upload', function (req, res) {
             res.end( JSON.stringify( response ) );
         });
     });
-})
+});
 
 /*引入cookie*/
 var cookieParser = require('cookie-parser');

@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>真假朋友第二季</title>
+    <title>天造地设情侣大检验</title>
     <meta charset="utf-8">
     <meta name="format-detection" content="telephone=no"/>
     <meta name="viewport" content="width=device-width,user-scalable=no">
@@ -351,7 +351,7 @@
     <div class="topic">
         <p class="ts_top">“天造地设情侣大检验”</p>
         <div class="topi_text" style="display: none">
-            <p class="topi_text_ei">只选择你的真心话<i>换一题</i></p>
+            <p class="topi_text_ei">只选择你的真心话<i onclick="ojb.Replace()">换一题</i></p>
             <p class="topi_text_title">此处是广告植入(老板威胁我的):I美是一款帮助 用户享受绿色专业美容服务的美容App。</p>
             <div class="topi_text_xt" style="display: none">
                 <ul>
@@ -385,12 +385,12 @@
         <div class="Lose_ts">
             <img style="" src="images/none.png" />
         </div>
-        <p style="color: #fff;font-size: 16px;">暂时没有人答题哦，请耐心等待有缘人吧！</p>
+        <p style="color: #fff;font-size: 16px;">赶紧邀请好友来答题吧~</p>
     </div>
     <!--已经答题-->
     <!--出题者进入-->
     <div class="yeslose">
-        <p class=""><b>我</b>与<b>XXX</b>的默契度是<i>80%</i><br /><b>我们</b>可以携手到老了！</p>
+        <p class=""><b>我</b>与<b>XXX</b>的默契度是<i>80%</i><br /><b>我们</b><a>可以携手到老了！</a></p>
         <div class="Lose_ts">
             <img style="" src="images/80.png" alt="图片异常" />
         </div>
@@ -408,11 +408,21 @@
     <script>
         document.body.addEventListener('touchstart', function () {});
         var ojb={
-            characterType:['答题','','60'],/*yes:出问题，还没有人答题，no:还没有出题，空表示出完题也答完题*/
-            user:['我','用**','用**'],/*我：我自己，用户1：答题者，用户2：出题者*/
+            characterType:['出题','','20'],/*yes:出问题，还没有人答题(如果是答题者：已经答完题)，no:还没有出题，空表示出完题也答完题*/
+            user:['我','答题者的的**','出题者的的**'],/*我：我自己，用户1：答题者，用户2：出题者*/
+            Blessingwords:['还是分手吧！','是不是刚刚认识？','之间可以不可以再真诚些？','要加强了解啊。','可以携手到老了。','是天造地设的一对。'],
             htm:[/*已经答题1*//*没人答题2*//*出题或答题3*//*首页4*//*底部5*//*分享页面6*//*I 美平台技术支持*/],
-            hchtm:[],
+            hchtm:[/*页面缓存，原始页面*/],
+            problem:[/*题目集合*/],
+            data:'/*接收后台数据（按需取值）*/',
+            getdata:[],
+            openid:'1',
+            series_sn:'55R0Wb',
+            true:false,/*监控出答题动画完成*/
+            size:0,/*换一换*/
+            xsize:1,/*下一题*/
             bodyselector:$('body'),
+            ts:'要放弃出题或答题吗？',
             bodyhtm:function (e) {
                 this.bodyselector.html(e);
                 this.bodyselector.append(this.htm[6]);/*底部添加*/
@@ -428,8 +438,68 @@
                 /*点击下一题*/
                 var th=this;
                 th.bodyselector.on('click','.next',function () {
-                    th.nextfinish();
-              })
+                    var This=$(this);
+                    th.getdata.push([$('.topi_text_xt li.xs').attr('data-size'),$('.topi_text_xt li.xs').attr('question_id')]);
+                    if(th.characterType[0]=='出题') {
+                        /*出题者流程*/
+                      /*选一个删除一个*/
+                      th.problem.splice((th.size), 1);
+
+                      th.size = 0;
+                      if (th.xsize == 4) {
+                        th.xydata(th.problem[th.problem.length - 1]);
+                        th.htm[2].find('.topi_text_jt i').text(th.xsize + 1);
+                        th.htm[2].find('.topi_text_ei i').remove();
+                        setTimeout(function () {
+                          This.css({
+                            'background': 'url(images/wcfx.png)',
+                            'background-size': '100%'
+                          });
+                        }, 100)
+                      } else if (th.xsize == 5) {
+//                        th.ajaxp('/webapi/index.php?app=activity&act=submit_answer',"POST",{
+//                            openid:th.openid,
+//                            answer:th.ajaxpdata(th)
+//                        });
+                        th.nextfinish();
+                        setTimeout(function () {
+                          th.bodyselector.append(th.htm[5])
+                        }, 3000);
+                      } else {
+                        th.xydata(th.problem[0]);
+                        th.htm[2].find('.topi_text_jt i').text(th.xsize + 1);
+                      }
+                      th.xsize++;
+                    }else{
+                        /*答题者流程*/
+                      if(th.xsize==4){
+                        $('button.next').css({
+                          'background':'url(images/load.png)',
+                          'background-size':'100%'
+                        });
+                      }
+                      if(th.xsize==5){
+                          th.ajaxp('http://local.vote.ivymei.com/webapi/index.php?app=activity&act=submit_answer',"POST",{
+                            series_sn:th.series_sn,
+                            openid:th.openid,
+                            answer:th.ajaxpdata(th)
+                          });
+
+                          th.Blesswor(th);
+                          th.bodyhtm(th.htm[0]);
+                          th.htm[0].find('button').css({
+                            'background':'url(images/myw.png)',
+                            'background-size':'100%'
+                          });
+                          th.losedonghua();
+                          $('body').off('click','.next');
+                          return;
+                      }
+                      th.xydata(th.problem[th.xsize]);
+                      th.htm[2].find('.topi_text_jt i').text(th.xsize + 1);
+                      th.xsize++;
+                    }
+              });
             },
             nextfinish:function () {
                 /*点击第五题后的程序体*/
@@ -437,6 +507,7 @@
                 var th=this;
                 if(th.characterType[0]=='出题'){
                     /*出题者*/
+                    th.htm[1].find('p').eq(1).text('赶紧邀请好友来答题吧~');
                     th.bodyhtm(th.htm[1]);
                 }else{
                     /*答题者*/
@@ -456,14 +527,19 @@
             saveClick:function () {
                 /*出题，答题*/
               var th=this;
+                th.backOrder();
               //程序运行
               th.bodyselector.on('click','.save',function () {
-                    $('.ts_index').remove();
+                  $('.ts_index').remove();
                   if(th.characterType[0]=='答题'){
                       /*答题*/
-                      th.htm[2].find('.topi_text_ei i').hide();
+                      th.htm[2].find('.topi_text_ei i').remove();
+                      th.ts='要放弃答题吗？';
+                  }else if(th.characterType[0]=='出题'){
+                      th.ts='要放弃出题吗？';
                   }
                     th.bodyhtm(th.htm[2]);
+                    th.xydata(th.problem[0]);
                     $('.topic').show(100,function () {
                         $('.topi_text').show(500,function () {
                             $('.topi_text .next').css('bottom','2.5rem');
@@ -473,7 +549,8 @@
                                     'height':'34px',
                                     'line-height':'34px',
                                     'top':'50%',
-                                    'font-size':'15px'
+                                    'font-size':'15px',
+                                    'color':'#fff'
                                 }).fadeIn(1000,function () {
                                     setTimeout(function () {
                                         $('.topi_text_jt').css({
@@ -481,10 +558,12 @@
                                             'height':'auto',
                                             'line-height':'20px',
                                             'top':'auto',
-                                            'font-size':'12px'
+                                            'font-size':'12px',
+                                            'color':'#792f0e'
                                         });
                                         th.checkClick();
                                         th.nextClick();
+                                        th.true=true;
                                     },1000)
                                 });
                             })
@@ -494,10 +573,21 @@
             },
             checkClick:function () {
                 /*选中点击*/
-                $('.topi_text_xt').on('click','li',function () {
+                $('body').on('click','.topi_text_xt li',function () {
                     $(this).closest('.topi_text_xt').find('li').removeClass('xs');
                     $(this).addClass('xs')
                 });
+            },
+            Replace:function () {
+              /*换一换*/
+              if(this.true&&this.size<this.problem.length){
+                this.size++;
+                if(this.problem.length-1==this.size){
+                    this.size=0;
+                }
+                this.xydata(this.problem[this.size]);
+              }
+              this.bodyhtm(this.htm[2]);
             },
             Lose:function () {
                 /*没人答题*/
@@ -517,6 +607,9 @@
                     this.characterType=['出题','no'];
                     this.htm=this.hchtm;
                     this.bodyselector.html(this.htm[3]);
+                    this.size=0;
+                    this.xsize=1;
+                    this.ajaxp('images/json.json',"GET",{openid:this.openid});
                 }
             },
             index:function (e) {
@@ -532,29 +625,32 @@
                             return this.htm[1];
                         }else{
                             /*第二次进来，出题了也已经答题了*/
-                            this.htm[0].find('p:eq(0) b:eq(1)').text(this.user[1]);
-                            this.htm[0].find('p:eq(1) b:eq(0)').text(this.user[1]);
-                            this.htm[0].find('p:eq(0) i').text(this.characterType[2]+'%');
-                            this.htm[0].find('p:eq(1) b:eq(1)').text(this.characterType[2]+'%');
+                            this.Blesswor(this);//显示祝福语
                             return this.htm[0];
                         }
                         break;
                     case '答题':
                         /*答题者*/
-                        this.htm[3].find('.save').css({
+                        if(e[1]=='yes'){
+                            this.Blesswor(this);//显示祝福语
+                            this.htm[0].find('button').css({
+                            'background':'url(images/myw.png)',
+                            'background-size':'100%'
+                          });
+                          this.losedonghua();
+                          return this.htm[0];
+                        }else{
+                          this.htm[3].find('.save').css({
                             'background':'url(images/jsjc.png)',
                             'background-size':'100%'
-                        });/*答题者进入的首页*/
-                        this.htm[3].find('.set_teat').text('我当然是爱你的啊！');/*答题者进入的首页*/
-                        return this.htm[3];
+                          });/*答题者进入的首页*/
+                          this.htm[3].find('.set_teat').text('我当然是爱你的啊！');/*答题者进入的首页*/
+                          return this.htm[3];
+                        }
                         break;
                     default:
                         /*第三者*/
-                        this.htm[0].find('p:eq(0) b:eq(0)').text(this.user[2]);
-                        this.htm[0].find('p:eq(0) b:eq(1)').text(this.user[1]);
-                        this.htm[0].find('p:eq(0) b:eq(2)').text('他们');
-                        this.htm[0].find('p:eq(0) i').text(this.characterType[2]+'%');
-                        this.htm[0].find('.Lose_ts img').attr('src','images/'+this.characterType[2]+'.png');
+                        this.Blesswor(this);//显示祝福语
                         this.htm[0].find('p:eq(1)').text('想知道你和谁最有默契吗？赶紧来玩玩吧~');
                         this.htm[0].find('button').css({
                             'background':'url(images/myw.png)',
@@ -564,19 +660,122 @@
                 }
             },
             losedonghua:function () {
+                /*出题或答题完后的动画*/
                 var th=this;
                 setTimeout(function () {
                     th.Lose();
                 },10);
             },
-            read:function () {
-                /*只能一次加载，因为这里涉及板块设计*/
+            Blesswor:function (e) {
+              /*答题完的祝福语显示*/
+              if(e.characterType[0]!=''){
+                /*不是第三者*/
+                if(e.characterType[0]=='出题'){
+                  e.htm[0].find('p:eq(0) b:eq(1)').text(e.user[1]);
+                  e.htm[0].find('p:eq(1) b:eq(0)').text(e.user[1]);
+                }else{
+                  e.htm[0].find('p:eq(0) b:eq(1)').text(e.user[2]);
+                  e.htm[0].find('p:eq(1) b:eq(0)').text(e.user[2]);
+                }
+                e.htm[0].find('p:eq(1) b:eq(1)').text(e.characterType[2]+'%');
+              }else{
+                  /*第三者*/
+                e.htm[0].find('p:eq(0) b:eq(1)').text(e.user[1]);
+                e.htm[0].find('p:eq(0) b:eq(0)').text(e.user[2]);
+                e.htm[0].find('p:eq(0) b:eq(2)').text('他们');
+              }
+              e.htm[0].find('p:eq(0) i').text(e.characterType[2]+'%');
+              e.htm[0].find('.Lose_ts img').attr('src','images/'+e.characterType[2]+'.png');
+              e.htm[0].find('p a').text(e.Blessingwords[e.characterType[2]/20]);
+            },
+            oflw:function (e) {
+                /*保存数据*/
+              this.problem=[];
+              for(i in e){
+                this.problem.push(e[i]);
+              }
+            },
+            ajaxp:function (e,type,data) {
+                /*请求接口*/
+              console.log(data);
+              var th=this;
+              $.ajax({
+                type: type,
+                url: e,
+                data: data,
+                success: function(data) {
+                  console.log(data);
+                  th.oflw(data.data);
+                  th.data=data;
+                }
+              });
+            },
+            ajaxpdata:function (e) {
+              /*返回出题与答题选项给后台，data参数*/
+              return '{"'+e.getdata[0][1]+'"'+':'+e.getdata[0][0]+',' +
+                      '"'+e.getdata[1][1]+'"'+':'+e.getdata[1][0]+',' +
+                      '"'+e.getdata[2][1]+'"'+':'+e.getdata[2][0]+',' +
+                      '"'+e.getdata[3][1]+'"'+':'+e.getdata[3][0]+',' +
+                      '"'+e.getdata[4][1]+'"'+':'+e.getdata[4][0]+'}'
+            },
+            xydata:function (e) {
+                /*输出数据*/
+              for(i in e.option){
+                  if(i<2){
+                    $('.topi_text_xt ul:eq(0) li:eq('+i+')').attr({'data-size':e.option[i].option_id,'question_id':e.question_id});
+                    $('.topi_text_xt ul:eq(0) li:eq('+i+') p').text(e.option[i].name);
+                    $('.topi_text_title').text(e.title);
+                  }else{
+                    $('.topi_text_xt ul:eq(1) li:eq('+(i%2)+')').attr({'data-size':e.option[i].option_id,'question_id':e.question_id});
+                    $('.topi_text_xt ul:eq(1) li:eq('+(i%2)+') p').text(e.option[i].name);
+                  }
+              }
+            },
+            backOrder:function () {
+                var bool = false,th=this,windows=window;
+                    pushHistory();
+                    setTimeout(function() {
+                        bool = true;
+                    }, 500);
+                    var implement=function() {
+//                        windows.removeEventListener("popstate", implement, false);
+                        if (bool) {
+                            //监听点击返回按钮
+                            if(confirm(th.ts)){
+                                location.href='/answer';
+                            }else{
+//                                windows.addEventListener("popstate", implement, false);
+                            }
+                        }
+                        pushHistory();
+                    };
+                    function pushHistory() {
+                        var state = {
+                            title: "title",
+                            url: "/answer"
+                        };
+                        windows.history.pushState(state, "title", "/answer");
+                    }
+                windows.addEventListener("popstate", implement, false);
+            },
+            read:function (){
+                /*只能刷新加载，因为这里涉及板块设计*/
+                if(this.characterType[0]=='出题'){
+                  this.ajaxp('images/json.json',"GET",{openid:this.openid});
+                }else if(this.characterType[0]=='答题'){
+                  this.ajaxp('images/json.json',"GET",{series_sn:this.series_sn});
+                }
                 var th=this;
                 th.htmclone(['.yeslose','.Lose','.topic','.ts_index','.ts_log','.fx','.ts_log']);/*把板块记录到缓存*/
                 th.bodyhtm(th.index(th.characterType));//页面首页显示
                 th.saveClick();
                 if(th.characterType[0]==''||th.characterType[1]=='yes'||th.characterType[1]==''){
                     this.losedonghua();
+                    if(th.characterType[0]=='出题' && th.characterType[1]=='yes'){
+                      setTimeout(function () {
+                        th.bodyselector.append(th.htm[5])
+                      }, 3000);
+                    }
                 }
             }
         };

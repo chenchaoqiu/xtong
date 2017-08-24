@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1">
+		<title>松鼠君给你送礼啦</title>
+		<link rel="stylesheet" href="../css/base.css" />
+		<link rel="stylesheet" href="../css/richScan.css" />
+		<link rel="stylesheet" href="../css/NewCapacity.css" />
+	</head>
+	<body>
+		<div class="bigBox">
+		<img class="bgImg" src="../images/richScan/bg.jpg" />
+		<div class="textBox">
+
+			<div class="Div1" style="display: block;">
+				<div class="Div1T1">
+					恭喜你获得 <span id="tMoney1">10</span>个 松鼠币
+				</div>
+				<div class="Div1T2 Div1T2Add">不请你吃饭，请你免费现金换商品</div>
+				<div  class="Div1T2">1个松鼠币=1元</div>
+				<div  class="Div1T2">美妆、服装、全球购不要钱</div>
+
+				<div class="Div1B1Box">
+					<img class="Div1B1Icon" src="../images/richScan/icon2.png" />
+					<div class="Div1B1InpBox">
+						<input type="number" id="phone" class="Div1B1Inp" placeholder="请输入11位手机号" />
+					</div>
+				</div>
+
+				<div onclick="getMoney()" class="Div1B2Box">立即领取</div>
+
+				<div onclick="goState()" class="bottomText">
+					关于松鼠币<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+				</div>
+			</div>
+
+			<div class="Div2" style="display: none;">
+				<div class="Div2T1">恭喜你</div>
+				<div class="Div2T2">
+					获得 <span id="tMoney2">10</span> 松鼠币
+				</div>
+				<div class="Div2Line"></div>
+				<div class="Div2T3">
+					赠送的松鼠币已经放入账号<span id="tPhone"></span>中
+				</div>
+
+				
+				<div class="Div2B2Box" onclick="goDownload()">下载APP使用</div>
+				<div class="Div2B1Box" onclick="weChat()">分享给好友</div>
+				<div onclick="goState()" class="bottomText">
+					关于松鼠币<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+				</div>
+			</div>
+
+			<div class="Div3" style="display: none;">
+				<div class="Div3ImgBox">
+					<img src="../images/richScan/Logo.png" />
+				</div>
+
+				<div class="Div3T1">来晚一步</div>
+				<div class="Div3T2">松鼠币已经被别人领取</div>
+
+				<div class="Div3B1Box" onclick="goBusiness()">获取更多松鼠币</div>
+				<div onclick="goState()" class="bottomText">
+					关于松鼠币<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="bigBox2" style="display: none;background-color: #fff;">
+		<div class="title-top">
+			<div class="title-center">
+				<a href="javascript:;" onclick="javascript:history.go(-1);" class="return-left"></a>松鼠币Q&A 
+			</div>
+		</div>
+		<div class="songshu">
+			<h4>Q：什么是松鼠币？</h4>
+			<p>A：松鼠币是松鼠说平台唯一指定流通代币，用户可用松鼠币兑换各平台上除邮费以外的所有商品（含虚拟物品、服务类商品以及消费场所折扣和代金券等）。松鼠币并非任何代币费用，不能用于松鼠说平台以外的任何商品或服务购买。</p>
+		</div>
+		<div class="songshu">
+			<h4>Q：如何使用松鼠币？</h4>
+			<p>A：松鼠币可以用于兑换等值商品，在松鼠说平台上，1松鼠币的购买力约等于1人民币；松鼠币还可用来参与抽奖活动等。</p>
+		</div>
+		<div class="songshu">
+			<h4>Q：如何获取松鼠币？</h4>
+			<p>A：用户主要通过到商家消费获得松鼠币，获赠松鼠币数量为25%—100%的消费额。此外，用户可通过完成「每日签到任务」、「分享有礼任务」获取松鼠币，进入「赚取松鼠币」界面，可了解松鼠说平台不定期推出的送币活动。</p>
+		</div>
+		<div class="songshu">
+			<h4>Q：松鼠币的有效期多长？</h4>
+			<p>A：松鼠币在松鼠说平台正常营运的情况下长期有效，但是因为用户个人原因违反《松鼠说用户协议》导致松鼠币自动作废的情况不在正常范围内，相应条款可查看《松鼠说用户服务协议》。</p>
+		</div>
+		<div class="songshu">
+			<h4>Q：如何查看我的松鼠币数量？</h4>
+			<p>A：用户可以通过点击平台上「我的」页面来查看当前持有的松鼠币数量，点击「松鼠币数量」-「松鼠币余额」，进入松鼠币详情，可查看松鼠币的获得使用记录。</p>
+		</div>
+		<div class="songshu">
+			<h4>Q：松鼠币是否可以从A账户转到B账户？</h4>
+			<p>A：一旦松鼠币进入用户账号后，如无特殊活动，松鼠币不支持账户之间的互相转换。</p>
+		</div>
+	</div>
+	<div class="toastBack"></div>
+	<div class="toastText">此礼包已被你领取</div>
+	
+	<div id="mcover" class="mcover" onClick="weChat()" style="display: none;" ><img src="../images/share/tishi2.png"></div>
+	<!--弹窗-->
+	<div  class="tNewCapacityBack"></div>
+	<div  class="tNewCapacityAlert">
+		<div class="tNewCapacityAlert_text"></div>
+		<div class="tNewCapacityAlert_button" onclick="alertVerify()">确认</div>
+	</div>
+	
+	<div class="tNewCapacityConfirm">
+		<div class="tNewCapacityConfirm_text"></div>			
+		<div class="tNewCapacityConfirmControlBox">
+			<div class="tNewCapacityConfirm_button1" onclick="confirmCancel()">取消</div>
+		    <div class="tNewCapacityConfirm_button2">确认</div>
+		</div>
+	</div>
+	
+	<script type="text/javascript" src="../js/jquery-2.0.0.min.js" ></script>
+	<script type="text/javascript" src="../js/cookie.js" ></script>
+	<script type="text/javascript" src="../js/base.js" ></script>
+	<script type="text/javascript" src="../js/NewCapacity.js" ></script>
+	<script type="text/javascript" src="../js/baseUrl.js" ></script>
+	<script type="text/javascript" src="https://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+	<script>
+		$(window).ready(function() {
+			changeDis();
+			getShareTest();
+			getRecord();
+			//weixinLoad();
+		});
+		
+		function weChat(){
+			$("#mcover").css("display","block");
+			
+			setTimeout(function () {
+		        $("#mcover").hide(); }, 8000);    //8000毫秒是隐藏层层
+		}
+		
+		var code = "";
+		//var theOpenid ="";
+		function changeDis() {
+			var heightW = $(window).height();
+			var heightB = $(".bigBox").height();
+			if (heightW > heightB) {
+				$(".tBody").css("overflow", "hidden");
+			} else {
+				$(".bigBox").css("overflow", "hidden");
+			}
+		}
+		function goState() {
+			$(".bigBox").hide();
+			$(window).scrollTop(0);
+			$(".bigBox2").show();
+		}
+
+		function getMoney() {
+			var token = getTk("findForAttenByPoint");
+			var theUrl = "../weixinV_T/findForAttenByPoint";
+			var phone = $("#phone").val();				
+			var phone_validation = /^1[3|4|5|8|7][0-9]\d{8}$/;
+			if (phone == "") {
+				newAlert("请输入手机号");
+			} else if (!(phone_validation.exec(phone))) {
+				newAlert("请输入正确手机号");
+			} else {
+				newConfirm("确认是: " + $("#phone").val() + " 领取松鼠币吗？",function() {
+					$.ajax({
+						type : "POST",
+						url : theUrl,
+						data : {
+							'openid' : "1234567826",
+							'phone' : phone,
+							token:token
+						},
+						dataType : 'json',
+						async : false,
+						success : function(data) {
+							if (data.result == "1") {
+								$("#tPhone").html(phone);
+								$(".Div1").hide();
+								$(".Div2").show();
+								setRecord(phone);
+							} else {
+								newAlert(data.tag);
+							}
+						},
+						error : function(XMLHttpRequest, textStatus,
+								errorThrown) {
+							newAlert('网络超时，请尝试刷新页面');
+						}
+					});
+				});
+			}
+		}
+		function goBusiness() {
+			window.location.href = '../download.html';
+		}
+		function goDownload() {
+			window.location.href = '../download.html';
+		}
+		function hideState(){
+			$(".bigBox2").hide();
+			$(".bigBox").show();
+		}
+		
+		
+		function toast(){
+			$(".toastBack").show();
+			$(".toastText").show();
+			setTimeout("$('.toastBack').fadeOut()", 2000);
+			setTimeout("$('.toastText').fadeOut()", 2000);
+		}
+		
+		function setRecord(nphone){	
+			localStorage.setItem("t2phone",nphone);
+		}
+		function getRecord(){
+			var phone=localStorage.getItem("t2phone");
+			if(phone==""||phone==null){
+				$(".Div1").show();
+				$(".Div2").hide();
+				$(".Div3").hide();
+			}else{
+				$(".Div1").hide();
+				$(".Div2").show();
+				$(".Div3").hide();
+				$("#tPhone").html(phone);
+				$("#phone").val(phone);
+				toast();
+			}
+			
+		}
+        goShareRData();
+		function goShareRData(){
+			var sharetUrl="http://192.168.1.9:8081/share";
+			//waitAc_show();
+			var token = getTk("getShareConfig");
+			var theUrl="../weixinV_T/getShareConfig";
+			
+			$.ajax({url:theUrl,
+				data:{
+					url:sharetUrl,
+					token:token
+				},
+				error : function(jqXHR, textStatus, errorThrown) {
+					//waitAc_hide();
+					newAlert("网络超时，分享功能不可用！");
+				},
+				success:function(result){
+					if(result.result=="1"){
+						shareToInit(result.entity.appId,result.entity.timestamp,result.entity.nonceStr,result.entity.signature,result.entity.url);
+					}else{
+						//waitAc_hide();
+						newAlert("网络超时，分享功能不可用！");
+					}
+				}
+			});
+		}
+
+		function shareToInit(pid,ttp,ns,st,turl){	
+			var theUrl2=baseUrl_getWebServiceUrl()+"index.html?type=1";
+			var tAppId=pid;
+			var tTimestamp=ttp;
+			var tNonceStr=ns;
+			var tSignature=st;	
+			//newAlert("tAppId:"+tAppId+"----tTimestamp:"+tTimestamp+"----tNonceStr:"+tNonceStr+"----tSignature:"+tSignature);
+			wx.config({
+			    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端newAlert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+			    appId: tAppId, // 必填，公众号的唯一标识
+			    timestamp: tTimestamp, // 必填，生成签名的时间戳
+			    nonceStr: tNonceStr, // 必填，生成签名的随机串
+			    signature: tSignature,// 必填，签名，见附录1
+				jsApiList: ['onMenuShareTimeline', 'onMenuShareAppMessage']// 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+			});
+			
+			wx.ready(function(){	
+				wx.onMenuShareTimeline({
+				    title: '松鼠说', // 分享标题
+				    link: theUrl2, // 分享链接
+				    imgUrl: baseUrl_getWebServiceUrl()+"images/share/sIcon.jpg", // 分享图标
+				    success: function () {
+				    	newAlert("分享成功");
+				        // 用户确认分享后执行的回调函数
+				    },
+				    cancel: function () { 
+				        // 用户取消分享后执行的回调函数
+				    }
+				});
+				 //imgUrl: $('#baseUrlP').attr('href')+"images/share/sIcon.jpg",
+				wx.onMenuShareAppMessage({
+					title: '松鼠说', // 分享标题
+				    desc: '消费打折，巨优惠！海量商品，众多商家，惊喜不间断！', // 分享描述
+				    link: theUrl2, // 分享链接
+				    imgUrl: baseUrl_getWebServiceUrl()+"images/share/sIcon.jpg", // 分享图标
+				    type: 'link', // 分享类型,music、video或link，不填默认为link
+				    dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+				    success: function () { 
+				    	newAlert("分享成功");
+				        // 用户确认分享后执行的回调函数
+				    },
+				    cancel: function () {
+				        // 用户取消分享后执行的回调函数
+				    }
+				});
+				//waitAc_hide();
+				//newAlert("分享准备成功");
+			    // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+			});
+			
+			wx.error(function(res){
+			    // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+
+			});
+		}
+
+		function getShareTest(){
+			if (browser.versions.mobile) {//判断是否是移动设备打开。browser代码在下面
+		        var ua = navigator.userAgent.toLowerCase();//获取判断用的对象
+		        if (ua.match(/MicroMessenger/i) == "micromessenger") {
+		        	goShareRData();
+		        }      
+		    }
+		}
+
+		var browser = {
+			    versions: function () {
+			        var u = navigator.userAgent, app = navigator.appVersion;
+			        return {         //移动终端浏览器版本信息
+			            trident: u.indexOf('Trident') > -1, //IE内核
+			            presto: u.indexOf('Presto') > -1, //opera内核
+			            webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+			            gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+			            mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+			            ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+			            android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或uc浏览器
+			            iPhone: u.indexOf('iPhone') > -1, //是否为iPhone或者QQHD浏览器
+			            iPad: u.indexOf('iPad') > -1, //是否iPad
+			            webApp: u.indexOf('Safari') == -1 //是否web应该程序，没有头部与底部
+			        };
+			    }(),
+			    language: (navigator.browserLanguage || navigator.language).toLowerCase()
+			};
+	</script>
+	</body>
+</html>

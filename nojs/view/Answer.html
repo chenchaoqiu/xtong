@@ -1,0 +1,785 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>天造地设情侣大检验</title>
+    <meta charset="utf-8">
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="viewport" content="width=device-width,user-scalable=no">
+    <meta name="x5-orientation" content="portrait"/>
+    <script type="text/javascript" src="js/flexible.js"></script>
+    <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+    <style>
+        body,html{
+            cursor: pointer;
+            -webkit-user-select: none;
+            line-height: 1.5;
+            -webkit-touch-callout: none;
+            -webkit-text-size-adjust: none;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
+            width:100%;
+            height: 100%;
+        }
+        *{
+            padding: 0;
+            margin: 0;
+            font-style: normal;
+            font-weight:normal;
+        }
+        .ts_index{
+            background: url("images/get_bg.png") no-repeat center center;
+            background-size: 100% 100%;
+            width:100%;
+            height:100%;
+        }
+        .save{
+            width:4.84rem;
+            height:1.56rem;
+            background: url("images/save.png");
+            background-size: 100% 100%;
+            border:none;
+            outline:none;
+            position: fixed;
+            bottom:2.9rem;
+            left:50%;
+            margin-left:-2.42rem;
+            transition: All 0.2s ease-in-out;
+            -webkit-transition: All 0.2s ease-in-out;
+            -moz-transition: All 0.2s ease-in-out;
+            -o-transition: All 0.2s ease-in-out;
+        }
+        .jsjc{
+            background: url("images/jsjc.png");
+            background-size: 100% 100%;
+        }
+        .save:active{
+            transform: scale(1.1);
+            -webkit-transform: scale(1.1);
+            -moz-transform: scale(1.1);
+            -o-transform: scale(1.1);
+            -ms-transform: scale(1.1);
+        }
+        .set_teat{
+            color: #fff;
+            font-size:0.45rem;
+            position: fixed;
+            text-align: center;
+            width:100%;
+            bottom:2rem;
+            font-family:cursive;
+        }
+        .ts_log{
+            color: #fff;
+            font-size: 0.375rem;
+            position: fixed;
+            text-align: center;
+            width:100%;
+            bottom: 0.31rem;
+        }
+        .topic{
+            background: #e69601;
+            width: 100%;
+            height:100%;
+            overflow:hidden;
+        }
+        .ts_top{
+            color: #fded01;
+            font-size:0.46rem;
+            text-align: center;
+            margin: 0.625rem 0;
+        }
+        .topi_text{
+            width:9.429rem;
+            height:9.714rem;
+            background:url("images/bg.png");
+            background-size: 100% 100%;
+            margin:0 auto;
+            overflow: hidden;
+        }
+        .topi_text_ei{
+            position: relative;
+            font-size: 0.4rem;
+            color: #ffdc50;
+            text-align: center;
+            margin-top:0.78rem;
+        }
+        .topi_text_ei i{
+            position: absolute;
+            right:7px;
+            top:-5px;
+            color: #792f0e;
+            font-size:0.46rem;
+            width:2rem;
+            height: 0.78rem;
+            line-height:0.78rem;
+            background: #fded01;
+            border:2px solid #19032b;
+            border-radius:20px;
+        }
+        .topi_text_ei i:active{
+            background: #aba65d;
+        }
+        .topi_text_title{
+            width: 93%;
+            margin:0.46rem 0 0 0.53rem;
+            color:#fff;
+            font-size: 13px;
+            line-height:20px;
+        }
+        .topi_text_xt{
+            margin-left: 16px;
+            overflow: hidden;
+        }
+        .topi_text_xt ul{
+            width:8.7rem;
+            height:2.8rem;
+            margin-top: 0.3rem;
+            background: #740dca;
+        }
+        .topi_text_xt li{
+            width:100%;
+            height:50%;
+            list-style-type: none;
+        }
+        .topi_text_xt li *{
+            float: left;
+        }
+        .topi_text_xt li em{
+            width:0.53rem;
+            height: 0.53rem;
+            border:1px solid #fded01;
+            border-radius:5px;
+            margin-left: 10px;
+            margin-top: 8px;
+        }
+        .topi_text_xt li em img{
+            display: none;
+        }
+        .topi_text_xt li p{
+            width:7.5rem;
+            color: #fff;
+            font-size: 13px;
+            float: right;
+            margin-top: 6px;
+            line-height: 17px;
+        }
+        .topi_text_xt li.xs em{
+            background: #fded01;
+        }
+        .topi_text_xt li.xs em img{
+            display: block;
+        }
+        .topi_text .next{
+            width:4.84rem;
+            height:1.56rem;
+            background: url("images/next.png") no-repeat;
+            background-size: 100% 100%;
+            border:none;
+            outline:none;
+            position: fixed;
+            bottom:-1.56rem;
+            left:50%;
+            margin-left:-2.42rem;
+            transition: All 0.1s ease-in-out;
+            -webkit-transition: All 0.1s ease-in-out;
+            -moz-transition: All 0.1s ease-in-out;
+            -o-transition: All 0.1s ease-in-out;
+        }
+        .topi_text .next:active{
+            background-size: 100% 117%;
+            opacity:.8;
+            -moz-opacity:.8;
+            filter:alpha(opacity=80);
+        }
+        .topi_text_jt{
+            font-size: 12px;
+            color: #792f0e;
+            position: fixed;
+            bottom:2.0rem;
+            left:0;
+            width:100%;
+            text-align: center;
+        }
+        .Lose{
+            background: #e69601;
+            width:100%;
+            height:100%;
+            overflow: hidden;
+        }
+        .Lose p{
+            color: #fded01;
+            font-size: 0.5rem;
+            text-align: center;
+            margin: 0;
+            opacity: 0;
+            transition: All 1s ease-in-out;
+            -webkit-transition: All 1s ease-in-out;
+            -moz-transition: All 1s ease-in-out;
+            -o-transition: All 1s ease-in-out;
+        }
+        .Lose p.xs{
+            opacity: 1;
+            margin: 0.9rem 0;
+        }
+        .Lose_ts{
+            width:9.429rem;
+            height:9.714rem;
+            background:url("images/bg.png");
+            background-size: 100% 100%;
+            margin:0 auto;
+            overflow: hidden;
+        }
+        .Lose_ts img{
+            width: 7.9rem;
+            height:7.9rem;
+            margin-top: 0.91rem;
+            margin-left: 0.91rem;
+            opacity: 0;
+            transform: scale(1.3);
+            -webkit-transform: scale(1.3);
+            -moz-transform: scale(1.3);
+            -o-transform: scale(1.3);
+            -ms-transform: scale(1.3);
+            transition: All 1s ease-in-out;
+            -webkit-transition: All 1s ease-in-out;
+            -moz-transition: All 1s ease-in-out;
+            -o-transition: All 1s ease-in-out;
+        }
+        .Lose_ts img.xs{
+            opacity: 1;
+            transform: scale(1);
+            -webkit-transform: scale(1);
+            -moz-transform: scale(1);
+            -o-transform: scale(1);
+            -ms-transform: scale(1);
+        }
+        .yeslose{
+            background: #e49600;
+            width:100%;
+            height:100%;
+            overflow: hidden;
+        }
+        .yeslose p{
+            font-size: 0.42rem;
+            text-align: center;
+            color: #fff;
+            margin-top: 0.26rem;
+            margin-bottom:10px;
+        }
+        .yeslose p.font{
+            font-size: 0.37rem;
+        }
+        .yeslose p i{
+            font-size: 0.4rem;
+            opacity: 0;
+            transition: All 0.5s ease-in-out;
+            -webkit-transition: All 0.5s ease-in-out;
+            -moz-transition: All 0.5s ease-in-out;
+            -o-transition: All 0.5s ease-in-out;
+        }
+        .yeslose p i.xs{
+            opacity: 1;
+            font-size: 0.8rem;
+        }
+        .yeslose button{
+            width:4.13rem;
+            height:1.33rem ;
+            background: url("images/ljfx.png");
+            background-size: 100%;
+            border:none;
+            outline:none;
+            margin:0 auto;
+            display: block;
+            transition: All 0.2s ease-in-out;
+            -webkit-transition: All 0.2s ease-in-out;
+            -moz-transition: All 0.2s ease-in-out;
+            -o-transition: All 0.2s ease-in-out;
+        }
+        .yeslose button:active{
+            transform: scale(1.1);
+            -webkit-transform: scale(1.1);
+            -moz-transform: scale(1.1);
+            -o-transform: scale(1.1);
+            -ms-transform: scale(1.1);
+        }
+        .fx{
+            position: fixed;
+            width:100%;
+            height:100%;
+            top:0;
+            left:0;
+            background: #000;
+            opacity:.8;
+            -moz-opacity:.8;
+            filter:alpha(opacity=80);
+            font-size: 0.5rem;
+            color: #fff;
+            /*display: none;*/
+        }
+        .fx img{
+            float: right;
+            margin-right: 5px;
+            margin-top: 20px;
+            width:2.48rem;
+            height: 2.85rem;
+        }
+        .fx p{
+            float: left;
+            width:100%;
+            text-align: center;
+            margin-top: 15px;
+        }
+        .fx a{
+            text-decoration: underline;
+            position: fixed;
+            bottom: 2.3rem;
+            left:3.71rem;
+        }
+        .fx a:active{
+            color: #7d2e2e;
+        }
+    </style>
+</head>
+<body>
+    <!--底部-->
+    <p class="ts_log">I 美平台技术支持</p>
+    <!--首页-->
+    <div class="ts_index" style="display: block">
+        <button data-type="出题" class="save"></button>
+        <p class="set_teat">他果真是我生命中那个唯一么？</p>
+    </div>
+    <!--出题或答题-->
+    <div class="topic">
+        <p class="ts_top">“天造地设情侣大检验”</p>
+        <div class="topi_text" style="display: none">
+            <p class="topi_text_ei">只选择你的真心话<i onclick="ojb.Replace()">换一题</i></p>
+            <p class="topi_text_title">此处是广告植入(老板威胁我的):I美是一款帮助 用户享受绿色专业美容服务的美容App。</p>
+            <div class="topi_text_xt" style="display: none">
+                <ul>
+                    <li data-size="1" class="xs">
+                        <em><img width="100%" height="100%" src="images/check.png"></em>
+                        <p>A.打开家门-换鞋-换衣服-上厕所-葛优 躺-打开电视</p>
+                    </li>
+                    <li data-size="2">
+                        <em><img width="100%" height="100%" src="images/check.png"></em>
+                        <p>B.打开家门-换衣服-打开电视-上厕所 -葛优躺</p>
+                    </li>
+                </ul>
+                <ul>
+                    <li data-size="3">
+                        <em><img width="100%" height="100%" src="images/check.png"></em>
+                        <p>C.打开家门-打开冰箱喝饮料-准备晚餐</p>
+                    </li>
+                    <li data-size="4">
+                        <em><img width="100%" height="100%" src="images/check.png"></em>
+                        <p>D.打开家门-换鞋/衣服-和室友/男友聊 天电话-打开电脑加班</p>
+                    </li>
+                </ul>
+            </div>
+            <button class="next"></button>
+            <p class="topi_text_jt" style="display: none">第<i>1</i>题/共5题</p>
+        </div>
+    </div>
+    <!--没人答题-->
+    <div class="Lose">
+        <p>“我的有缘人在哪？”</p>
+        <div class="Lose_ts">
+            <img style="" src="images/none.png" />
+        </div>
+        <p style="color: #fff;font-size: 16px;">赶紧邀请好友来答题吧~</p>
+    </div>
+    <!--已经答题-->
+    <!--出题者进入-->
+    <div class="yeslose">
+        <p class=""><b>我</b>与<b>XXX</b>的默契度是<i>80%</i><br /><b>我们</b><a>可以携手到老了！</a></p>
+        <div class="Lose_ts">
+            <img style="" src="images/80.png" alt="图片异常" />
+        </div>
+        <p class="font">我与<b>xxx</b>的默契度为<b class="xs">80%</b>,赶紧分享好友求围观吧~</p>
+        <button onclick="ojb.fx()"></button>
+    </div>
+    <!--分享页面-->
+    <div class="fx">
+        <img src="images/fs.png" alt="图片异常"/>
+        <p>点击右上角分享给你的朋友吧！</p>
+        <a onclick="$('.fx').fadeOut(200,function() {
+          $(this).remove();
+        })">取消分享</a>
+    </div>
+    <script>
+        document.body.addEventListener('touchstart', function () {});
+        var ojb={
+            characterType:['出题','','20'],/*yes:出问题，还没有人答题(如果是答题者：已经答完题)，no:还没有出题，空表示出完题也答完题*/
+            user:['我','答题者的的**','出题者的的**'],/*我：我自己，用户1：答题者，用户2：出题者*/
+            Blessingwords:['还是分手吧！','是不是刚刚认识？','之间可以不可以再真诚些？','要加强了解啊。','可以携手到老了。','是天造地设的一对。'],
+            htm:[/*已经答题1*//*没人答题2*//*出题或答题3*//*首页4*//*底部5*//*分享页面6*//*I 美平台技术支持*/],
+            hchtm:[/*页面缓存，原始页面*/],
+            problem:[/*题目集合*/],
+            data:'/*接收后台数据（按需取值）*/',
+            getdata:[],
+            openid:'1',
+            series_sn:'55R0Wb',
+            true:false,/*监控出答题动画完成*/
+            size:0,/*换一换*/
+            xsize:1,/*下一题*/
+            bodyselector:$('body'),
+            ts:'要放弃出题或答题吗？',
+            bodyhtm:function (e) {
+                this.bodyselector.html(e);
+                this.bodyselector.append(this.htm[6]);/*底部添加*/
+            },
+            htmclone:function (e) {
+                /*页面加载保存到缓存加以重用*/
+                for(i in e){
+                   this.htm.push($(e[i]).clone(true));
+                   this.hchtm.push($(e[i]).clone(true));
+                }
+            },
+            nextClick:function () {
+                /*点击下一题*/
+                var th=this;
+                th.bodyselector.on('click','.next',function () {
+                    var This=$(this);
+                    th.getdata.push([$('.topi_text_xt li.xs').attr('data-size'),$('.topi_text_xt li.xs').attr('question_id')]);
+                    if(th.characterType[0]=='出题') {
+                        /*出题者流程*/
+                      /*选一个删除一个*/
+                      th.problem.splice((th.size), 1);
+
+                      th.size = 0;
+                      if (th.xsize == 4) {
+                        th.xydata(th.problem[th.problem.length - 1]);
+                        th.htm[2].find('.topi_text_jt i').text(th.xsize + 1);
+                        th.htm[2].find('.topi_text_ei i').remove();
+                        setTimeout(function () {
+                          This.css({
+                            'background': 'url(images/wcfx.png)',
+                            'background-size': '100%'
+                          });
+                        }, 100)
+                      } else if (th.xsize == 5) {
+//                        th.ajaxp('/webapi/index.php?app=activity&act=submit_answer',"POST",{
+//                            openid:th.openid,
+//                            answer:th.ajaxpdata(th)
+//                        });
+                        th.nextfinish();
+                        setTimeout(function () {
+                          th.bodyselector.append(th.htm[5])
+                        }, 3000);
+                      } else {
+                        th.xydata(th.problem[0]);
+                        th.htm[2].find('.topi_text_jt i').text(th.xsize + 1);
+                      }
+                      th.xsize++;
+                    }else{
+                        /*答题者流程*/
+                      if(th.xsize==4){
+                        $('button.next').css({
+                          'background':'url(images/load.png)',
+                          'background-size':'100%'
+                        });
+                      }
+                      if(th.xsize==5){
+                          th.ajaxp('http://local.vote.ivymei.com/webapi/index.php?app=activity&act=submit_answer',"POST",{
+                            series_sn:th.series_sn,
+                            openid:th.openid,
+                            answer:th.ajaxpdata(th)
+                          });
+
+                          th.Blesswor(th);
+                          th.bodyhtm(th.htm[0]);
+                          th.htm[0].find('button').css({
+                            'background':'url(images/myw.png)',
+                            'background-size':'100%'
+                          });
+                          th.losedonghua();
+                          $('body').off('click','.next');
+                          return;
+                      }
+                      th.xydata(th.problem[th.xsize]);
+                      th.htm[2].find('.topi_text_jt i').text(th.xsize + 1);
+                      th.xsize++;
+                    }
+              });
+            },
+            nextfinish:function () {
+                /*点击第五题后的程序体*/
+                this.bodyselector.off('click','.next');
+                var th=this;
+                if(th.characterType[0]=='出题'){
+                    /*出题者*/
+                    th.htm[1].find('p').eq(1).text('赶紧邀请好友来答题吧~');
+                    th.bodyhtm(th.htm[1]);
+                }else{
+                    /*答题者*/
+                    th.htm[0].find('p:eq(0) b:eq(1)').text(th.user[1]);
+                    th.htm[0].find('p:eq(1) b:eq(0)').text(th.user[1]);
+                    th.htm[0].find('p:eq(0) i').text(th.characterType[2]+'%');
+                    th.htm[0].find('p:eq(1) b:eq(1)').text(th.characterType[2]+'%');
+                    th.htm[0].find('button').css({
+                        'background':'url(images/myw.png)',
+                        'background-size':'100%'
+                    });
+                    th.htm[0].find('.Lose_ts img').attr('src','images/'+th.characterType[2]+'.png');
+                    th.bodyhtm(th.htm[0])
+                }
+                th.losedonghua();
+            },
+            saveClick:function () {
+                /*出题，答题*/
+              var th=this;
+                th.backOrder();
+              //程序运行
+              th.bodyselector.on('click','.save',function () {
+                  $('.ts_index').remove();
+                  if(th.characterType[0]=='答题'){
+                      /*答题*/
+                      th.htm[2].find('.topi_text_ei i').remove();
+                      th.ts='要放弃答题吗？';
+                  }else if(th.characterType[0]=='出题'){
+                      th.ts='要放弃出题吗？';
+                  }
+                    th.bodyhtm(th.htm[2]);
+                    th.xydata(th.problem[0]);
+                    $('.topic').show(100,function () {
+                        $('.topi_text').show(500,function () {
+                            $('.topi_text .next').css('bottom','2.5rem');
+                            $('.topi_text_xt').show(500,function () {
+                                $('.topi_text_jt').css({
+                                    'background':'#000',
+                                    'height':'34px',
+                                    'line-height':'34px',
+                                    'top':'50%',
+                                    'font-size':'15px',
+                                    'color':'#fff'
+                                }).fadeIn(1000,function () {
+                                    setTimeout(function () {
+                                        $('.topi_text_jt').css({
+                                            'background':'0',
+                                            'height':'auto',
+                                            'line-height':'20px',
+                                            'top':'auto',
+                                            'font-size':'12px',
+                                            'color':'#792f0e'
+                                        });
+                                        th.checkClick();
+                                        th.nextClick();
+                                        th.true=true;
+                                    },1000)
+                                });
+                            })
+                        });
+                    });
+                });
+            },
+            checkClick:function () {
+                /*选中点击*/
+                $('body').on('click','.topi_text_xt li',function () {
+                    $(this).closest('.topi_text_xt').find('li').removeClass('xs');
+                    $(this).addClass('xs')
+                });
+            },
+            Replace:function () {
+              /*换一换*/
+              if(this.true&&this.size<this.problem.length){
+                this.size++;
+                if(this.problem.length-1==this.size){
+                    this.size=0;
+                }
+                this.xydata(this.problem[this.size]);
+              }
+              this.bodyhtm(this.htm[2]);
+            },
+            Lose:function () {
+                /*没人答题*/
+                $('.Lose p').addClass('xs');
+                setTimeout(function () {
+                    $('.Lose .Lose_ts img').addClass('xs');
+                },1000);
+                $('.yeslose .Lose_ts img,.yeslose p i').addClass('xs');
+                /*出题或答题，一开始进入*/
+
+            },
+            fx:function () {
+                if(this.characterType[0]=='出题'){
+                    this.bodyselector.append(this.htm[5]);
+                    $('.fx').fadeIn(200);
+                }else{
+                    this.characterType=['出题','no'];
+                    this.htm=this.hchtm;
+                    this.bodyselector.html(this.htm[3]);
+                    this.size=0;
+                    this.xsize=1;
+                    this.ajaxp('images/json.json',"GET",{openid:this.openid});
+                }
+            },
+            index:function (e) {
+                switch(e[0])
+                {
+                    case '出题':
+                        /*出题者*/
+                        if(e[1]=='no'){
+                            /*第一次进来，还没有出题*/
+                            return this.htm[3];
+                        }else if(e[1]=='yes'){
+                            /*第二次进来，出题了还没人答题*/
+                            return this.htm[1];
+                        }else{
+                            /*第二次进来，出题了也已经答题了*/
+                            this.Blesswor(this);//显示祝福语
+                            return this.htm[0];
+                        }
+                        break;
+                    case '答题':
+                        /*答题者*/
+                        if(e[1]=='yes'){
+                            this.Blesswor(this);//显示祝福语
+                            this.htm[0].find('button').css({
+                            'background':'url(images/myw.png)',
+                            'background-size':'100%'
+                          });
+                          this.losedonghua();
+                          return this.htm[0];
+                        }else{
+                          this.htm[3].find('.save').css({
+                            'background':'url(images/jsjc.png)',
+                            'background-size':'100%'
+                          });/*答题者进入的首页*/
+                          this.htm[3].find('.set_teat').text('我当然是爱你的啊！');/*答题者进入的首页*/
+                          return this.htm[3];
+                        }
+                        break;
+                    default:
+                        /*第三者*/
+                        this.Blesswor(this);//显示祝福语
+                        this.htm[0].find('p:eq(1)').text('想知道你和谁最有默契吗？赶紧来玩玩吧~');
+                        this.htm[0].find('button').css({
+                            'background':'url(images/myw.png)',
+                            'background-size':'100%'
+                        });
+                        return this.htm[0]
+                }
+            },
+            losedonghua:function () {
+                /*出题或答题完后的动画*/
+                var th=this;
+                setTimeout(function () {
+                    th.Lose();
+                },10);
+            },
+            Blesswor:function (e) {
+              /*答题完的祝福语显示*/
+              if(e.characterType[0]!=''){
+                /*不是第三者*/
+                if(e.characterType[0]=='出题'){
+                  e.htm[0].find('p:eq(0) b:eq(1)').text(e.user[1]);
+                  e.htm[0].find('p:eq(1) b:eq(0)').text(e.user[1]);
+                }else{
+                  e.htm[0].find('p:eq(0) b:eq(1)').text(e.user[2]);
+                  e.htm[0].find('p:eq(1) b:eq(0)').text(e.user[2]);
+                }
+                e.htm[0].find('p:eq(1) b:eq(1)').text(e.characterType[2]+'%');
+              }else{
+                  /*第三者*/
+                e.htm[0].find('p:eq(0) b:eq(1)').text(e.user[1]);
+                e.htm[0].find('p:eq(0) b:eq(0)').text(e.user[2]);
+                e.htm[0].find('p:eq(0) b:eq(2)').text('他们');
+              }
+              e.htm[0].find('p:eq(0) i').text(e.characterType[2]+'%');
+              e.htm[0].find('.Lose_ts img').attr('src','images/'+e.characterType[2]+'.png');
+              e.htm[0].find('p a').text(e.Blessingwords[e.characterType[2]/20]);
+            },
+            oflw:function (e) {
+                /*保存数据*/
+              this.problem=[];
+              for(i in e){
+                this.problem.push(e[i]);
+              }
+            },
+            ajaxp:function (e,type,data) {
+                /*请求接口*/
+              console.log(data);
+              var th=this;
+              $.ajax({
+                type: type,
+                url: e,
+                data: data,
+                success: function(data) {
+                  console.log(data);
+                  th.oflw(data.data);
+                  th.data=data;
+                }
+              });
+            },
+            ajaxpdata:function (e) {
+              /*返回出题与答题选项给后台，data参数*/
+              return '{"'+e.getdata[0][1]+'"'+':'+e.getdata[0][0]+',' +
+                      '"'+e.getdata[1][1]+'"'+':'+e.getdata[1][0]+',' +
+                      '"'+e.getdata[2][1]+'"'+':'+e.getdata[2][0]+',' +
+                      '"'+e.getdata[3][1]+'"'+':'+e.getdata[3][0]+',' +
+                      '"'+e.getdata[4][1]+'"'+':'+e.getdata[4][0]+'}'
+            },
+            xydata:function (e) {
+                /*输出数据*/
+              for(i in e.option){
+                  if(i<2){
+                    $('.topi_text_xt ul:eq(0) li:eq('+i+')').attr({'data-size':e.option[i].option_id,'question_id':e.question_id});
+                    $('.topi_text_xt ul:eq(0) li:eq('+i+') p').text(e.option[i].name);
+                    $('.topi_text_title').text(e.title);
+                  }else{
+                    $('.topi_text_xt ul:eq(1) li:eq('+(i%2)+')').attr({'data-size':e.option[i].option_id,'question_id':e.question_id});
+                    $('.topi_text_xt ul:eq(1) li:eq('+(i%2)+') p').text(e.option[i].name);
+                  }
+              }
+            },
+            backOrder:function () {
+                var bool = false,th=this,windows=window;
+                    pushHistory();
+                    setTimeout(function() {
+                        bool = true;
+                    }, 500);
+                    var implement=function() {
+//                        windows.removeEventListener("popstate", implement, false);
+                        if (bool) {
+                            //监听点击返回按钮
+                            if(confirm(th.ts)){
+                                location.href='/answer';
+                            }else{
+//                                windows.addEventListener("popstate", implement, false);
+                            }
+                        }
+                        pushHistory();
+                    };
+                    function pushHistory() {
+                        var state = {
+                            title: "title",
+                            url: "/answer"
+                        };
+                        windows.history.pushState(state, "title", "/answer");
+                    }
+                windows.addEventListener("popstate", implement, false);
+            },
+            read:function (){
+                /*只能刷新加载，因为这里涉及板块设计*/
+                if(this.characterType[0]=='出题'){
+                  this.ajaxp('images/json.json',"GET",{openid:this.openid});
+                }else if(this.characterType[0]=='答题'){
+                  this.ajaxp('images/json.json',"GET",{series_sn:this.series_sn});
+                }
+                var th=this;
+                th.htmclone(['.yeslose','.Lose','.topic','.ts_index','.ts_log','.fx','.ts_log']);/*把板块记录到缓存*/
+                th.bodyhtm(th.index(th.characterType));//页面首页显示
+                th.saveClick();
+                if(th.characterType[0]==''||th.characterType[1]=='yes'||th.characterType[1]==''){
+                    this.losedonghua();
+                    if(th.characterType[0]=='出题' && th.characterType[1]=='yes'){
+                      setTimeout(function () {
+                        th.bodyselector.append(th.htm[5])
+                      }, 3000);
+                    }
+                }
+            }
+        };
+        ojb.read();
+    </script>
+</body>
+</html>

@@ -27,6 +27,9 @@
 <p>--------------------------------------------------------------------------------------</p>
 <input id="addpic" name="picupload" type="file" multiple="multiple" style="">
 <input onclick="filel()" id="uploadpic" type="button" value=" 上 传 ">
+<p>-----------------------------------------------------------------------------------------</p>
+<ul id="xiazai">
+</ul>
 </body>
 <script>
     function filel() {
@@ -53,18 +56,27 @@
         });
     }
 
+    $('#xiazai').on('click','li',function () {
+//        if($(this).text()==''){
+//            return;
+//        }
+        location.href='/fileXload/'+$(this).text();
+    });
+
     function sle() {
-        alert($('#upfile').val())
         $.ajax({
-            type:'POST',
-            url:'/message',
-            data:{file_name:true},
+            type:'GET',
+            url:'/files',
+            data:{},
             dataType:'',
             success:function (data) {
-                console.log(data);
+                data=JSON.parse(data);
+                $('#xiazai').html('');
+                for (i in data){
+                    $('#xiazai').append('<li>'+data[i]+'</li>')
+                }
             }
         });
     }
-
 </script>
 </html>

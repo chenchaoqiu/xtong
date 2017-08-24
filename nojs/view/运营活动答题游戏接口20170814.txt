@@ -1,0 +1,175 @@
+接口：
+请求方式：post
+1.出题题库游戏题目和选项列表接口
+url:http:/域名/webapi/index.php?app=activity&act=question_bank
+参数：
+openid		用户openid 必填
+返回数据：
+{
+  "status": 1,
+  "error": 0,
+  "message": "success",
+  "data": [
+    {
+      "question_id": "2",
+      "title": "手机",
+      "is_default": "1",
+      "option": [
+        {
+          "option_id": "101",
+          "name": "我认为手机不需要安全软件，冒险精神万岁"
+        },
+        {
+          "option_id": "102",
+          "name": "我认为手机需要装安全软件，推荐使用腾讯手机管家"
+        }
+      ]
+    },
+    {
+      "question_id": "3",
+      "title": "迟到",
+      "is_default": "0",
+      "option": [
+        {
+          "option_id": "103",
+          "name": "我认为迟到1分钟都不能忍！"
+        },
+        {
+          "option_id": "104",
+          "name": "我觉得晚个几分钟不算迟到，我能等！"
+        }
+      ]
+    },
+    {
+      "question_id": "4",
+      "title": "酒量",
+      "is_default": "0",
+      "option": [
+        {
+          "option_id": "105",
+          "name": "我喝酒海量，不服来战！"
+        },
+        {
+          "option_id": "106",
+          "name": "我酒量不好，求放过~"
+        }
+      ]
+    },
+    {
+      "question_id": "5",
+      "title": "买单",
+      "is_default": "0",
+      "option": [
+        {
+          "option_id": "107",
+          "name": "我常用手机支付，不太用现金了"
+        },
+        {
+          "option_id": "108",
+          "name": "搞不懂手机支付，我更常用现金"
+        }
+      ]
+    },
+    {
+      "question_id": "6",
+      "title": "减肥",
+      "is_default": "0",
+      "option": [
+        {
+          "option_id": "109",
+          "name": "我从不减肥，不管胖瘦都是最好的自己"
+        },
+        {
+          "option_id": "110",
+          "name": "我坚持减肥，保持苗条的身材"
+        }
+      ]
+    },
+    {
+      "question_id": "7",
+      "title": "早餐",
+      "is_default": "0",
+      "option": [
+        {
+          "option_id": "111",
+          "name": "我觉得早餐很重要，最好最隆重！"
+        },
+        {
+          "option_id": "112",
+          "name": "我觉得早餐可吃可不吃"
+        }
+      ]
+    }
+  ]
+}
+
+2.保存出题者游戏题目和选项提交答案接口
+url:http:/域名/webapi/index.php?app=activity&act=submit_answer
+参数：
+openid		用户openid 必填
+answer		提交答案 json数组对象字符串 {"5":"107","4":"106","3":"104","2":"101","7":"111"}
+返回数据：
+{
+  "status": 1,
+  "error": 0,
+  "message": "success",
+  "data": {
+    "series_sn": "438UCU"		出题序列号
+  }
+}
+
+3.保存答题者游戏题目和选项提交答案接口
+url:http:/域名/webapi/index.php?app=activity&act=submit_answer
+参数：
+series_sn	出题序列号 必填
+openid		用户openid 必填
+answer		提交答案 json数组对象字符串 {"5":"107","4":"106","3":"104","2":"101","7":"111"}
+返回数据：
+{
+  "status": 1,
+  "error": 0,
+  "message": "success",
+  "data": {
+    "series_sn": "438UCU"		出题序列号
+  }
+}
+4.答题者题目和选项列表接口
+url:http:/域名/webapi/index.php?app=activity&act=answer_question
+参数：
+series_sn	出题序列号 必填
+返回数据：
+{
+  "status": 1,
+  "error": 0,
+  "message": "success",
+  "data": [
+    {
+      "question_id": "5",
+      "title": "买单",
+      "option": [
+        {
+          "option_id": "107",
+          "name": "我常用手机支付，不太用现金了"
+        },
+        {
+          "option_id": "108",
+          "name": "搞不懂手机支付，我更常用现金"
+        }
+      ]
+    },
+    {
+      "question_id": "4",
+      "title": "酒量",
+      "option": [
+        {
+          "option_id": "105",
+          "name": "我喝酒海量，不服来战！"
+        },
+        {
+          "option_id": "106",
+          "name": "我酒量不好，求放过~"
+        }
+      ]
+    }
+  ]
+}

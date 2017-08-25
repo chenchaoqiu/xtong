@@ -4,7 +4,27 @@
 First Name: <input type="text" name="first_name">  <br>
  
 Last Name: <input type="text" name="last_name">
-<input type="submit" value="Submit">
+<input onclick="aa()" type="button" value="Submit">
 </form>
+
+<script>
+    var lei=[];
+    function aa() {
+        var aty=[3];
+        var lsei=Math.floor(Math.random()*(aty.length-1));
+        console.log(lsei)
+        for(i in lei){
+            if(lsei==lei[i]){
+                aa();
+                return;
+            }
+        }
+        if(lei.length>6){
+            lei.splice(0,1);
+        }
+        lei.push(lsei);
+        console.log(aty.splice(lsei,1));
+    }
+</script>
 </body>
 </html>

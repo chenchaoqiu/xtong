@@ -25,24 +25,25 @@
 //
 // console.log(json);
 
-// var fs=require('fs');
-// var data='你好啊！',data1='';
-// /*写入数据*/
-// var ll=fs.createWriteStream('ll.txt');
-// /*读取数据*/
-// var ll1=fs.createReadStream('ll.txt');
-// /*写入数据加编码*/
-// ll.write(data,'UTF8');
-// /*标记文件末尾*/
-// ll.end();
-//
-// ll.on('finish',function(){
-//     console.log('写入完成！');
-// });
-//
-// ll.on('error',function(err){
-//     console.log(err.stack);
-// });
+var fs=require('fs');
+var data='你好啊！',data1='';
+/*写入数据*/
+var ll=fs.createWriteStream('ll.txt');
+/*读取数据*/
+var ll1=fs.createReadStream('ll.txt');
+console.log(ll1)
+/*写入数据加编码*/
+ll.write(data,'UTF8');
+/*标记文件末尾*/
+ll.end();
+
+ll.on('finish',function(){
+    console.log('写入完成！');
+});
+
+ll.on('error',function(err){
+    console.log(err.stack);
+});
 // /*读取数据编码*/
 // ll1.setEncoding('UTF8');
 // /*读出来的数据*/

@@ -5,10 +5,10 @@ var fs = require('fs');
 var mysql = require('mysql');
 var opn=require('opn');
 var request = require('request');
-const csrf = request('csurf');/*防止csurf攻击*/
+// const csrf = request('csurf');/*防止csurf攻击*/
 /*引入cookie*/
 var cookieParser = require('cookie-parser');
-var csrfProtection = csrf({ cookie: true })
+// var csrfProtection = csrf({ cookie: true })
 app.use(cookieParser());
 
 /*lodash开始*/
@@ -105,14 +105,14 @@ app.post('/file_upload', function (req, res) {
 });
 
 /*防止csurf攻击*/
-app.get('/form', csrfProtection, function (req, res) {
-    // pass the csrfToken to the view
-    res.render('send', { csrfToken: req.csrfToken() })
-})
-
-app.post('/process', urlencodedParser, csrfProtection, function (req, res) {
-    res.send('data is being processed')
-})
+// app.get('/form', csrfProtection, function (req, res) {
+//     // pass the csrfToken to the view
+//     res.render('send', { csrfToken: req.csrfToken() })
+// })
+//
+// app.post('/process', urlencodedParser, csrfProtection, function (req, res) {
+//     res.send('data is being processed')
+// })
 /*防止csurf攻击结束*/
 
 /*cookies 管理*/

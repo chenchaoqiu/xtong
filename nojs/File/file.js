@@ -12,7 +12,6 @@
         formParse.maxFieldsSize = 50 * 1024 * 1024;
         var size,arry=[];
         formParse.parse(request, function(err, fields, files) {
-            console.log(files)
             clearTimeout(size);
             size=setTimeout(function () {
                 for(var k in files){

@@ -2,9 +2,9 @@
     /*上传文件
     * 整合ajax，form上传，可以兼容ie所有，也可以兼容ie10以上的筛选；
     * * */
-    var formidable = require('formidable');
-    var formParse=new formidable.IncomingForm();
     app.post('/ajaxfile', urlencodedParser, function (request,response) {
+        var formidable = require('formidable');
+        var formParse=new formidable.IncomingForm();
         /*ajax 提交的ie10下不支持*/
         formParse.uploadDir='./uploads/';//缓存地址
         formParse.multiples=true;//设置为多文件上传
@@ -37,6 +37,8 @@
     });
 
     app.post('/fromfile', urlencodedParser, function (req,resp) {
+        var formidable = require('formidable');
+        var formParse=new formidable.IncomingForm();
         /*from 提交的浏览器都支持*/
         formParse.uploadDir='./uploads/';//缓存地址
         formParse.multiples=true;//设置为多文件上传

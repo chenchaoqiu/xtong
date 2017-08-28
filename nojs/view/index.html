@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-<script type="text/javascript" src="js/jquery-2.0.0.min.js"></script>
+<script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
 <body>
 <form action="/process_post" method="post">
     First Name: <input type="text" name="first_name">  <br>
@@ -23,7 +23,7 @@
     <br />
     <input type="submit" value="上传文件" />
 </form>
-<button onclick="sle()" id="upJQuery" type="button">提交</button>
+<button id="upJQuery" type="button">提交</button>
 <p>--------------------------------------------------------------------------------------</p>
 <input id="addpic" name="picupload" type="file" multiple="multiple" style="">
 <input onclick="filel()" id="uploadpic" type="button" value=" 上 传 ">
@@ -32,51 +32,55 @@
 </ul>
 </body>
 <script>
-    function filel() {
-        var datapic=new FormData();
-//        datapic.delete('myfile')
-        for(var k=0;k<document.getElementById("addpic").files.length;k++)
-        {
-            datapic.append("myfile", document.getElementById("addpic").files[k]);
-            //第一个参数是文件实例名，可以再后台作为files的引用来遍历所有文件  第二个是文件实例
-        }
-        //使用JS来遍历files文件，并添加到FormData实例中，同时赋予名字"myfile"+k,
-        $.ajax({
-            url:"/ajaxfile",
-            data:datapic,
-            type: 'POST',
-            async: false,
-            cache: false,
-            contentType: false,    //这些参数要设置为false
-            processData: false,
-            success:function(result){
-                //处理函数
-//                if(result){location.href='/'}
+    $(function () {
+        function filel() {
+            var datapic=new FormData();
+    //        datapic.delete('myfile')
+            for(var k=0;k<document.getElementById("addpic").files.length;k++)
+            {
+                datapic.append("myfile", document.getElementById("addpic").files[k]);
+                //第一个参数是文件实例名，可以再后台作为files的引用来遍历所有文件  第二个是文件实例
             }
-        });
-    }
-
-    $('#xiazai').on('click','li',function () {
-//        if($(this).text()==''){
-//            return;
-//        }
-        location.href='/fileXload/'+$(this).text();
-    });
-
-    function sle() {
-        $.ajax({
-            type:'GET',
-            url:'/files',
-            data:{},
-            dataType:'',
-            success:function (data) {
-                data=JSON.parse(data);
-                $('#xiazai').html('');
-                for (i in data){
-                    $('#xiazai').append('<li>'+data[i]+'</li>')
+            //使用JS来遍历files文件，并添加到FormData实例中，同时赋予名字"myfile"+k,
+            $.ajax({
+                url:"/ajaxfile",
+                data:datapic,
+                type: 'POST',
+                async: false,
+                cache: false,
+                contentType: false,    //这些参数要设置为false
+                processData: false,
+                success:function(result){
+                    //处理函数
+    //                if(result){location.href='/'}
                 }
-            }
+            });
+        }
+
+        $('#xiazai').on('click','li',function () {
+    //        if($(this).text()==''){
+    //            return;
+    //        }
+            location.href='/fileXload/'+$(this).text();
         });
-    }
+        $('#upJQuery').click(function () {
+            sle();
+        })
+            function sle() {
+                $.ajax({
+                    type:'GET',
+                    url:'/files',
+                    data:{},
+                    dataType:'',
+                    success:function (data) {
+                        data=JSON.parse(data);
+                        $('#xiazai').html('');
+                        for (i in data){
+                            $('#xiazai').append('<li>'+data[i]+'</li>')
+                        }
+                    }
+                });
+            }
+    })
 </script>
 </html>

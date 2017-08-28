@@ -33,56 +33,54 @@
 </body>
 <script>
     $(function () {
-    function filel() {
-        var datapic=new FormData();
-//        datapic.delete('myfile')
-        for(var k=0;k<document.getElementById("addpic").files.length;k++)
-        {
-            datapic.append("myfile", document.getElementById("addpic").files[k]);
-            //第一个参数是文件实例名，可以再后台作为files的引用来遍历所有文件  第二个是文件实例
-        }
-        //使用JS来遍历files文件，并添加到FormData实例中，同时赋予名字"myfile"+k,
-        $.ajax({
-            url:"/ajaxfile",
-            data:datapic,
-            type: 'POST',
-            async: false,
-            cache: false,
-            contentType: false,    //这些参数要设置为false
-            processData: false,
-            success:function(result){
-                //处理函数
-//                if(result){location.href='/'}
+        function filel() {
+            var datapic=new FormData();
+    //        datapic.delete('myfile')
+            for(var k=0;k<document.getElementById("addpic").files.length;k++)
+            {
+                datapic.append("myfile", document.getElementById("addpic").files[k]);
+                //第一个参数是文件实例名，可以再后台作为files的引用来遍历所有文件  第二个是文件实例
             }
-        });
-    }
-
-    $('#xiazai').on('click','li',function () {
-//        if($(this).text()==''){
-//            return;
-//        }
-        location.href='/fileXload/'+$(this).text();
-    });
-    $('#upJQuery').click(function () {
-        sle();
-    })
-        function sle() {
+            //使用JS来遍历files文件，并添加到FormData实例中，同时赋予名字"myfile"+k,
             $.ajax({
-                type:'GET',
-                url:'/files',
-                data:{},
-                dataType:'',
-                success:function (data) {
-                    data=JSON.parse(data);
-                    $('#xiazai').html('');
-                    for (i in data){
-                        $('#xiazai').append('<li>'+data[i]+'</li>')
-                    }
+                url:"/ajaxfile",
+                data:datapic,
+                type: 'POST',
+                async: false,
+                cache: false,
+                contentType: false,    //这些参数要设置为false
+                processData: false,
+                success:function(result){
+                    //处理函数
+    //                if(result){location.href='/'}
                 }
             });
         }
 
-
+        $('#xiazai').on('click','li',function () {
+    //        if($(this).text()==''){
+    //            return;
+    //        }
+            location.href='/fileXload/'+$(this).text();
+        });
+        $('#upJQuery').click(function () {
+            sle();
+        })
+            function sle() {
+                $.ajax({
+                    type:'GET',
+                    url:'/files',
+                    data:{},
+                    dataType:'',
+                    success:function (data) {
+                        data=JSON.parse(data);
+                        $('#xiazai').html('');
+                        for (i in data){
+                            $('#xiazai').append('<li>'+data[i]+'</li>')
+                        }
+                    }
+                });
+            }
     })
 </script>
 </html>

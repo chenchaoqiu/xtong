@@ -5,6 +5,30 @@ var fs = require('fs');
 var mysql = require('mysql');
 var opn=require('opn');
 var request = require('request');
+const csrf = request('csurf');/*防止csurf攻击*/
+/*引入cookie*/
+var cookieParser = require('cookie-parser');
+var csrfProtection = csrf({ cookie: true })
+app.use(cookieParser());
+
+/*lodash开始*/
+//加载完整版本。
+var _ = require('lodash');
+// 加载核心构建。
+var _ = require('lodash/core');
+// 加载FP构建用于不可变的自动编写的iteratee-first数据最后的方法。
+var fp = require('lodash/fp');
+
+// 加载方法类别。
+var array = require('lodash/array');
+var object = require('lodash/fp/object');
+
+// 用于较小的browserify / rollup / webpack bundle的Cherry-pick方法。
+var at = require('lodash/at');
+var curryN = require('lodash/fp/curryN');
+/*lodash结束*/
+
+
 
 /*打开静态文件夹或文件*/
 app.use(express.static(__dirname+'/view/public'));
@@ -23,6 +47,7 @@ var db = require('./data/db/db.js')(app,mysql,urlencodedParser);
 
 // /*配置路由*/
 var router = require('./router/router.js')(app);
+
 app.post('/process_post', urlencodedParser, function (req, res) {
     /*post 方式输出输入*/
     var response = {
@@ -79,11 +104,18 @@ app.post('/file_upload', function (req, res) {
     });
 });
 
-/*引入cookie*/
-var cookieParser = require('cookie-parser');
+/*防止csurf攻击*/
+app.get('/form', csrfProtection, function (req, res) {
+    // pass the csrfToken to the view
+    res.render('send', { csrfToken: req.csrfToken() })
+})
+
+app.post('/process', urlencodedParser, csrfProtection, function (req, res) {
+    res.send('data is being processed')
+})
+/*防止csurf攻击结束*/
 
 /*cookies 管理*/
-app.use(cookieParser());
 app.get('/COO', function(req, res) {
     req.cookies.sle='lsjei';
     console.log("Cookies: ", req.cookies);

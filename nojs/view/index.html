@@ -30,14 +30,29 @@
 <p>-----------------------------------------------------------------------------------------</p>
 <ul id="xiazai">
 </ul>
+<div id="textll">
+    44
+</div>
 </body>
 <script>
-    $(function () {
+    $.ajax({
+        url:"js/nn.txt",
+        dataType:'html',
+        timeout:1,
+        success:function(e){
+            $('#textll').text(e)
+        },
+        error:function (e) {
+            console.log(e)
+        }
+    });
+//    $(function () {
         function filel() {
             var datapic=new FormData();
     //        datapic.delete('myfile')
             for(var k=0;k<document.getElementById("addpic").files.length;k++)
             {
+                console.log(document.getElementById("addpic").files[k])
                 datapic.append("myfile", document.getElementById("addpic").files[k]);
                 //第一个参数是文件实例名，可以再后台作为files的引用来遍历所有文件  第二个是文件实例
             }
@@ -81,6 +96,6 @@
                     }
                 });
             }
-    })
+//    })
 </script>
 </html>

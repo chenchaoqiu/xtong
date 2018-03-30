@@ -185,4 +185,120 @@
             res.end( JSON.stringify(data));
         });
     });
+
+
+    /*-----------------------------------------------文件夹操作-----------------------------------------------------*/
+
+    //创建文件夹
+    const fs=require('fs');
+    function mkdir(currentDir) {
+        fs.exists(currentDir,function(exists){
+            if(!exists){
+                fs.mkdir(currentDir,0777,function(err){
+                    if(err){
+                        console.log('创建文件夹出错！'+err);
+                    }else{
+                        console.log(currentDir+'文件夹-创建成功！');
+                    }
+                });
+            }else{
+                console.log(currentDir+'文件夹-已存在！');
+            }
+        });
+    }
+    mkdir('F:\\wamp\\www\\imei-1\\webpage\\app\\active\\codeTooKeen_20180308');
+
+//删除目录
+//注：当前删除目录操作，只能删除空目录
+//如果目录总有文件，抛出异常 { [Error: ENOTEMPTY, rmdir 'f:\test1'] errno: -4051, code: 'ENOTEMPTY', path: 'f:\\test1' }
+    function delrmdir(currentDir) {
+        fs.rmdir(currentDir, function(err) {
+            if (err) {
+                console.log('删除空目录失败，可能原因：1、目录不存在，2、目录不为空')
+                return console.error(err);
+            }
+            console.log('删除目录成功');
+        });
+    }
+// delrmdir('F:\\wamp\\www\\imei-1\\webpage\\app\\active\\codeTooKeen_20180308');
+
+//重命名文件或文件夹
+    var path=require('path');
+    function rename(old, New) {
+        old=path.resolve(old);
+        console.info(old);
+        New=path.resolve(New);
+        fs.rename(old,New,function(err){
+            if(err){
+                console.error(err);
+                return;
+            }
+            console.log('重命名成功');
+        });
+    }
+// rename('F:\\wamp\\www\\imei-1\\webpage\\app\\active\\codeTooKeen_20180308','F:\\wamp\\www\\imei-1\\webpage\\app\\active\\codeTooKeen_20180309');
+
+/*小文件复制功能*/
+    function xcopy(src, dst) {
+        fs.createReadStream(src).pipe(fs.createWriteStream(dst));
+        console.log('复制成功')
+    }
+
+    function main(argv) {
+        xcopy(argv[0], argv[1]);
+    }
+
+    // main(['F:\\wamp\\www\\imei-1\\webpage\\app\\active\\codeTooKeen_20180307\\index.html','F:\\wamp\\www\\imei-1\\webpage\\app\\active\\codeTooKeen_20180308\\index.html']);
+
+
+/*复制目录所有文件，包括子目录*/
+    var stat = fs.stat;
+    var copy = function( src, dst ){
+        // 读取目录中的所有文件/目录
+        fs.readdir( src, function( err, paths ){
+            if( err ){
+                throw err;
+            }
+            console.log(paths)
+            paths.forEach(function( path ){
+                var _src = src + '/' + path,
+                    _dst = dst + '/' + path,
+                    readable, writable;
+                stat( _src, function( err, st ){
+                    if( err ){
+                        throw err;
+                    }
+                    // 判断是否为文件
+                    if( st.isFile() ){
+                        // 创建读取流
+                        readable = fs.createReadStream( _src );
+                        // 创建写入流
+                        writable = fs.createWriteStream( _dst );
+                        // 通过管道来传输流
+                        readable.pipe( writable );
+                    }
+                    // 如果是目录则递归调用自身
+                    else if( st.isDirectory() ){
+                        exists( _src, _dst, copy );
+                    }
+                });
+            });
+        });
+    };
+// 在复制目录前需要判断该目录是否存在，不存在需要先创建目录
+    var exists = function( src, dst, callback ){
+        fs.exists( dst, function( exists ){
+            // 已存在
+            if( exists ){
+                callback( src, dst );
+            }
+            // 不存在
+            else{
+                fs.mkdir( dst, function(){
+                    callback( src, dst );
+                });
+            }
+        });
+    };
+//     exists( 'F:\\wamp\\www\\imei-1\\webpage\\app\\active\\codeTooKeen_20180307', 'F:\\wamp\\www\\imei-1\\webpage\\app\\active\\codeTooKeen_20180308', copy );
 };

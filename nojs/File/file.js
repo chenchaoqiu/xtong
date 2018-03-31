@@ -190,7 +190,6 @@
     /*-----------------------------------------------文件夹操作-----------------------------------------------------*/
 
     //创建文件夹
-    const fs=require('fs');
     function mkdir(currentDir) {
         fs.exists(currentDir,function(exists){
             if(!exists){

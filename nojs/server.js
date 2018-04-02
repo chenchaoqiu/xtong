@@ -2,14 +2,8 @@
 var upload = require('multer')({ dest: 'uploads/' });
 var app = express();
 var fs = require('fs');
-var mysql = require('mysql');
 var opn=require('opn');
 var request = require('request');
-// const csrf = request('csurf');/*防止csurf攻击*/
-/*引入cookie*/
-var cookieParser = require('cookie-parser');
-// var csrfProtection = csrf({ cookie: true })
-app.use(cookieParser());
 
 /*lodash开始*/
 //加载完整版本。
@@ -41,9 +35,6 @@ var bodyParser = require('body-parser');
 
 // 创建 application/x-www-form-urlencoded 编码解析   post
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
-
-//连入数据库
-var db = require('./data/db/db.js')(app,mysql,urlencodedParser);
 
 // /*配置路由*/
 var router = require('./router/router.js')(app);
@@ -104,29 +95,12 @@ app.post('/file_upload', function (req, res) {
     });
 });
 
-/*防止csurf攻击*/
-// app.get('/form', csrfProtection, function (req, res) {
-//     // pass the csrfToken to the view
-//     res.render('send', { csrfToken: req.csrfToken() })
-// })
-//
-// app.post('/process', urlencodedParser, csrfProtection, function (req, res) {
-//     res.send('data is being processed')
-// })
-/*防止csurf攻击结束*/
 
-/*cookies 管理*/
-app.get('/COO', function(req, res) {
-    req.cookies.sle='lsjei';
-    console.log("Cookies: ", req.cookies);
-})
-
-
-var server = app.listen(8081, function () {
+var server = app.listen(9782, function () {
 /*配置服务器*/
-    var host = server.address().address
-    var port = server.address().port
+    var host = server.address().address;
+    var port = server.address().port;
     opn('http://localhost:8081');
-    console.log("应用实例，访问地址为 http://%s:%s", host, port)
+    console.log("应用实例，访问地址为 http://%s:%s", host, port);
 
 })

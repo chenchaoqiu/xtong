@@ -2,27 +2,28 @@
 <html>
 <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
 <body>
-<form action="/process_post" method="post">
-    First Name: <input type="text" name="first_name">  <br>
+链接最后路径名称：<input id="celis" type="text" /><button class="edit">修改</button>
+title名称：<input id="title" type="text" />
+<div class="proct" dat="proct">
+    <div class="proct-mb">
+        <p>第1个</p>
+        标识名称：<input dat="bing" type="text" /><br>
+        套餐ID：<input dat="proId" type="text" /><br>
+        项目名称：<input dat="xmname" type="text" /><br>
+        套餐详情图片名称：<input dat="xqimg" type="text" /><br>
+        套餐图片名称：<input dat="proimg" type="text" /><br>
+        套餐名称：<input dat="proname" type="text" /><br>
+        项目1名称：<input dat="pron1" type="text" /><br>
+        项目1详情：<input dat="protxt1" type="text" /><br>
+        项目2名称：<input dat="pron2" type="text" /><br>
+        项目2详情：<input dat="protxt2" type="text" /><br>
 
-    Last Name: <input type="text" name="last_name">
-    <input type="submit" value="Submit">
-</form>
-
-<h3>文件上传：</h3>
-选择一个文件上传: <br />
-<form action="/file_upload" method="post" enctype="multipart/form-data">
-    <input type="file" name="image" size="50" /><!--multiple="multiple" -->
-    <br />
-    <input type="submit" value="上传文件" />
-</form>
-<h3>文件上传：</h3>
-选择多个文件上传: <br />
-<form action="/fromfile" method="post" enctype="multipart/form-data">
-    <input type="file" name="uuu" size="50" multiple />
-    <br />
-    <input type="submit" value="上传文件" />
-</form>
+        门店标识：<input dat="shop" type="text" value="" />做为链接识别参数shop={参数},可为任意字母<br>
+        门店名称：<input dat="shopName" type="text" /><br>
+        门店地址：<input dat="shopPisn" type="text" /><br>
+    </div>
+</div><br>
+<b id="New_por" style="cursor: pointer;">新增</b><br><br>
 <button id="upJQuery" type="button">提交</button>
 <p>--------------------------------------------------------------------------------------</p>
 <input id="addpic" name="picupload" type="file" multiple="multiple" style="">
@@ -35,28 +36,24 @@
 </div>
 </body>
 <script>
-    $.ajax({
-        url:"js/nn.txt",
-        dataType:'html',
-        timeout:1,
-        success:function(e){
-            $('#textll').text(e)
-        },
-        error:function (e) {
-            console.log(e)
-        }
-    });
+    $('#New_por').click(function () {
+        var mb=$('.proct-mb').eq(0).clone();
+        console.log($('.proct-mb').size())
+        mb.find('p').text('第'+($('\.proct-mb').size()+1)+'个');
+        $('.proct').append(mb);
+    })
 //    $(function () {
         function filel() {
             var datapic=new FormData();
     //        datapic.delete('myfile')
             for(var k=0;k<document.getElementById("addpic").files.length;k++)
             {
-                console.log(document.getElementById("addpic").files[k])
+//                console.log(document.getElementById("addpic").files[k])
                 datapic.append("myfile", document.getElementById("addpic").files[k]);
                 //第一个参数是文件实例名，可以再后台作为files的引用来遍历所有文件  第二个是文件实例
             }
             //使用JS来遍历files文件，并添加到FormData实例中，同时赋予名字"myfile"+k,
+
             $.ajax({
                 url:"/ajaxfile",
                 data:datapic,
@@ -66,36 +63,92 @@
                 contentType: false,    //这些参数要设置为false
                 processData: false,
                 success:function(result){
+                    console.log(result)
                     //处理函数
-    //                if(result){location.href='/'}
                 }
             });
         }
-
-        $('#xiazai').on('click','li',function () {
-    //        if($(this).text()==''){
-    //            return;
-    //        }
-            location.href='/fileXload/'+$(this).text();
-        });
-        $('#upJQuery').click(function () {
-            sle();
+        $('.edit').click(function () {
+            /*修改*/
+            $.ajax({
+                type:'GET',
+                url:'/conlog',
+                data:{},
+                dataType:'text',
+                success:function (data) {
+                    if(data.split(',').indexOf($("#celis").val())<0){
+                        alert('抱歉，没找到您要修改的目录，会默认为新目录添加！')
+                    }else{
+                        $.getJSON('/listuser',{ur:$('#celis').val()},function(data){
+                            $('#title').val(data.title);
+                            data.proct.forEach(function (p1, p2, p3) {
+                                var mb=$('.proct-mb').eq(0).clone();
+                                mb.find('p').text('第'+(p2+1)+'个');
+                                for (let [k,v] of Object.entries(data.proct[p2])) {
+                                    mb.find('input[dat="'+k+'"]').val(p1[k]);
+                                }
+                                $('.proct').append(mb);
+                            });
+                            $('.proct .proct-mb').eq(0).remove();
+                            $('.edit').remove();
+                        })
+                    }
+                }
+            });
         })
-            function sle() {
+
+        $('#upJQuery').click(function () {
+            if(!$('#celis').val()){
+                alert('请输入目录！');
+                return;
+            }
+            var arr=[{
+                proct:[],
+                mul:$('#celis').val(),
+                title:$('#title').val()
+            }];
+            $('.proct div').each(function (ind) {
+                arr[0].proct.push({})
+                $(this).find('input').each(function (i) {
+                    var dat=$(this).attr('dat');
+                    arr[0].proct[ind][dat]=$(this).val();
+                })
+            })
+            $.ajax({
+                type:'GET',
+                url:'/conlog',
+                data:{},
+                dataType:'text',
+                success:function (data) {
+                    if(data.split(',').indexOf($("#celis").val())>=0){
+                        if(confirm('已存在目录'+$("#celis").val()+'，是否要修改目录下的文件？')){
+                            ale();
+                        }else{
+                            alert('请核对目录是否存在，已存在目录如下：'+data);
+                        }
+                    }else{
+                        ale();
+                    }
+                }
+            });
+            function ale() {
                 $.ajax({
-                    type:'GET',
-                    url:'/files',
-                    data:{},
-                    dataType:'',
+                    type:'POST',
+                    url:'/New_project',
+                    data:{pro:JSON.stringify(arr[0])},
+                    dataType:'json',
                     success:function (data) {
-                        data=JSON.parse(data);
-                        $('#xiazai').html('');
-                        for (i in data){
-                            $('#xiazai').append('<li>'+data[i]+'</li>')
+                        if(data==200){
+                            var url=window.location.host.split(':')[0]+'/app/active/'+arr[0].mul+'/index.html?stop=';
+                            arr[0].proct.forEach(function (p1,p2) {
+                                console.log(p1.shopName+'门店链接：http://'+(url+p1.shop))
+                            })
                         }
                     }
                 });
             }
+        })
+
 //    })
 </script>
 </html>

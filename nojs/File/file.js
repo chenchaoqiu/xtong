@@ -2,7 +2,17 @@
     /*上传文件
     * 整合ajax，form上传，可以兼容ie所有，也可以兼容ie10以上的筛选；
     * * */
+    var url='';
+    function loadfileImg(e) {
+        /*找到新建的图片images路径*/
+        url='imei-1/webpage/app/active/'+e+'/images/';
+    }
+
     app.post('/ajaxfile', urlencodedParser, function (request,response) {
+        if(url==''){
+            response.end('请选择链接最后路径名称！');
+            return;
+        }
         var formidable = require('formidable');
         var formParse=new formidable.IncomingForm();
         /*ajax 提交的ie10下不支持*/
@@ -19,20 +29,19 @@
                     if(arry.length==1){
                         for(var i in files[k]){
                             if(files[k][i]!=null){
-                                var fileUrl=__dirname + '/' + "../uploads/" +new Date().getTime()+files[k][i].name;
+                                var fileUrl=__dirname + "/../../../../"+url +files[k][i].name;
                                 fs.rename(files[k][i].path,fileUrl);
                             }else{
-                                var fileUrl=__dirname + '/' + "../uploads/" +new Date().getTime()+files[k].name;
+                                var fileUrl=__dirname + "/../../../../"+url +files[k].name;
                                 fs.rename(files[k].path,fileUrl);
                                 return;
                             }
-
                         }
                     }
                     files[k]=''
                 }
             },1000);
-            response.end('true');
+            response.end('成功');
         });
     });
 
@@ -140,11 +149,11 @@
 
     /*读取数据*/
     app.get('/listuser',function (req, res) {
-        fs.readFile(__dirname + '/' + '../json/users.json','utf8',function (err, data) {
-            console.log(data);
-            res.end(JSON.stringify(data));
-        })
-    })
+        var url1='F:\\wamp\\www\\imei-1\\webpage\\app\\active\\'+req.query.ur+'\\package.json';
+        fs.readFile(url1,'utf8',function (err, data) {
+            res.end(data);
+        });
+    });
 
     /*添加数据*/
     var user = {
@@ -189,8 +198,54 @@
 
     /*-----------------------------------------------文件夹操作-----------------------------------------------------*/
 
+
+    app.post('/New_project', urlencodedParser, function (req, res) {
+        /*post 方式输出输入* */
+        var fripo='F:\\wamp\\www\\imei-1\\webpage\\app\\active\\mb';/*模范*/
+        var posi='F:\\wamp\\www\\imei-1\\webpage\\app\\active\\';/*保存路径*/
+        var mul=JSON.parse(req.body.pro).mul;
+        mkdir(posi+mul);/*创建目录*/
+        exists( fripo, posi+mul, copy );/*复制文件*/
+        fs.readFile(__dirname + "/" + "../view/conlog.txt", 'utf8', function (err, data) {
+            data =data.split(',');
+            if(data.indexOf(mul)<0){
+                writeFile(__dirname + "/" + "../view/conlog.txt",','+mul,'a',function (e) {});/*写入json文件*/
+            }
+        });
+
+        var dir=(posi+mul+'\\package.json');
+        setTimeout(function () {
+            loadfileImg(mul);
+            writeFile(dir,req.body.pro,'w',function (e) {
+                if(e){
+                    res.end('200');
+                }
+            });/*写入json文件*/
+        },1000)
+        // 输出 JSON 格式
+    });
+
+    //写入文件
+    function writeFile(cur,pro,q,callback) {
+        /*
+         * flag：文件的操作情况，r表示这个文件只读，w表示写入文件，a追加文件（常用的三个）
+         *encoding:读取文件用的编码，utf-8，base64，ascii我们不指定编码，那么返回的data为一个buffer
+         * */
+        fs.writeFile(cur,pro,{flag:q,encoding:'utf-8',mode:'0666'},function(err){/**/
+            if(err){
+                callback(false);
+                console.log("文件写入失败")
+            }else{
+                callback(true);
+                console.log("文件写入成功");
+
+            }
+
+        })
+    }
+
     //创建文件夹
-    const fs=require('fs');
+    // const fs=require('fs');
     function mkdir(currentDir) {
         fs.exists(currentDir,function(exists){
             if(!exists){
@@ -206,7 +261,7 @@
             }
         });
     }
-    mkdir('F:\\wamp\\www\\imei-1\\webpage\\app\\active\\codeTooKeen_20180308');
+    // mkdir('F:\\wamp\\www\\imei-1\\webpage\\app\\active\\codeTooKeen_20180308');
 
 //删除目录
 //注：当前删除目录操作，只能删除空目录
@@ -250,7 +305,6 @@
 
     // main(['F:\\wamp\\www\\imei-1\\webpage\\app\\active\\codeTooKeen_20180307\\index.html','F:\\wamp\\www\\imei-1\\webpage\\app\\active\\codeTooKeen_20180308\\index.html']);
 
-
 /*复制目录所有文件，包括子目录*/
     var stat = fs.stat;
     var copy = function( src, dst ){
@@ -259,7 +313,7 @@
             if( err ){
                 throw err;
             }
-            console.log(paths)
+            // console.log(paths)
             paths.forEach(function( path ){
                 var _src = src + '/' + path,
                     _dst = dst + '/' + path,

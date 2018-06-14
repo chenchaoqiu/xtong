@@ -39,6 +39,9 @@ var urlencodedParser = bodyParser.urlencoded({ extended: false });
 // /*配置路由*/
 var router = require('./router/router.js')(app);
 
+
+
+
 app.post('/process_post', urlencodedParser, function (req, res) {
     /*post 方式输出输入*/
     var response = {
@@ -96,11 +99,19 @@ app.post('/file_upload', function (req, res) {
 });
 
 
+// /*设置反代理proxyMiddleWare。，proxyPath，proxyOption*/
+var proxyMiddleWare = require("http-proxy-middleware");
+/*设置反代理地址('/discern'完全可以写成'/'就是说所有路由都可以访问)*/
+app.use('/', proxyMiddleWare({
+    target: "http://caoq.com/app/active",//目标后端服务地址(公司同事电脑地址)
+    changeOrigin: true
+}));
+
 var server = app.listen(9782, function () {
-/*配置服务器*/
-    var host = server.address().address;
-    var port = server.address().port;
-    opn('http://localhost:8081');
-    console.log("应用实例，访问地址为 http://%s:%s", host, port);
+    /*配置服务器*/
+    var host = server.address().address
+    var port = server.address().port
+    // opn('http://localhost:9782');
+    console.log("应用实例，访问地址为 http://%s:%s", host, port)
 
 })

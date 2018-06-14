@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <html>
+<head>
+    <meta charset="UTF-8">
+</head>
 <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
 <body>
 链接最后路径名称：<input id="celis" type="text" /><button class="edit">修改</button>
@@ -79,7 +82,27 @@ title名称：<input id="title" type="text" />
                     if(data.split(',').indexOf($("#celis").val())<0){
                         alert('抱歉，没找到您要修改的目录，会默认为新目录添加！')
                     }else{
-                        $.getJSON('/listuser',{ur:$('#celis').val()},function(data){
+                        $.ajax({
+                            type:'GET',
+                            url:'/'+$('#celis').val()+'/package.json',
+                            data:{},
+                            dataType:'json',
+                            success:function (data) {
+                                $('#title').val(data.title);
+                                data.proct.forEach(function (p1, p2, p3) {
+                                    var mb=$('.proct-mb').eq(0).clone();
+                                    mb.find('p').text('第'+(p2+1)+'个');
+                                    for (let [k,v] of Object.entries(data.proct[p2])) {
+                                        mb.find('input[dat="'+k+'"]').val(p1[k]);
+                                    }
+                                    $('.proct').append(mb);
+                                });
+                                $('.proct .proct-mb').eq(0).remove();
+                                $('.edit').remove();
+                            }
+                        })
+                       /* $.getJSON('/listuser',{ur:$('#celis').val()},function(data){
+                            console.log(data)
                             $('#title').val(data.title);
                             data.proct.forEach(function (p1, p2, p3) {
                                 var mb=$('.proct-mb').eq(0).clone();
@@ -91,7 +114,7 @@ title名称：<input id="title" type="text" />
                             });
                             $('.proct .proct-mb').eq(0).remove();
                             $('.edit').remove();
-                        })
+                        })*/
                     }
                 }
             });

@@ -79,9 +79,11 @@ title名称：<input id="title" type="text" />
                 data:{},
                 dataType:'text',
                 success:function (data) {
+                    console.log(data)
                     if(data.split(',').indexOf($("#celis").val())<0){
                         alert('抱歉，没找到您要修改的目录，会默认为新目录添加！')
                     }else{
+                        console.log('/'+$('#celis').val()+'/package.json')
                         $.ajax({
                             type:'GET',
                             url:'/'+$('#celis').val()+'/package.json',

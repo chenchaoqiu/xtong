@@ -34,6 +34,7 @@
 					content: content
 				};
 				this.socket.emit('message', obj);
+                this.socket.emit('set nickname', '9999');
 				d.getElementById("content").value = '';
 			}
 			return false;
@@ -110,7 +111,6 @@
 			this.socket.on('logout', function(o){
 				CHAT.updateSysMsg(o, 'logout');
 			});
-			
 			//监听消息发送
 			this.socket.on('message', function(obj){
 				var isme = (obj.userid == CHAT.userid) ? true : false;
@@ -126,7 +126,7 @@
 					section.innerHTML = usernameDiv + contentDiv;
 				}
 				CHAT.msgObj.appendChild(section);
-				CHAT.scrollToBottom();	
+				CHAT.scrollToBottom();
 			});
 
 		}

@@ -1,4 +1,5 @@
 ﻿var express = require('express');
+// import express from 'express';
 var upload = require('multer')({ dest: 'uploads/' });
 var app = express();
 var fs = require('fs');
@@ -111,8 +112,8 @@ var Live_chats=require('./Live_chat/index.js')(io);
 // /*设置反代理proxyMiddleWare。，proxyPath，proxyOption*/
 var proxyMiddleWare = require("http-proxy-middleware");
 /*/!*设置反代理地址('/discern'完全可以写成'/'就是说所有路由都可以访问)*!/*/
-app.use('/', proxyMiddleWare({
-    target: "http://caoq.com/app/active",//目标后端服务地址(公司同事电脑地址)
+app.use('/active', proxyMiddleWare({
+    target: "http://chaoq.com/app",//目标后端服务地址(公司同事电脑地址)
     changeOrigin: true
 }));
 

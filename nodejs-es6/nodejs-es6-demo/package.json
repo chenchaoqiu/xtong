@@ -4,8 +4,10 @@
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rimraf dist/ && babel ./ --out-dir dist/ --ignore ./node_modules,./live_chat/view/socket.io,./.babelrc,./package.json,./npm-debug.log --copy-files",
-    "start": "npm run build && node dist/index.js"
+    "sass-w":"node-sass -w -r view/public/css -o dist/view/public/css",
+    "sass-r":"node-sass -r view/public/css -o dist/view/public/css",
+    "build": "rimraf dist/ && babel ./ --out-dir dist/ --ignore ./node_modules,./live_chat/view/socket.io,./view/public/css,./view/public/commit,./.babelrc,./package.json,./npm-debug.log --copy-files",
+    "start": "npm run build && npm run sass-r && node dist/index.js"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +16,7 @@
     "express": "^4.16.3",
     "http-proxy": "^1.17.0",
     "http-proxy-middleware": "^0.18.0",
+    "node-sass": "^4.9.0",
     "request": "^2.87.0",
     "socket.io": "^2.1.1"
   },

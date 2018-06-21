@@ -1,0 +1,9 @@
+$color-primary: #0070e9;
+p{
+  width:100%;
+  height: 222px;
+  background-color: $color-primary;
+  color: $color-primary;
+  display: flex;
+  transition: all .5s;
+}

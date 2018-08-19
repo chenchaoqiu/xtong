@@ -1,0 +1,127 @@
+<style lang="less">
+  page {background-color: #f8f8f8;font-size: 30rpx;}
+  .header {
+    min-height: 70px;
+  }
+  .container{width: 692rpx;margin:30rpx auto 0;background: #fff;border: 1rpx solid #eee;border-radius: 10rpx;}
+  /*活动团队*/
+ .list{width: 692rpx;border-bottom: 1rpx solid #eee}
+  .list-top{width: 100%;height: 70rpx;line-height: 70rpx;font-size: 28rpx;position: relative;border-bottom: 1rpx solid #eee}
+  .list-top-mark{width: 79rpx;height: 70rpx;position: absolute;top:0;right: 0}
+  .list-content{display: flex;display: -webkit-flex;padding: 24rpx 20rpx 34rpx}
+  .list-content-l{flex: 1;-webkit-flex: 1}
+  .list-content-r{width: 90rpx;text-align: right;position: relative}
+  /*组织团队*/
+  .item{width: 692rpx;margin:0 auto ;border-bottom: 1rpx solid #eee;
+  display: flex;display: -webkit-flex;box-sizing: border-box;padding: 30rpx 68rpx 30rpx 20rpx;}
+  .item-avatar{width: 130rpx;height: 130rpx;border: 1rpx solid #eee;border-radius: 50%}
+  .item-con{flex: 1;-webkit-flex: 1;margin-left: 34rpx;margin-top: 24rpx;}
+  .item-phone{width: 52rpx;height: 52rpx;margin-top: 39rpx;}
+  .refresh{text-align: center;color: #999999;font-size: 30rpx;padding-bottom: 10rpx;}
+  .loadmore{text-align: center;color: #999999;font-size: 30rpx;padding-top: 20rpx;padding-bottom: 80rpx;}
+</style>
+<template>
+  <view class="header">
+    <navigation :title="navTitle" :isShow="isShowBack"></navigation>
+  </view>
+  <view class="container">
+    <view class="list">
+      <view class="list-top">
+        <text style="padding-left: 20rpx;color: #333">{{details.comName}}</text>
+        <image class="list-top-mark" src="../../images/mark{{details.status}}.png" ></image>
+      </view>
+      <view class="list-content">
+        <view class="list-content-l">
+          <text class="ellipsis-2" style="line-height: 48rpx;color: #333;font-size: 30rpx;">{{details.title}}</text>
+          <text style="font-size: 22rpx;color: #666">活动时间：{{details.time}}</text>
+        </view>
+        <!--<view class="list-content-r">-->
+          <!--<image src="../../images/next.png" style="width:24rpx;height: 44rpx;position: absolute;top:50%;margin-top: -22rpx;right:0"></image>-->
+        <!--</view>-->
+      </view>
+    </view>
+    <block wx:for="{{details.spreaders}}" wx:key="{{index}}" wx:for-item="item">
+      <view class="item">
+        <image src="{{item.headImgUrl}}" class="item-avatar"></image>
+        <view class="item-con" style="overflow: hidden">
+          <view style="height: 30rpx;line-height: 30rpx;">
+            <text  style="color:#333;max-width: 60%;display: block;float: left;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;">{{item.spreaderName}}</text>
+            <text style="color: #666;padding-left: 24rpx;display: block;float: left;">组员</text>
+          </view>
+          <view style="color: #666;font-size: 26rpx;margin-top: 20rpx;">{{item.mobile}}</view>
+        </view>
+        <image src="../../images/phone.png" class="item-phone" @tap="dial({{item.mobile}})"></image>
+      </view>
+    </block>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import api from '../../api/api'
+  import navigation from '@/components/navigation'
+
+  export default class myteam extends wepy.page {
+    config = {
+//      navigationBarTitleText: '我的团队',
+      enablePullDownRefresh: false,
+    };
+    components = {
+      navigation
+    };
+    data = {
+      navTitle: '我的团队',
+      currentTab: 0,//默认我的团队
+      winWidth:"",//获取屏幕宽度
+      winHeight:"",//获取屏幕高度
+      swiperwinHeight:'',//下面swiper的高度
+      hideHeader:true,//刷新中默认true
+      activityId:'',//跳转带过来的活动id
+      marketId:'',
+      details:{},//返回的数据
+    };
+    methods = {
+      //    拨打电话
+      dial(e1){
+        wx.makePhoneCall({
+          phoneNumber: e1,//仅为示例，并非真实的电话号码
+          success:function(){
+            console.log("拨打电话成功！")
+          },
+          fail:function(){
+            console.log("拨打电话失败！")
+          }
+        })
+      }
+    };
+    //详情-接口数据
+    async getGroupDetails() {
+      const json = await api.GroupDetails({
+        query: {
+          activityId: this.activityId,
+          marketId:this.marketId,
+        }
+      });
+      this.details = json.data;
+      this.$apply();
+    }
+
+    onLoad(options) {
+      this.activityId = options.activityId;
+      this.marketId = options.marketId;
+      this.getGroupDetails();
+// 获取高度
+      wx.getSystemInfo({
+        success: function (res) {
+          this.winWidth = res.windowWidth;
+          var winHeight = res.windowHeight;
+          var rpxR = 750 / this.winWidth;
+          this.winHeight = winHeight * rpxR;
+          //下面swiper的高度
+          this.swiperwinHeight = winHeight * rpxR - 80;
+        }.bind(this)
+      });
+      this.$apply();
+    }
+  }
+</script>

@@ -1,0 +1,146 @@
+<style lang="less">
+    .wrap {
+        background-color: #fff;
+        margin-top: 1rpx;
+        padding: 40rpx 30rpx 124rpx 30rpx;
+        height: 100vh;
+    }
+    .cell {
+        display:-webkit-box;
+        display:-webkit-flex;
+        display: flex;
+        height: 100rpx;
+        margin-bottom: 10rpx;
+        /*  padding-left: 30rpx;
+          padding-right: 24rpx;*/
+        padding-right: 54rpx;
+        border-bottom: 1rpx solid #F2F2F4;
+        background-color: #fff;
+        -webkit-box-align:center;
+        -webkit-align-items:center;
+        align-items:center;
+        border-bottom: 1rpx solid #E6E6E6;
+        input {
+            padding-left: 30rpx;
+        }
+    }
+    .logo-code-warp {
+        height: 42rpx;
+    }
+    .user-code {
+        width: 42rpx;
+        height: 42rpx;
+        margin-right: 20rpx;
+    }
+    .user-phone {
+        -webkit-box-flex:1;
+        -webkit-flex:1;
+        flex:1;
+        padding-top: 3rpx;
+        padding-left: 40rpx;
+        color: #666;
+    }
+    .no-border {
+        border: none;
+    }
+    .lable {
+        /* width: 156rpx;*/
+        border-right: 1rpx solid #ddd;
+        padding-right: 20rpx;
+    }
+    .btn-wrap {
+        text-align: center;
+        margin-top: 64rpx;
+    }
+    .btn-wrap .btn {
+        width: 690rpx;
+        height: 86rpx;
+        line-height: 86rpx;
+        background-color: #999 !important;
+        font-size: 30rpx;
+        color: #fff !important;
+        border: none !important;
+    }
+
+    .btn-wrap .btn-active {
+        width: 690rpx;
+        height: 86rpx;
+        line-height: 86rpx;
+        background-color: #3296F8 !important;
+        font-size: 30rpx;
+        color: #fff !important;
+        border: none !important;
+    }
+    .title {
+        font-size: 36rpx;
+        margin-bottom: 16rpx;
+    }
+    .input-placeholder {
+        color: #ddd;
+        font-size: 30rpx;
+    }
+    .sp-mb-22 {
+        margin-bottom: 22rpx;
+    }
+</style>
+<template>
+    <view class="wrap">
+        <view class="title color-66">请输入新的手机号码</view>
+
+        <view class="color-33 size-30">手机号码</view>
+
+        <view class="cell">
+            <view class="size-30 color-33 lable">+86</view>
+            <input class="weui-input size-30 flex-1" placeholder-class="input-placeholder"  maxlength="11"  value="{{code}}" placeholder="请输入新的手机号码" @input="setVal" />
+        </view>
+
+        <view class="btn-wrap">
+            <button class="weui-btn {{mobilePhone.length == 11 ? 'btn-active' : 'btn'}}" disabled="{{mobilePhone.length < 11}}" @tap="submit" type="default" plain="true">下一步</button>
+        </view>
+
+    </view>
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+
+	export default class PhoneInfo extends wepy.page {
+		config = {
+			navigationBarTitleText: '我的手机号码',
+			backgroundColor: '#fff',
+			disableScroll: true
+		};
+
+		onLoad() {
+
+		}
+
+		data = {
+			code: '',
+			mobilePhone: ''
+		};
+
+		methods = {
+			setVal(e) {
+				this.mobilePhone = e.detail.value;
+			},
+			submit() {
+				this.sendChangePhoneMobileCode();
+			},
+		};
+
+		async sendChangePhoneMobileCode() {
+			const {imei_error_code} = await api.sendChangePhoneMobileCode({
+				query: {
+					mobile: this.mobilePhone,
+				}
+			});
+
+			if (imei_error_code == 0) {
+				let time = wx.getStorageSync('vAuthCodeTime');
+                (!time || time == 59) && wx.setStorageSync('vSetAuthCodeTime', new Date().getTime());
+				this.$redirect({url: '/pages/myInfo/verifyPhone?mobile='+this.mobilePhone});
+            }
+		}
+	}
+</script>

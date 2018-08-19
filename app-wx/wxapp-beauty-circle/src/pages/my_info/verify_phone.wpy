@@ -1,0 +1,249 @@
+<style lang="scss">
+   /* .wrap {
+        position: relative;
+        padding: 0 30rpx;
+        height: 108rpx;
+        background-color: #fff;
+        line-height: 108rpx;
+        color: #333;
+        font-size: 30rpx;
+        display: table-cell;
+        vertical-align: middle;
+        width: 100vw;
+    }*/
+   .wrap {
+       margin-top: 20rpx;
+   }
+   .cell {
+       display:-webkit-box;
+       display:-webkit-flex;
+       display: flex;
+       height: 100rpx;
+       padding-left: 30rpx;
+       padding-right: 24rpx;
+       border-bottom: 1rpx solid #ddd;
+       background-color: #fff;
+       -webkit-box-align:center;
+       -webkit-align-items:center;
+       align-items:center;
+   }
+   .logo-code-warp {
+       height: 42rpx;
+   }
+   .user-code {
+       width: 42rpx;
+       height: 42rpx;
+       margin-right: 20rpx;
+   }
+   .user-phone {
+       -webkit-box-flex:1;
+       -webkit-flex:1;
+       flex:1;
+       padding-top: 3rpx;
+       padding-left: 40rpx;
+       color: #666;
+   }
+   .code-wrap {
+       height: 108rpx;
+       line-height: 108rpx;
+   }
+   .code {
+       display: inline-block;
+       text-align: center;
+       width: 200rpx;
+       height: 60rpx;
+       line-height: 60rpx;
+       color: #fff;
+       font-size: 30rpx;
+       background-color: #26CAD3;
+       border-radius: 5px;
+   }
+   .no-border {
+       border: none;
+   }
+   .lable-code {
+       padding-right: 40rpx;
+   }
+   .btn-wrap {
+       text-align: center;
+       margin-top: 35rpx;
+   }
+   .btn-wrap .btn {
+       width: 690rpx;
+       height: 86rpx;
+       line-height: 86rpx;
+       background-color: #e6e6e6 !important;
+       font-size: 30rpx;
+       color: #666 !important;
+       border: none !important;
+   }
+   .btn-wrap .btn-active {
+       width: 690rpx;
+       height: 86rpx;
+       line-height: 86rpx;
+       background-color: #26CAD3 !important;
+       font-size: 30rpx;
+       color: #fff !important;
+       border: none !important;
+   }
+</style>
+<template>
+   <view class="wrap">
+       <view class="cell" style="border: 1rpx solid #ddd">
+           <view class="size-30 color-33">手机号</view>
+           <view class="flex-1 size-28 user-phone">{{phone}}</view>
+           <view class="code-warp">
+               <view class="code" @tap="getCode">{{codeBtn}}</view>
+           </view>
+       </view>
+       <view class="cell no-border">
+           <view class="size-30 color-33 lable-code">验证码</view>
+           <input class="weui-input size-30" style="flex: 1" maxlength="4" type="number" value="{{code}}" placeholder="请输入验证码" @input="setVal" />
+       </view>
+
+       <view class="btn-wrap">
+           <button class="weui-btn {{code.length == 4 ? 'btn-active' : 'btn'}}" @tap="submit" type="default" disabled="{{code.length < 4}}" plain="true">验证后更换新手机号</button>
+       </view>
+
+       <!--<input class="weui-input" value="{{name}}" placeholder="请输入昵称" @confirm="submit" @input="setVal" />
+       <image class="icon" src="../../images/x.png" @tap="reset"/>-->
+   </view>
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+
+	export default class VerifyPhone extends wepy.page {
+		config = {
+			navigationBarTitleText: '更换手机',
+			backgroundColor: '#ebf0ef',
+			disableScroll: true
+		};
+
+		async onLoad() {
+			this.mobilePhone = wx.getStorageSync('eInfo').mobilePhone;
+		}
+
+		onShow() {
+			if (wx.getStorageSync("vCode1")) {
+				clearInterval(wx.getStorageSync("vCode1"));
+            }
+
+            if (wx.getStorageSync("vCode")) {
+	            clearInterval(wx.getStorageSync("vCode"));
+            }
+
+			if (!wx.getStorageSync('vAuthCodeTime')) {
+				wx.setStorageSync('vAuthCodeTime', 59);
+			}
+
+			if (wx.getStorageSync('vAuthCodeTime')) {
+				var nowTime = new Date().getTime();
+				var diffTime = Math.ceil((nowTime - (wx.getStorageSync('vSetAuthCodeTime') || '0')) / 1000);
+
+				if (wx.getStorageSync('vAuthCodeTime') >= 60) {
+					wx.setStorageSync('vAuthCodeTime', 59);
+				} else {
+					this.isClick = false;
+					wx.setStorageSync('vAuthCodeTime', 59 - diffTime);
+                    let _this = this;
+					let clearAuthCode = setInterval(function() {
+						if (wx.getStorageSync('vAuthCodeTime') <= 0) {
+							clearInterval(wx.getStorageSync("vCode"));
+							_this.codeBtn = "获取验证码";
+							_this.isClick = true;
+							wx.setStorageSync('vAuthCodeTime', 59);
+							_this.$apply();
+							return false;
+						}
+
+						let num = wx.getStorageSync('vAuthCodeTime');
+						wx.setStorageSync('vAuthCodeTime', --num);
+						_this.codeBtn = num + 's';
+						_this.$apply();
+					}, 1000);
+					wx.setStorageSync('vCode', clearAuthCode);
+				};
+			}
+        }
+
+		data = {
+            code: '',
+			mobilePhone: '',
+            isClick: true,
+            codeBtn: '获取验证码'
+		};
+
+		watch = {
+			/*num (curVal, oldVal) {
+				console.log(`旧值：${oldVal}，新值：${curVal}`)
+			}*/
+		};
+
+		methods = {
+			setVal(e) {
+                this.code = e.detail.value;
+            },
+			submit() {
+				this.updateUserInfo();
+            },
+			getCode() {
+				if (this.isClick) {
+					this.isClick = false;
+					this.verifyCode();
+                }
+            },
+		};
+		async verifyCode() {
+			clearInterval(wx.getStorageSync("vCode"));
+			const {imei_error_code} = await api.verifyCode({
+				query:{
+					mobilePhone: this.mobilePhone,
+				}
+			});
+
+			this.codeBtn = wx.getStorageSync('vAuthCodeTime') + 's';
+			this.isClick = false;
+            this.$apply();
+            let _this = this;
+
+			wx.setStorageSync('vSetAuthCodeTime', new Date().getTime());
+
+			let clearAuthCode = setInterval(function() {
+				if (wx.getStorageSync('vAuthCodeTime') <= 0) {
+					clearInterval(wx.getStorageSync("vCode1"));
+					_this.codeBtn("获取验证码");
+					_this.isClick = true;
+					wx.setStorageSync('vAuthCodeTime',59);
+					_this.$apply();
+					return false;
+				}
+				let num = wx.getStorageSync('vAuthCodeTime');
+				wx.setStorageSync('vAuthCodeTime', --num);
+				_this.codeBtn = num + 's';
+				_this.$apply();
+			}, 1000);
+			wx.setStorageSync('vCode1', clearAuthCode);
+		}
+		async updateUserInfo() {
+			const {imei_error_code} = await api.updateUserInfo({
+				query:{
+					mobilePhone: this.mobilePhone,
+					verifyType: 1,
+					verifyCode: this.code
+				}
+			});
+
+			if (imei_error_code == 0) {
+				wx.redirectTo({
+					url: '/pages/my_info/edit_phone'
+				})
+			}
+		}
+		computed = {
+			phone () {
+				return this.mobilePhone.replace(this.mobilePhone.substring(3,7),'****');
+			}
+		}
+	}
+</script>

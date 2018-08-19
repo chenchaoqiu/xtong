@@ -1,0 +1,331 @@
+<style lang="scss">
+    page {
+        height: 100%;
+        max-height: 100%;
+    }
+    .nav-bar {
+        width: 100%;
+        height: 64px;
+        position: absolute;
+        top: 0;
+        text-align: center; font-size: 40rxp;
+        color: #fff;
+        background-color: transparent;
+        z-index: 100;
+        line-height: 64px;
+        padding-top: 8px;
+    }
+    .main-container {
+        height: 100%;
+        max-height: 100%;
+    }
+    .header {
+        max-width: 100vw;
+        overflow: hidden;
+        min-height: 773rpx;
+    }
+    .header-bg {
+        height: 480rpx;
+        display: block;
+        width: 100%;
+        position: absolute;
+        top: 0;
+    }
+    .user-img {
+        width: 148rpx;
+        height: 148rpx;
+        margin-top: 166rpx;
+        border-radius: 50%;
+        display: inline-block;
+        overflow: hidden;
+    }
+    .set-img {
+        position: absolute;
+        width: 44rpx;
+        height: 44rpx;
+        overflow: hidden;
+        right: 0;
+        margin-right: 16px;
+        top: 166rpx;
+    }
+    .info-wrap {
+        position: absolute;
+        top:0;
+        z-index: 99;
+        color: #fff;
+        height: 478rpx;
+        background-color: transparent;
+        width: 100%;
+        text-align: center;
+    }
+    .user-statistics {
+        background-color: #fff;
+        position: absolute;
+        display: table;
+        height: 174rpx;
+        top:600rpx;
+        width: 100%;
+        color: #333;
+        font-size: 30rpx;
+        .item {
+            width: 33.33%;
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle;
+            .data {
+                color: #ff8589;
+                font-size: 40rpx;
+            }
+        }
+    }
+    .border-wrap {
+        .border {
+            border: 1rpx solid #f8f8f8;
+            box-sizing: border-box;
+        }
+        position: absolute;
+        top:600rpx;
+        width: 100vw;
+        box-sizing: border-box;
+        padding-left: 12px;
+        padding-right: 12px;
+        z-index: 100;
+    }
+    .nav-list {
+        position: absolute;
+        display: table;
+        width: 100%;
+        top:480rpx;
+        background-color: #fff;
+        height: 118rpx;
+        font-size: 30rpx;
+        color: #666;
+        border-bottom: 1rpx solid #f8f8f8;
+        .item {
+            width: 33.33%;
+            display: table-cell;
+            text-align: center;
+            vertical-align: middle;
+            text {
+                padding: 0 24rpx;
+                display: inline-block;
+                height: 118rpx;
+                line-height: 118rpx;
+            }
+            .active {
+                color: #ff8589;
+                border-bottom: 1px solid #ff8589;
+                box-sizing: border-box;
+            }
+        }
+    }
+    .module {
+        width: 100%;
+        margin-top: 10px;
+        background-color: #ffffff;
+        display: table;
+        table-layout: fixed;
+        text-align: center;
+        .cell {
+            padding: 40rpx 0;
+            display: table-cell;
+            width: 33.33% !important;
+            text-align: center;
+            height: 104rpx;
+            vertical-align: middle;
+            line-height: 1;
+            .img-wrap {
+                position: relative;
+                height: 100%;
+                .emphasis {
+                    position: absolute;
+                    left: 50%;
+                    margin-left: -70rpx;
+                    top: -50rpx;
+                }
+            }
+            .nav-title {
+                font-size: 30rpx;
+                color: #333;
+                margin-top: 14rpx;
+            }
+            image {
+                width: 54rpx;
+                height: 54rpx;
+            }
+        }
+    }
+    .sp-mt-5 {
+        margin-top: 5px;
+    }
+</style>
+<template>
+    <view class="nav-bar" style="" >小美圈圈</view>
+    <view class="main-container">
+        <view class="header">
+            <view class="info-wrap">
+                <!--<image class="user-img" src="{{res.headImgUrl}}"></image>-->
+                <open-data class="user-img" type="userAvatarUrl"></open-data>
+                <navigator url="/pages/my_info/info" hover-class="none"><image class="set-img" src="../../images/home_set.png"></image></navigator>
+                <block wx:if="{{res.spreaderName}}">
+                    <view class="size-40 sp-mt-5">{{res.spreaderName}}</view>
+                </block>
+                <block wx:else>
+                    <open-data class="size-40 sp-mt-5" type="userNickName"></open-data>
+                </block>
+                <view class="size-26">{{res.mobile}}</view>
+            </view>
+            <view class="nav-list">
+                <view class="item" @tap="switchoverDay(1)">
+                    <text class="{{tabCode == 1 ? 'active' : ''}}">今日</text>
+                </view>
+                <view class="item" @tap="switchoverDay(2)">
+                    <text class="{{tabCode == 2 ? 'active' : ''}}">近7天</text>
+                </view>
+                <view class="item" @tap="switchoverDay(3)">
+                    <text class="{{tabCode == 3 ? 'active' : ''}}">近30天</text>
+                </view>
+            </view>
+            <!--<view class="border-wrap">
+                <view class="border"></view>
+            </view>-->
+            <view class="user-statistics">
+                <navigator url="/pages/accumulative/accumulative-custom?id=2" class="item">
+                    <text class="title">注册用户</text>
+                    <view><text class="data">{{regUser}}</text></view>
+                </navigator>
+                <navigator url="/pages/accumulative/accumulative-custom?id=3" class="item">
+                    <text class="title">消费用户</text>
+                    <view><text class="data">{{spendingUser}}</text></view>
+                </navigator>
+                <navigator url="/pages/accumulative/accumulative-custom?id=4" class="item">
+                    <text class="title">消耗用户</text>
+                    <view><text class="data">{{consumeUser}}</text></view>
+                </navigator>
+            </view>
+            <image class="header-bg" src="../../images/home_h_bg.png"></image>
+        </view>
+        <view class="main" style="height: 100%; max-height: 100%; overflow-y: scroll">
+            <navigator url="/pages/spread_order/spread-order" class="weui-cell" hover-class="weui-cell_active" style="margin-top: 10px; padding: 38rpx 50rpx;background-color: #fff">
+                <view class="weui-cell__hd color-33">
+                    累计订单量：
+                </view>
+                <view class="weui-cell__bd size-32" style="color: #ff8589">{{orders}}</view>
+                <view>
+                    <image class="arrows" src="../../images/arrows.png"/>
+                </view>
+            </navigator>
+
+            <view class="module">
+                <navigator url="/pages/user_confirm/user-confirm" class="cell">
+                    <image src="../../images/home_s.png"></image>
+                    <view class="nav-title">用户确认</view>
+                </navigator>
+                <navigator url="/pages/spread/spread_activity" class="cell">
+                    <image src="../../images/home_l.png"></image>
+                    <view class="nav-title">推广活动</view>
+                </navigator>
+                <navigator url="/pages/invite/invite" class="cell">
+                    <image src="../../images/home_c.png"></image>
+                    <view class="nav-title active">专属邀请码</view>
+                </navigator>
+            </view>
+        </view>
+    </view>
+
+</template>
+<script>
+  import wepy from 'wepy'
+  import api from '../../api/api'
+
+  export default class Home extends wepy.page {
+    config = {
+      navigationBarTitleText: '首页',
+      navigationBarBackgroundColor: '#fda2a0',
+      navigationBarTextStyle: 'white',
+      backgroundColor: '#f4f4f4',
+      enablePullDownRefresh: true
+
+    };
+
+    async onLoad() {
+      this.getSpreaderInfo(1);
+      this.getUserInfo();
+    }
+
+    onShow() {
+      let eInfo = wx.getStorageSync('eInfo');
+      if (eInfo) {
+        this.res = eInfo;
+        this.$apply();
+      }
+    }
+
+    onReady() {
+
+    }
+
+    onPullDownRefresh() {
+      wx.showNavigationBarLoading(); //在标题栏中显示加载
+      this.getSpreaderInfo(this.tabCode);
+      this.getUserInfo();
+    }
+
+    data = {
+      tabCode:1,
+      spendingUser: 0,
+      regUser: 0,
+      consumeUser: 0,
+      orders: 0,
+      res: {
+        spreaderName: '',
+        mobile: '',
+        headImgUrl: ''
+      }
+    };
+
+    watch = {
+      /*num (curVal, oldVal) {
+          console.log(`旧值：${oldVal}，新值：${curVal}`)
+      }*/
+    };
+
+    methods = {
+      switchoverDay(code) {
+        if (this.tabCode != code) {
+          this.getSpreaderInfo(code);
+          this.tabCode = code;
+        }
+      }
+    }
+    async getSpreaderInfo(num) {
+      const {data:{orders,spendingUser,regUser,consumeUser}} = await api. getSpreaderInfo({
+        query: {
+          status: num
+        }
+      });
+      this.spendingUser = spendingUser;
+      this.regUser = regUser;
+      this.consumeUser = consumeUser;
+      this.orders = orders;
+      this.$apply();
+    }
+
+    async getUserInfo() {
+      const {data} = await api.getUserInfo({
+        query: {
+        }
+      });
+        setTimeout(function () {
+          wx.stopPullDownRefresh()
+        },500)
+      if (data) {
+        wx.setStorageSync('eInfo', data);
+        this.res.spreaderName = data.spreaderName;
+        this.res.mobile = data.mobile;
+        this.res.headImgUrl = data.headImgUrl;
+      }
+      this.$apply();
+    }
+  }
+</script>

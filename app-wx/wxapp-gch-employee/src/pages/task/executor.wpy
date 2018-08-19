@@ -1,0 +1,170 @@
+<style lang="less">
+    .module-wrap {
+        background-color: #fff;
+        font-size: 30rpx;
+        .label {
+            width: 130rpx;
+        }
+        .flex-box+.flex-box {
+            border-top: 1rpx solid #EEE;
+        }
+        .row {
+            text {
+                padding-left: 10rpx;
+            }
+            .info {
+                margin-left: 10rpx;
+                padding-left: 18rpx;
+                border-left: 1rpx solid #A9A9A9;
+            }
+        }
+    }
+    .module-task {
+        border-top: 1rpx solid #ddd;
+        .flex-box {
+            padding: 30rpx;
+        }
+
+    }
+    .title {
+        background-color: #F2F2F4;
+        font-size: 26rpx;
+        padding: 24rpx 30rpx;
+    }
+    .module-un,
+    .module-already {
+        .user-logo {
+            width: 100rpx;
+            height: 100rpx;
+            border-radius: 100%;
+            display: block;
+            background-color: #27CAD3;
+        }
+        .flex-box {
+            padding: 30rpx 50rpx 30rpx 30rpx;
+        }
+
+    }
+
+</style>
+<template>
+    <view class="module-wrap module-task">
+        <view class="flex-box">
+            <text class="label">时间：</text>
+            <text class="flex-1">{{time}}</text>
+        </view>
+        <view class="flex-box">
+            <text class="label">来访人：</text>
+            <text class="flex-1">{{name}}</text>
+        </view>
+        <view class="flex-box">
+            <text class="label">子任务：</text>
+            <text class="flex-1 ellipsis-1">{{content}}</text>
+        </view>
+        <view class="flex-box">
+            <text class="label">执行人：</text>
+            <text class="flex-1">{{employeeName}}</text>
+        </view>
+    </view>
+    <view class="title">
+        未执行（{{unFinish.length}}）
+    </view>
+    <view class="module-wrap module-un">
+        <view wx:for="{{unFinish}}" class="flex-box" wx:key="unique">
+            <view>
+                <image class="user-logo" src="{{item.headImgUrl}}"></image>
+            </view>
+            <view class="flex-1" style="padding-left: 30rpx">
+                <view class="row">{{item.employeeName}} <text class="info color-66">{{item.roleTypeValue}}</text></view>
+            </view>
+            <!--<view>
+                <image class="arrows" src="../../images/arrows.png"></image>
+            </view>-->
+        </view>
+        <!--<view class="flex-box">
+            <view>
+                <image class="user-logo" src=""></image>
+            </view>
+            <view class="flex-1" style="padding-left: 30rpx">
+                <view class="row">何华龙 <text class="info color-66">冼村派出所</text></view>
+            </view>
+            <view>
+                <image class="arrows" src="../../images/arrows.png"></image>
+            </view>
+        </view>-->
+    </view>
+    <view class="title">
+        已执行（{{finish.length}}）
+    </view>
+    <view class="module-wrap module-already">
+       <!-- <view class="flex-box">
+            <view>
+                <image class="user-logo" src=""></image>
+            </view>
+            <view class="flex-1" style="padding-left: 30rpx">
+                <view class="row">何华龙 <text class="info color-66">冼村派出所</text></view>
+            </view>
+            <view>
+                <image class="arrows" src="../../images/arrows.png"></image>
+            </view>
+        </view>-->
+        <view wx:for="{{finish}}" class="flex-box" wx:key="unique">
+            <view>
+                <image class="user-logo" src="{{item.headImgUrl}}"></image>
+            </view>
+            <view class="flex-1" style="padding-left: 30rpx">
+                <view class="row">{{item.employeeName}} <text class="info color-66">{{item.roleTypeValue}}</text></view>
+            </view>
+            <!--<view>
+                <image class="arrows" src="../../images/arrows.png"></image>
+            </view>-->
+        </view>
+    </view>
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+
+	export default class Task extends wepy.page {
+		config = {
+			navigationBarTitleText: '执行人',
+			backgroundColor: '#F2F2F4',
+		};
+
+		onLoad(o) {
+			this.time = o.time;
+			this.content = o.content;
+			this.name = o.name;
+			this.employeeName = o.employeeName;
+
+			this.getExecutorList({planSonId:o.id});
+			/*this.res = wx.getStorageSync('eInfo');*/
+		}
+
+		data = {
+			finish:[],
+			unFinish: [],
+			content: '',
+            time:'',
+            name: '',
+			employeeName: ''
+		};
+
+		watch = {
+			/*num (curVal, oldVal) {
+				console.log(`旧值：${oldVal}，新值：${curVal}`)
+			}*/
+		};
+
+		methods = {
+
+		};
+		async getExecutorList(query={}) {
+			let {data:{finish,unFinish}} = await api.getExecutorList({query});
+			this.finish = finish;
+            this.unFinish = unFinish;
+			this.$apply();
+		}
+
+	}
+</script>

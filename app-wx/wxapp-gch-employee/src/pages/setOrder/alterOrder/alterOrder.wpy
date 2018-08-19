@@ -1,0 +1,583 @@
+<style lang="scss">
+  page{
+    background: #f2f2f2;
+    border-top: 1rpx solid #eee;
+    padding-bottom:134rpx;
+  }
+  .setorder-user{
+    padding: 8rpx 30rpx 25rpx;
+    background: #fff;
+    font-size: 30rpx;
+    > view:first-child{
+      height:72rpx;
+      line-height:72rpx;
+      color: #333;
+    }
+    > view:nth-child(n+2){
+      height:58rpx;
+      line-height: 58rpx;
+      overflow: hidden;
+      color: #333;
+      image{
+        width:16rpx;
+        height:30rpx;
+        margin-top: 14rpx;
+        margin-left: 16rpx;
+      }
+      text.vip{
+        color: #deb48c;
+        margin-left: 10rpx;
+      }
+      text.none{
+        color: #666;
+      }
+    }
+  }
+  .commodity{
+    margin: 20rpx 0;
+    background: #fff;
+    > view{
+      padding:0 30rpx;
+    }
+    .commodity-title{
+      height:88rpx;
+      line-height:88rpx;
+      background: #fff;
+      overflow: hidden;
+      color: #666;
+      font-size: 30rpx;
+      border-bottom: 1rpx solid #eee;
+      image{
+        width:16rpx;
+        height:30rpx;
+        margin-top: 31rpx;
+        margin-left: 16rpx;
+      }
+    }
+    .commodity-det{
+      border-top: 1rpx solid #eee;
+      margin:0 30rpx;
+      padding: 30rpx 0;
+      background: #fff;
+      .commodity-det-cur{
+        overflow: hidden;
+        image{
+          width:240rpx;
+          height:160rpx;
+          background: #000;
+        }
+        > view{
+          width:418rpx;
+          height:160rpx;
+          margin-left: 30rpx;
+          font-size: 26rpx;
+          view{
+            width:100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+          view:nth-child(2){
+            margin-top: 6rpx;
+            margin-bottom: 27rpx;
+          }
+        }
+      }
+      .commodity-det-table{
+        > view:first-child{
+          font-size: 28rpx;
+          color: #333;
+          margin-top: 30rpx;
+        }
+        view:nth-child(2){
+          view{
+            margin-top: 6rpx;
+            font-size: 24rpx;
+            color: #666;
+            overflow: hidden;
+          }
+        }
+      }
+    }
+    .commodity-det:nth-child(2){
+      border-top: none;
+    }
+    .zffs{
+      margin:0 30rpx;
+      padding:0 0 21rpx;
+      border-bottom: 1rpx solid #eee;
+      font-size: 26rpx;
+      color: #333;
+    }
+    .zffs view{
+      &:first-child{
+        margin-top: 19rpx;
+      }
+      overflow: hidden;
+      height:52.5rpx;
+      line-height: 52.5rpx;
+      input{
+        width:290rpx;
+      }
+    }
+    .correlation{
+      padding:30rpx 30rpx 0;
+      border-bottom:1rpx solid #eee;
+      view{
+        padding-bottom: 20rpx;
+        overflow: hidden;
+        height:52.5rpx;
+        line-height: 52.5rpx;
+      }
+      text{
+        font-size: 26rpx;
+        color: #666;
+        margin-right: 40rpx;
+      }
+      text:first-child{
+        width:183rpx;
+      }
+      input{
+        width:260rpx;
+        font-size: 26rpx;
+        color: #378ed1;
+      }
+    }
+  }
+  textarea{
+    min-height: 85rpx;
+    font-size: 26rpx;
+    color: #333;
+    display: block;
+    width: auto;
+    padding: 0 30rpx;
+    line-height: 23rpx;
+  }
+  textarea.hied{
+    display: none;
+    opacity:0;
+    visibility:hidden;
+  }
+  .button{
+    position: fixed;
+    z-index: 999;
+    left:0;
+    bottom:0;
+    width:100%;
+    font-size: 31rpx;
+    color: #fff;
+    text-align: center;
+    height:94rpx;
+    background: #fff;
+    text{
+      background: #3096f8;
+      width:150rpx;
+      height:56rpx;
+      line-height:56rpx;
+      margin:20rpx 25rpx;
+      border-radius: 5rpx;
+    }
+  }
+  .gjr-bot{
+    border-top:1rpx solid #ddd;
+  }
+  .gjr-bot text{
+    display: inline-block;
+    width:100%;
+    text-align: center;
+    font-size: 30rpx;
+    color: #fff;
+    height: 98rpx;
+    line-height: 98rpx;
+    position: relative;
+    background: #3096f8;
+  }
+  .vip {
+    width: 50rpx !important;
+    height: 24rpx !important;
+  }
+
+  .weui-cell:before,.weui-cells:before,.weui-cells:after{
+    border:none;
+  }
+  .check{
+    margin-top: 10rpx;
+    height: auto !important;
+    &:nth-child(2){
+      margin-top: 0px;
+    }
+  }
+</style>
+<template>
+  <view class="setorder-user">
+    <view>客户信息</view>
+    <view @tap="setorder_user('/pages/setOrder/clientList')">
+      <view style="width: 64%" class="pull-left"><text style="max-width: 70%" class="pull-left ellipsis-1">{{user_cur[0].memberName || '选择客户'}}</text>  <image src="{{user_cur[0].tagLogo}}" class="vip"></image></view>
+      <view style="width: 36%" class="pull-right">
+        <text style="width: 87%;height: 44rpx;text-align: right" class="pull-left ellipsis-1">{{user_cur[0].bizzPartnerName}}</text>
+        <image class="pull-left" mode="widthFix" src="/images/xy.png"></image>
+      </view>
+    </view>
+  </view>
+  <!--商品信息-->
+  <view class="commodity">
+    <view @tap="setorder_user('/pages/setOrder/projectList')" class="commodity-title">
+      <text class="pull-left">商品信息</text>
+      <view class="pull-right">
+        <text class="pull-left" style="font-size: 26rpx;">选择商品</text>
+        <image class="pull-left" mode="widthFix" src="/images/xy.png"></image>
+      </view>
+    </view>
+    <!--商品-->
+    <view class="commodity-det" wx:for="{{commodity}}" wx:key="index">
+      <view class="commodity-det-cur">
+        <image class="pull-left" src="{{item.coverImgUrl}}"></image>
+        <view class="pull-left">
+          <view style="font-size: 30rpx;color: #333;">{{item.name}}</view>
+          <view style="color: #666;">{{item.subTitle}}</view>
+          <view style="color: #d42929;">{{item.totalAmount?item.totalAmount:item.price}}</view>
+        </view>
+      </view>
+      <view class="commodity-det-table">
+        <view>包含项目：</view>
+        <view>
+          <view wx:for="{{item.list}}" wx:key="index">
+            <text class="pull-left">{{item.projectName}}</text>
+            <text class="pull-right">×{{item.num}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <!--订单信息-->
+  <view class="commodity">
+    <view class="commodity-title">
+      <text style="color: #333;" class="pull-left">订单信息</text>
+    </view>
+    <!--成交价-->
+    <view class="commodity-title" style="font-size: 26rpx;padding: 0;margin: 0 30rpx;border-bottom:1rpx solid #eee;">
+      <text class="pull-left">订单成交价</text>
+      <view class="pull-right">
+        <input maxlength="9" value="{{order_det[1]}}" @input="bargain_ok" class="pull-left" style="color: #333;width: 152rpx;margin-top: 22rpx;text-align: right" type="digit" placeholder="请输入金额" />
+        <image class="pull-left" mode="widthFix" src="/images/xy.png"></image>
+      </view>
+    </view>
+    <!--实付款-->
+    <view class="commodity-title" style="font-size: 26rpx;padding: 0;margin: 0 30rpx;">
+      <text class="pull-left">订单实付款</text>
+      <view class="pull-right">
+        <input maxlength="9" value="{{order_det[2]}}" @input="out_of_pocket" class="pull-left" style="color: #333;width: 152rpx;margin-top: 22rpx;text-align: right" type="digit" placeholder="请输入金额" />
+        <image class="pull-left" mode="widthFix" src="/images/xy.png"></image>
+      </view>
+    </view>
+    <!--支付方式-->
+    <view @tap="payShay" class="commodity-title" style="font-size: 26rpx;">
+      <text class="pull-left">支付方式</text>
+      <view class="pull-right">
+        <text class="pull-left" style="color: #333;">请选择</text>
+        <image class="pull-left" mode="widthFix" src="/images/xy.png"></image>
+      </view>
+    </view>
+    <view wx:if="{{imatx.length>0}}" class="zffs">
+      <view wx:for="{{imatx}}" wx:key="index">
+        <text class="pull-left">{{item.name}}：</text>
+        <input maxlength="9" style="height: 52rpx;line-height: 52rpx;" value="{{item.moy}}" bindinput="money_mode({{item.payType}})" class="pull-left" type="digit" placeholder="请输入金额" />
+      </view>
+    </view>
+    <!--备注-->
+    <view class="commodity-title" style="font-size: 26rpx;border: none;">
+      <text class="pull-left">备注</text>
+    </view>
+    <view style="overflow: hidden;padding-bottom: 20rpx;height: 150rpx;">
+      <textarea class="teach" value="{{order_det[0]}}" bindinput="bindTextAreaBlur" wx:if="{{!ckeout}}" show-confirm-bar="{{false}}" bindfocus="bindTextAreaBlur" maxlength="100" auto-height="true" placeholder="请输入备注" />
+    </view>
+    <!--订单相关人-->
+    <view @tap="setorder_user('/pages/setOrder/orderMyteam')" class="commodity-title" style="font-size: 26rpx;color: #333;border-top:1rpx solid #eee;">
+      <text class="pull-left">订单相关人</text>
+      <view class="pull-right">
+        <image class="pull-left" mode="widthFix" src="/images/xy.png"></image>
+      </view>
+    </view>
+    <view class="correlation">
+      <view wx:for="{{order_correlation}}" wx:key="index">
+        <text class="pull-left ellipsis-1">{{item.employeeName}}</text>
+        <text class="pull-left">{{item.mobilePhone}}</text>
+        <input value="{{item.portion}}" bindinput="correlationInput({{item.employeeId}})" class="pull-left" type="text" placeholder="请输入业绩比例" maxlength="8" />
+      </view>
+    </view>
+  </view>
+  <view class="setorder-user">
+    <view style="color: #666;">审核信息</view>
+    <view wx:for="{{Data}}" wx:key="index" class="check">
+      <view style="height: 45rpx;line-height: 45rpx;">
+        <text class="pull-left">{{index==0?'首次':'第'+(index+1)+'次'}}收款{{item.amount}}元<text style="margin-left: 27rpx;">{{item.auditStatus==0?'未审核':'已审核'}}</text></text>
+      </view>
+      <view wx:if="{{item.auditTime}}" style="height: 45rpx;line-height: 45rpx;">
+        <text class="pull-left">{{item.auditTime}}</text>
+      </view>
+    </view>
+  </view>
+  <view class="button" >
+    <text @tap="save" class="pull-right">确认保存</text>
+  </view>
+  <!--支付方式-->
+  <view wx:if="{{ckeout}}" style="position: fixed;top: 0px;left: 0;width: 100%;height: 100%;z-index: 999;">
+    <view @tap="nock" animation="{{animationData_yc}}" style="width: 100%;height: 100%;background: #000;opacity: .8;"></view>
+    <view class="gjr" animation="{{animationData}}" style="position: fixed;bottom: 0;left: 0;background: #fff;width: 100%;">
+      <view style="overflow: hidden;font-size: 30rpx;color: #333;padding:0 20rpx;line-height: 99rpx;border-bottom: 1rpx solid #e5e5e5">
+        <text style="float:left;color: #666;">支付方式</text>
+      </view>
+      <view class="weui-cells pay-module weui-cells_after-title" style="max-height: 600rpx;overflow-y: auto;">
+        <checkbox-group bindchange="checkboxChange">
+          <label class="weui-cell weui-check__label" style="margin:0 30rpx;{{index==0?'':'border-top: 1px solid #e5e5e5;'}}" wx:for="{{checkboxItems}}" wx:key="payType">
+            <checkbox class="weui-check" value="{{item.payType}}" checked="{{item.checked}}"/>
+            <image style="width:64rpx;height:64rpx;border-radius: 50%;margin-right: 20rpx;" class="pay-logo" src="{{item.src}}"></image>
+            <view class="weui-cell__bd color-33">{{item.name}}</view>
+            <view class="weui-cell__ft weui-cell__ft_in-radio">
+              <icon class="weui-icon-checkbox_circle" type="circle" size="23" wx:if="{{!item.checked}}"></icon>
+              <icon class="weui-icon-checkbox_success" type="success" size="23" color="#3096f8" wx:if="{{item.checked}}"></icon>
+            </view>
+          </label>
+        </checkbox-group>
+      </view>
+      <!--确认-->
+      <view class="gjr-bot">
+        <!--<text @tap="nock">取消</text>-->
+        <text @tap="nock('ok')">确认</text>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+	import wepy from 'wepy'
+  import api from '../../../api/api'
+  import animo from '../../../utils/animove'
+  import dom from '../../../utils/dom'
+
+
+  export default class alterOrder extends wepy.page {
+		config = {
+			navigationBarTitleText: '修改订单',
+			backgroundColor: '#f4f4f4',
+      "enablePullDownRefresh": false, //开启下拉刷新
+		};
+    components = {
+    }
+		data = {
+      htmlStatus:false,/*页面是否为返回的*/
+      ckeout:false,/*支付方式控制*/
+      animationData:{},
+      animationData_yc:{},
+      imatx:[],/*支付方式选择的值*/
+      checkboxItems: [
+        {name: '支付宝支付', payType: 3, src: '../../images/zfb.png'},
+        {name: '微信支付', payType: 1, src: '../../images/wx.png'},
+        {name: '现金支付', payType: 2,  src: '../../images/xj.png'},
+        {name: 'POS支付', payType: 4, src: '../../images/pos.png'}
+      ],
+      Data:[],
+      commodity:[],/*商品列表*/
+      user_cur:[],/*客户列表*/
+      order_det:[],/*订单信息0:备注，1：成交价，2：实付款*/
+      order_correlation:[],/*订单相关人*/
+      OrderSn:'',
+      heishu:0,
+    };
+
+
+
+    async ajax(e){
+      const commodity=[],order_correlation=[],imatx=[];
+      this.commodity.forEach(function (c,ind) {
+        commodity[ind]={salePackageId:c.salePackageId,buyNum:1}
+      })
+      this.order_correlation.forEach(function (c, ind) {
+        if(c.portion){
+          order_correlation[ind]={employeeId:c.employeeId,portion:c.portion.replace('%','')*1}
+        }
+      })
+      this.imatx.forEach(function (c, ind) {
+        imatx[ind]={payType:c.payType*1,amount:c.moy*1}
+      })
+      const json = await api.orderModify({
+        query: {
+          OrderSn:this.OrderSn,
+          orderType:1,
+          salePackageDetail:commodity || '',
+          totalAmount:this.order_det[1] || '',
+          paidTotalAmount:this.order_det[2] || '',
+          payDetail:imatx || '',
+          memberId:this.user_cur[0].memberId || '',
+          remark:this.order_det[0] || '',
+          bizzPartnerId:this.user_cur[0].bizzPartnerId || '',
+          portionSetting:order_correlation || '',
+        }
+      });
+      if(json.imei_error_code==0){
+        wx.setStorageSync('chekeT','');
+        wx.setStorageSync('clienV','');
+        wx.setStorageSync('Myteam','');
+        wx.navigateBack({
+          delta: 1
+        })
+      }
+      this.$apply();
+    }
+
+    async ajax_Det(e){
+      const json = await api.orderDetail({
+        query: {
+          orderSn:e
+        }
+      });
+      json.data.salePackageDetails.forEach(function (c) {
+        const {imageUrl,projectDetails,salePackageId,salePackageName,totalAmount,salePackageSubtitle}=c;
+        projectDetails.forEach(function (l) {
+          l.num=l.projectNum;
+        }.bind(this))
+        this.commodity.push({coverImgUrl:imageUrl,list:projectDetails,salePackageId,name:salePackageName,totalAmount,subTitle:salePackageSubtitle});
+
+      }.bind(this))
+      this.user_cur[0]=json.data
+      this.order_det= [json.data.remark,json.data.totalAmount,json.data.paidTotalAmount]
+      this.order_correlation=json.data.portionSettingDetails
+      this.Data=json.data.auditDetails;
+      /*imatx:[],支付方式选择的值 checkboxItems*/
+      let ins=0;
+      this.checkboxItems.forEach(function (c, ind) {
+        json.data.payDetails.forEach(function (l) {
+          if(l.payType==c.payType){
+              c.checked=true;
+              c.moy=l.amount;
+              this.imatx[ins]=c;
+              ins++;
+          }
+        }.bind(this))
+      }.bind(this))
+      this.heishu=parseInt(this.order_det[0].length/30);
+      this.$apply();
+    }
+
+    onPullDownRefresh(){
+      /*上拉刷新*/
+    }
+
+    onReachBottom(e){//监控滚动到底部
+
+    }
+
+    __money_modes(e,e1){
+      e.forEach(function (c) {
+        if(c.payType==e1[0]){
+          c.amount=e1[1];
+          c.moy=e1[1];
+        }
+      })
+    }
+
+    methods = {
+      save(){
+        this.ajax();
+      },
+      bargain_ok(e){
+        this.order_det[1]=e.detail.value;
+      },
+      out_of_pocket(e){
+        this.order_det[2]=e.detail.value;
+      },
+      money_mode(e,e1){
+        this.__money_modes(this.checkboxItems,[e,e1.detail.value]);
+        this.__money_modes(this.imatx,[e,e1.detail.value]);
+      },
+      bindTextAreaBlur(e){
+        this.order_det[0]=e.detail.value;
+      },
+      correlationInput(e,e1){
+        this.order_correlation.forEach(function (c) {
+          if(c.employeeId==e){
+//              console.log(e1.detail.value) .indexOf('%')==-1?e1.detail.value:(e1.detail.value).split('%')[0]
+            c.portion=e1.detail.value;
+          }
+        })
+      },
+      async nock(e,e1,e2){
+        /*支付方式列表隐藏*/
+        var This=this;
+        if(e=='ok'){
+          This.imatx=[];
+          this.checkboxItems.forEach(function (p) {
+            if(p.checked){
+              This.imatx.push(p);
+            }
+          })
+        }
+        dom.height('.gjr',function (e) {
+//            console.log(555)
+          animo.yc({
+            This:This,
+            height:e
+          })
+        })
+        setTimeout(function () {
+          this.ckeout=false;
+          this.endout=false;
+          this.$apply();
+        }.bind(this),300)
+      },
+      checkboxChange: function (e) {
+        /*支付方式选择变化*/
+//        console.log('checkbox发生change事件，携带value值为：', e.detail.value);
+
+        var checkboxItems = this.checkboxItems, values = e.detail.value;
+        for (var i = 0, lenI = checkboxItems.length; i < lenI; ++i) {
+          checkboxItems[i].checked = false;
+
+          for (var j = 0, lenJ = values.length; j < lenJ; ++j) {
+            if(checkboxItems[i].payType == values[j]){
+              checkboxItems[i].checked = true;
+              break;
+            }
+          }
+        }
+
+        this.setData({
+          checkboxItems: checkboxItems
+        });
+      },
+      payShay(e){
+        this.ckeout=true;
+        setTimeout(function () {
+          animo.shwoIN(this)
+          this.$apply();
+        }.bind(this),50)
+      },
+      setorder_user(e){
+        /*客户信息*/
+        this.htmlStatus=true;
+        wx.setStorageSync('Myteam',this.order_correlation);
+        wx.setStorageSync('chekeT',this.commodity);
+        wx.setStorageSync('clienV',this.user_cur);
+        wx.navigateTo({
+          url: e
+        })
+      }
+    };
+
+    onShow(){
+      if(this.htmlStatus){
+        this.commodity=wx.getStorageSync('chekeT');
+        this.user_cur=wx.getStorageSync('clienV');
+        this.order_correlation=wx.getStorageSync('Myteam');
+      }else{
+        wx.setStorageSync('chekeT','');
+        wx.setStorageSync('clienV','');
+        wx.setStorageSync('Myteam','');
+      }
+    }
+
+    onLoad(e) {
+      this.OrderSn=e.orderSn;
+      this.ajax_Det(e.orderSn)
+    }
+	}
+</script>

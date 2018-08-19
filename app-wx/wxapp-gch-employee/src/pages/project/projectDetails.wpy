@@ -1,0 +1,193 @@
+<style lang="less">
+  @import "../../wxParse/wxParse.wxss";
+  .wxParse-img {
+    width: 100%;
+  }
+  page {background-color: #f2f2f4;font-family: PingFang-SC-Regular; max-height: 100vh; max-width: 100vw;}
+  ::-webkit-scrollbar{
+    width: 0;
+    height: 0;
+    color: transparent;
+  }
+  .color-333{color:#333333}
+  .color-666{color:#666666}
+  .color-999{color:#999999}
+  .font-36{font-size: 36rpx;}
+  .font-30{font-size: 30rpx;}
+  .font-28{font-size: 28rpx;}
+  .font-24{font-size: 24rpx;}
+  .font-26{font-size: 26rpx;}
+  swiper {
+    height: 500rpx;
+  }
+  swiper-item image {
+    width: 100%;
+    height: 100%;
+  }
+  .img{
+    width: 100%;
+    height: 500rpx;
+    display: block
+  }
+  .swiper-container{
+    position: relative;
+  }
+  .swiper-container .swiper{
+    height: 500rpx;
+  }
+  .swiper-container .swiper .img{
+    width: 100%;
+    height: 100%;
+  }
+  .oneline-overflow{overflow: hidden;text-overflow: ellipsis;white-space:nowrap}
+  .twoline-overflow{display: -webkit-box;  -webkit-box-orient: vertical;  -webkit-line-clamp: 2;
+    overflow: hidden;}
+  .section{background: #ffffff;padding: 40rpx 30rpx;}
+  .con-center{
+    width: 100%;
+    background: #fff;
+    margin-top: 20rpx;
+    box-sizing: border-box;
+    padding: 40rpx 30rpx;
+    .con-des{
+      .con-des-des{
+        font-size: 26rpx;color:#666;line-height: 1;margin-bottom: 24rpx;
+        text{
+        }
+      }
+      .con-des-des:last-child{margin-bottom: 0}
+    }
+  }
+  .consume-top{width:280rpx;margin:50rpx auto 30rpx auto;height: 30rpx;line-height: 30rpx;}
+  .icon-consume{display: block;float:left;width: 30rpx;height: 13rpx;margin-top: 9rpx;}
+  .icon-consume-l{margin-right: 14rpx;}
+  .icon-consume-r{margin-left: 14rpx;}
+  .maskLayer{position: fixed;-webkit-overflow-scrolling : touch; top:0;left: 0; bottom: 0; width: 100vw;min-height: 100vh;background: rgba(0,0,0,0.8);z-index: 998;overflow: hidden;
+    display: flex;display: -webkit-flex;flex-direction:column;-webkit-flex-direction: column;justify-content:flex-end;-webkit-justify-content: flex-end}
+  .maskLayer_top{flex: 1;-webkit-flex: 1;-webkit-transform: translateZ(0);}
+  .project_info{max-width: 100vw;margin-top: 20rpx;background: #ffffff;padding: 36rpx 0rpx 0;overflow-y: scroll}
+  .project_title{display: block;font-size: 30rpx;line-height: 1;color: #333;padding-left: 30rpx;}
+  .project_des{display: block;font-size: 26rpx;color:#222222;margin:30rpx 24rpx 0; }
+  .aaa{max-height: 100vh;overflow: hidden}
+  .fix{position: fixed;top:0;left: 0;width: 100%;height: 100%;overflow-y: scroll}
+  .wx-parse-wrap {
+    color: #333;
+    image {
+      display: block !important;
+    }
+  }
+</style>
+<template>
+  <view class="{{maskLayerShow?'fix':''}}" >
+      <view class="swiper-container">
+        <!--<swiper indicator-dots="{{indicatorDots}}"  indicator-color="rgb(193,202,204)"  indicator-active-color="#666" duration="{{duration}}" circular="{{duration}}" current="{{swiperCurrent}}" bindchange="swiperChange" class="swiper">
+          <block wx:for="{{ProductDetail.coverImgUrl}}" wx:key="unique">
+            <swiper-item>
+              <image src="{{item.imageUrl}}" class="img" />
+            </swiper-item>
+          </block>
+        </swiper>-->
+        <image src="{{ProductDetail.coverImgUrl}}"  class="img" />
+      </view>
+      <view class="section">
+        <text class="font-36 color-333 ellipsis-2" style="line-height: 1.2;">{{ProductDetail.name}}</text>
+        <text class="oneline-overflow" style="display: block;padding-top: 30rpx;font-size: 30rpx;line-height: 1;color: #666;">{{ProductDetail.subTitle}}</text>
+        <text class="oneline-overflow" style="display: block;padding-top: 30rpx;font-size: 50rpx;;line-height:1;color: #e43934;">{{ProductDetail.price}}</text>
+      </view>
+      <view class="con-center">
+        <view class="con-des">
+          <view style="font-size: 30rpx;line-height: 1;color: #333;margin-bottom: 30rpx;">包含项目</view>
+          <block wx:for="{{ProductDetail.projectList}}" wx:if="{{ProductDetail.projectList}}" wx:key="{{item.id}}">
+            <view class="con-des-des" >
+              <text class="oneline-overflow" style="display: inline-block;max-width: 80%;" >{{item.projectName}}</text>
+              <text style="float: right">x{{item.num}}</text>
+            </view>
+          </block>
+        </view>
+      </view>
+
+      <view class="project_info">
+        <text class="project_title">商品介绍</text>
+        <view class="consume-top font-30 color-666">
+          <image src="../../images/icon-consume-l.png" class="icon-consume icon-consume-l" ></image>
+          <text style="display: block;float: left;text-align: center">查看图文详情</text>
+          <image src="../../images/icon-consume-r.png" class="icon-consume icon-consume-r" ></image>
+        </view>
+        <!--<rich-text nodes="{{description}}" class="project_des"></rich-text>-->
+        <view class="wx-parse-wrap" style="padding: 24rpx">
+          <import src="../../wxParse/wxParse.wxml"/>
+          <template is="wxParse" data="{{wxParseData:article.nodes}}"/>
+        </view>
+      </view>
+  </view>
+
+</template>
+<script>
+  import wepy from 'wepy'
+  import api from '../../api/api'
+  import  WxParse from '../../wxParse/wxParse'
+
+  export default class productDetails extends wepy.page {
+    config = {
+      navigationBarTitleText: '商品详情页',
+      enablePullDownRefresh: true,     //关闭系统刷新
+    }
+    components = {
+    }
+    data = {
+      swiperCurrent: 0,
+      indicatorDots: true,
+      duration: 800,
+      circular:true,
+      maskLayerShow : false,  //弹出框默认false
+      ProductDetail:[],//详情信息
+      salePackageId:"",//销售包id
+      description:"",//详情描述
+    }
+    //    上拉刷新
+    onPullDownRefresh()
+    {
+      wx.showNavigationBarLoading(); //在标题栏中显示加载
+      //模拟加载
+      this.getProductDetail();
+      setTimeout(function()
+      {
+        wx.hideNavigationBarLoading(); //完成停止加载
+        wx.stopPullDownRefresh() //停止下拉刷新
+      }.bind(this),1000);
+    }
+    //轮播图的切换事件
+    swiperChange(e) {
+      this.swiperCurrent = e.detail.current
+    }
+    //点击指示点切换
+    chuangEvent(e) {
+      this.swiperCurrent  = e.currentTarget.id
+    }
+
+    methods = {}
+
+    //    按服务包id获取服务包详情接口
+    async getProductDetail(e){
+      const getProductDetail = await api.salePackagDetail({
+        query: {
+          salePackageId:this.salePackageId,
+        }
+      });
+      this.ProductDetail = getProductDetail.data;      //列表list
+      var olddescription = getProductDetail.data.description;//详情介绍
+      /*this.description = olddescription.replace(/px/g, 'rpx');*/
+      this.description = WxParse.wxParse('article', 'html', olddescription, this, 0);
+      this.$apply();
+    }
+
+
+    onShow(){}
+
+    async onLoad(options) {
+      this.salePackageId = options.salePackageId;
+      this.getProductDetail();
+      this.$apply();
+    }
+  }
+</script>

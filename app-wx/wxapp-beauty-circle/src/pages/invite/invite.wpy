@@ -1,0 +1,308 @@
+<style lang="scss">
+    page {
+        height: 100%;
+        max-height: 100%;
+        background-color: #f8f8f8;
+    }
+    .header {
+        min-height: 70px;
+    }
+    .main {
+        height: 100%;
+    }
+    .slide-item {
+        margin-top: 20px;
+        .img-code {
+            width: 650rpx;
+            height: 866rpx;
+            display: block;
+        }
+        .item {
+            /*padding: 30rpx 40rpx;*/
+            background-color: #fff;
+            .img {
+                width: 120rpx;
+                height: 120rpx;
+                border-radius: 50%;
+            }
+            .item-body {
+                margin-top: 70rpx;
+                text-align: center;
+                .logo {
+                    width: 142rpx;
+                    height: 142rpx;
+                    /*border: 1rpx solid #ddd;*/
+                }
+                .a-title {
+                    margin-top: 36rpx;
+                    margin-bottom: 12rpx;
+                }
+                .qrcode {
+                    width: 138rpx;
+                    height: 140rpx;
+                    margin-top: 80rpx;
+                    margin-bottom: 20rpx;
+                }
+            }
+        }
+    }
+    .module-header {
+        position: relative;
+        background-color: #fff;
+        margin-top: 10px;
+        border-top: 1rpx solid #ddd;
+        padding: 12rpx 24rpx;
+        padding-bottom: 0;
+        .shop-title {
+            position: relative;
+            box-sizing: content-box;
+            padding: 30rpx 0;
+            text-align: center;
+            padding-right: 24rpx;
+        }
+    }
+    .arrows-i {
+        width: 24rpx;
+        height: 44rpx;
+        position: absolute;
+        right: 24rpx;
+        top: 50%;
+        margin-top: 6px;
+    }
+    .sp-ml-30 {
+        margin-left: 30rpx;
+    }
+    .shadow {
+        box-shadow: 1px 1px 5px #BCBCBC;
+    }
+    .canvas-box{
+        position: fixed;
+        top:999999rpx;
+        left: 0
+    }
+</style>
+<template>
+    <view class="main-container">
+        <view class="header">
+            <navigation :title="navTitle"></navigation>
+        </view>
+        <view class="main">
+            <navigator url="/pages/facilitator/facilitator" id="mHeader" class="module-header size-30">
+                <view class="color-66">
+                    请选择推荐的门店
+                </view>
+                <image class="arrows-i" src="../../images/i_arrows.png"></image>
+                <view class="shop-title size-48 color-33 ellipsis-1">
+                    {{companyName}}
+                </view>
+            </navigator>
+            <block wx:if="{{list.length > 0}}">
+                <swiper indicator-dots="{{indicatorDots}}" bindchange="change" style="height: {{swiperHeight}}"
+                        autoplay="{{autoplay}}" duration="{{duration}}" previous-margin="20rpx" next-margin="50rpx">
+                    <block wx:for="{{list}}" wx:key="index">
+                        <swiper-item class="slide-item"><!--@tap="getImg({{item.headImgUrl}},{{item.qrCodeUrl}},{{item.spreaderName}},{{index}})"-->
+                            <view class="item sp-ml-30">
+                                <!--<view class="item-header flex-box">
+                                    <view class="weui-cell__bd">
+                                        <view class="size-36 color-33">{{item.spreaderName}}</view>
+                                        <view class="size-26 color-66" style="margin-top: 18rpx">邀请你一起来护肤啦！</view>
+                                    </view>
+                                    <view class="weui-cell__ft">
+                                        <image class="img" src='{{item.headImgUrl}}'></image>
+                                    </view>
+                                </view>
+                                <view class="item-body">
+                                    <image class="logo" src="../../images/w_logo.png"></image>
+                                    <view class="a-title color-33 size-30">智能科技美肤中心</view>
+                                    <view class="a-describe color-66 size-28">让你加速美  健康美  自然美</view>
+                                    <image class="qrcode" src="{{item.qrCodeUrl}}"></image>
+                                </view>-->
+                                <image @tap="previewImg({{item.shareUrl}})" class="img-code" src="{{item.shareUrl}}"></image>
+                            </view>
+
+                        </swiper-item>
+                    </block>
+                </swiper>
+            </block>
+        </view>
+    </view>
+    <zanDialog></zanDialog>
+    <!--画图-->
+    <!--<view class="canvas-box">
+        <canvas id="canvas" style="width: 300px;height: 400px;" canvas-id="mycanvas"/>
+    </view>-->
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import navigation from '@/components/navigation'
+  import api from '@/api/api'
+  import zanDialog from '@/components/zan-dialog'
+
+  export default class Invite extends wepy.page {
+    config = {
+      navigationBarTitleText: '邀请码',
+      enablePullDownRefresh: false,
+      navigationBarTextStyle: 'black'
+    };
+    components = {
+      navigation,
+      zanDialog
+    };
+    data = {
+      navTitle: '邀请码',
+      swiperHeight: '402px',
+      filePath: [],
+      list: [],
+      companyName: '去选门店',
+      current: 0
+    };
+    methods = {
+      previewImg(url,e) {
+        wx.previewImage({
+          current: url, // 当前显示图片的http链接
+          urls: [url] // 需要预览的图片http链接列表
+        })
+      },
+      change(e) {
+        this.current = e.detail.current;
+        this.companyName = this.list[e.detail.current].companyName;
+      },
+      /*getImg(hurl, qrcode, name,index,e) {
+        if (this.filePath[index]) {
+          wx.previewImage({
+            current: this.filePath[index], // 当前显示图片的http链接
+            urls: [this.filePath[index]] // 需要预览的图片http链接列表
+          })
+        } else {
+          this.paint(hurl, qrcode, name,index);
+        }
+      }*/
+    };
+
+    onLoad() {
+      this.$parent.verifyAccredit(1);
+      wx.setStorageSync('eCompany', false);
+      this.getcompanyList();
+      wx.downloadFile({
+        url: wx.getStorageSync('eInfo').headImgUrl,
+        success: function(res) {/*res.tempFilePath*/
+          this.headImgUrl = res.tempFilePath;
+        }.bind(this)
+      })
+
+    };
+    onReady() {
+      let query = wepy.createSelectorQuery();
+      let mainH = 0;
+      this.ctx = wx.createCanvasContext("mycanvas");
+
+      //设置高度
+      query.select('.main').boundingClientRect().exec((res) => {
+        mainH = res[0].height;
+      });
+      query.select('#mHeader').boundingClientRect().exec((res) => {
+        this.swiperHeight = mainH - res[1].height -10 + 'px';
+        this.$apply();
+      });
+
+      //设置画板
+      /*query.select('#canvas').boundingClientRect().exec((res) => {
+        this.canvas = res[2];
+      });*/
+
+    }
+    onShow() {
+      if (wx.getStorageSync('eCompany')) {
+        this.getcompanyList();
+      }
+    }
+    showAccreditDialog() {
+      this.$invoke('zanDialog', 'showZanDialog', {
+        title: '是否授权',
+        content: '系统检测你还未授权, 打开授权【用户信息】开启更多功能',
+        showCancel: true,
+        buttons:[],
+        openType: 'getUserInfo',
+        isGo: true
+      })
+        .then(() => {
+
+        })
+        .catch(() => {
+          wx.navigateBack({
+            delta: 1
+          })
+        })
+    }
+    async getcompanyList() {
+      const {data:{list}} = await api.getcompanyList({
+        query: {
+          isFilter: 1
+        }
+      });
+      if (list.length) {
+        this.companyName = list[this.current].companyName;
+      }
+      this.list = list;
+      wx.setStorageSync('eCompany',false)
+      this.$apply();
+    }
+//    paint(hurl, qrcode, name,i) {
+//      this.ctx.setFillStyle('#fff');
+//      this.ctx.fillRect(0, 0, 300, 400);
+//      this.ctx.draw();
+//      this.ctx.setFillStyle('#333');
+//      this.ctx.setFontSize(18);
+//      this.ctx.fillText(name, 20, 40);
+//      this.ctx.draw(true);
+//      this.ctx.setFillStyle('#666');
+//      this.ctx.setFontSize(13);
+//      this.ctx.fillText('邀请你一起来护肤啦！', 20, 65);
+//      this.ctx.draw(true);
+//      this.ctx.setFillStyle('#333');
+//      this.ctx.setFontSize(15);
+//      this.ctx.setTextAlign('center');
+//      this.ctx.fillText('智能科技美肤中心', 150, 220);
+//      this.ctx.draw(true);
+//      this.ctx.setFillStyle('#666');
+//      this.ctx.setFontSize(14);
+//      this.ctx.fillText('让你加速美  健康美  自然美', 150, 248);
+//      this.ctx.drawImage('../../images/w_logo.png', 115, 110, 70, 70);
+//      this.ctx.drawImage(this.headImgUrl, 230, 15, 50, 50);
+//      this.ctx.draw(true);
+//      let _this = this;
+//      this.dowImg([{url:qrcode,arr:[115, 288, 70, 70]}],i);
+//    }
+//    async dowImg(imgArr,num,showImg) {
+//      let i = 0;
+//      for (let v of imgArr) {
+//        wx.downloadFile({
+//          url: v.url,
+//          success: function(res) {/*res.tempFilePath*/
+//            this.ctx.drawImage(res.tempFilePath, ...v.arr);
+//            this.ctx.draw(true);
+//            /*if (++i == 2) {*/
+//            let _this = this;
+//            wx.canvasToTempFilePath({
+//              x: 0,
+//              y: 0,
+//              width: 300,
+//              height: 400,
+//              canvasId: 'mycanvas',
+//              fileType: 'jpg',
+//              success: function (res) {
+//                _this.filePath[num] = res.tempFilePath;
+//                wx.previewImage({
+//                  current: res.tempFilePath, // 当前显示图片的http链接
+//                  urls: [res.tempFilePath] // 需要预览的图片http链接列表
+//                })
+//              }
+//            })
+//            /* }*/
+//          }.bind(this)
+//        })
+//      }
+//    }
+  }
+</script>

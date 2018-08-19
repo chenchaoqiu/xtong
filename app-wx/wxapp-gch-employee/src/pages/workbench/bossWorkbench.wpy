@@ -1,0 +1,352 @@
+<style lang="less">
+    page {
+        height: 100%;
+    }
+    /*.navigator-hover {*/
+      /*background-color: #fff;*/
+    /*}*/
+    .color-dd{color:#ddd}
+
+    .switch-date-wrap {
+        margin-left: 40rpx;
+        width: 200rpx;
+        height: 40rpx;
+        line-height: 40rpx;
+        font-size: 26rpx;
+        text-align: center;
+        color: #3096F8;
+        border: 1rpx solid #3096F8;
+        will-change: all;
+        overflow: hidden;
+        view {
+            display: inline-block;
+            width: 50%;
+        }
+        .day {
+            border-top-left-radius: 1px;
+            border-bottom-left-radius: 1px;
+        }
+        .month {
+            border-bottom-right-radius: 1px;
+            border-top-right-radius: 1px;
+        }
+        .active {
+            background-color: #3096F8;
+            color: #fff;
+        }
+    }
+
+    .sp-mt-20 {
+        margin-top: 20rpx;
+    }
+    .sp-mt-30 {
+      margin-top: 30rpx;
+    }
+
+  .list-warpper{
+    background: #fff;
+    padding: 30rpx 0 30rpx 30rpx;
+    margin-top: 20rpx;
+    .list-title{
+      display: flex;
+      .line{
+        width: 6rpx;
+        height: 40rpx;
+        background: #3096f8;
+      }
+      .name{
+        flex: 1;
+        font-size: 30rpx;
+        line-height: 1;
+        margin-top: 5rpx;
+        margin-left: 16rpx;
+      }
+    }
+    .list-content{
+      margin-top: 45rpx;
+      text-align: center;
+      line-height: 1;
+      .num{
+        font-size: 40rpx;
+        color: #2c98fa;
+      }
+      .des{
+        font-size: 28rpx;
+        color:#333;
+        margin-top: 16rpx;
+      }
+    }
+  }
+  .yewu-table{
+    /*display: flex;*/
+    width: 100%;
+    background: #fff;
+    box-sizing: border-box;
+    /*padding: 30rpx 0;*/
+    .yewu-cell{
+      display: inline-block;
+      width: 320rpx;
+      height: 124rpx;
+      margin-top: 20rpx;
+      margin-right: 34rpx;
+      float: left;
+      border: 1px solid #eee;
+      font-size: 30rpx;
+      line-height: 1;
+      color: #333;
+      /*vertical-align: middle;*/
+      image{
+        display: block;
+        float: left;
+        width: 64rpx;
+        height: 64rpx;
+        margin-left: 20rpx;
+        margin-top: 30rpx;
+      }
+      text{
+        display: block;
+        float: left;
+        line-height: 125rpx;
+        margin-left: 24rpx;
+      }
+    }
+  }
+    .header {
+      background-color: #fff;
+      padding: 30rpx;
+      margin: 0 0 20rpx 0;
+      border-top:1px solid #ddd;
+      .row {
+        font-size: 36rpx;
+        color: #333;
+        padding-left: 40rpx;
+        text {
+          padding-left: 10rpx;
+        }
+        .logo {
+          width: 30rpx;
+          height: 36rpx;
+          vertical-align: middle;
+          margin-top: -8rpx;
+          margin-left: 4rpx;
+        }
+      }
+    }
+
+    .userinfo-avatar {
+      width: 130rpx;
+      height: 130rpx;
+      margin: 46rpx 0 46rpx 40rpx;
+      /*border:1px solid #E6E6E6;*/
+      border-radius: 50%;
+      overflow: hidden;
+    }
+    .user-info-wrap {
+      border: 1rpx solid #D9D9D9;
+      box-shadow: 0 2px 4px #B8B8B8, 1px 2px 3px #D9D9D9, -1px 2px 3px #D9D9D9;
+    }
+
+
+</style>
+<template>
+  <view   class="header">
+    <navigator url="/pages/myInfo/index"  hover-class="none" class="flex-box user-info-wrap">
+      <view>
+        <view class="userinfo-avatar">
+          <open-data   type="userAvatarUrl" ></open-data>
+        </view>
+      </view>
+      <view class="flex-1">
+        <view class="row">{{res.name}}</view>
+        <view class="row">{{res.companyName}} <image class="logo" src="../../images/attestation.png"></image> </view>
+        <view class="row color-66">{{res.mobilePhone}}</view>
+      </view>
+      <image  src="../../images/arrows.png" style="display: block;width: 16rpx;height: 30rpx;margin-right: 40rpx"></image>
+    </navigator>
+  </view>
+
+    <view class="list-warpper" wx:if="{{roleType ==  4}}">
+        <view class="list-title">
+          <view class="line"></view>
+          <view class="name">数据概况</view>
+          <view class="switch-date-wrap">
+            <view class="switchDate day {{ tabTime == 1 ? 'active':'' }}" @tap="switchDate(1)">昨天</view>
+            <view class="switchDate month {{ tabTime == 2 ? 'active':'' }} " @tap="switchDate(2)">近七天</view>
+          </view>
+        </view>
+
+        <view class="list-content">
+          <view class="table">
+            <view class="cell">
+              <view class="num">{{details.receptionNum}}</view>
+              <view class="des">接待客户量</view>
+            </view>
+            <view class="cell">
+              <view class="num">{{details.orderNum}}</view>
+              <view class="des">订单数量</view>
+            </view>
+            <view class="cell">
+              <view class="num">{{details.achieve}}</view>
+              <view class="des">成交金额</view>
+            </view>
+          </view>
+        </view>
+    </view>
+
+  <view class="list-warpper">
+    <view class="list-title">
+      <view class="line"></view>
+      <view class="name">业务入口</view>
+    </view>
+
+    <view class="yewu-table clearfix ">
+      <!--计划卖手客服财务-->
+        <navigator url="/pages/plan/plan" hover-class="none" class="yewu-cell" >
+          <image src="../../images/yewu-plan.png" />
+          <text>计划日程</text>
+        </navigator>
+
+      <!--计划 卖手 财务-->
+        <navigator url="/pages/orderManage/orderManage" hover-class="none" class="yewu-cell">
+          <image src="../../images/yewu-order.png"  />
+          <text>订单管理 </text>
+        </navigator>
+
+      <!--计划卖手客服财务-->
+        <navigator url="/pages/client/list" hover-class="none" class="yewu-cell">
+          <image src="../../images/yewu-file.png" />
+          <text>客户档案</text>
+        </navigator>
+
+
+      <navigator url="/pages/partner/partner" hover-class="none" class="yewu-cell">
+        <image src="../../images/yewu-partner.png"  />
+        <text>合作商</text>
+      </navigator>
+
+      <!--是否是组长才能显示-->
+      <navigator url="/pages/employee/bossEmployee" hover-class="none" class="yewu-cell" wx:if="{{isLeader == 1}}">
+        <image src="../../images/yewu-yeji.png" />
+        <text>员工业绩</text>
+      </navigator>
+    </view>
+
+
+  </view>
+
+  <view class="list-warpper  " style="margin-bottom: 134rpx;">
+    <view class="list-title">
+      <view class="line"></view>
+      <view class="name">资料管理</view>
+    </view>
+    <!--<block wx:if="{{roleType ==  3 || roleType ==  4 || roleType ==  5  || roleType ==  6}}">-->
+      <view class="yewu-table  clearfix ">
+      <navigator url="/pages/project/project" hover-class="none" class="yewu-cell">
+        <image src="../../images/ziliao-project.png" />
+        <text>项目管理</text>
+      </navigator>
+      <navigator url="/pages/brandData/brandData" hover-class="none" class="yewu-cell">
+        <image src="../../images/ziliao-brand.png"  />
+        <text>品牌资料 </text>
+      </navigator>
+
+      <navigator url="/pages/expert/expert" hover-class="none" class="yewu-cell">
+        <image src="../../images/ziliao-expert.png" />
+        <text>专家资料</text>
+      </navigator>
+      <view class="yewu-cell" style="border: 0!important;"></view>
+    </view>
+    <!--</block>-->
+  </view>
+
+  <view class="footer">
+    <view class="nav-foot-wrap">
+      <navigator class="cell" url="/pages/schedule/schedule" open-type="redirect" hover-class="none">
+        <image src="../../images/day.png"></image>
+        <view class="nav-title ">日程</view>
+      </navigator>
+
+      <navigator class="cell" url="/pages/echartsDetails/manageSurvey" open-type="redirect" hover-class="none" >
+        <image src="../../images/data.png"></image>
+        <view class="nav-title">数据</view>
+      </navigator>
+      <view class="cell" >
+        <image src="../../images/work_a.png"></image>
+        <view class="nav-title active">工作台</view>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+
+	export default class Performance extends wepy.page {
+		config = {
+			navigationBarTitleText: '工作台',
+			backgroundColor: '#f2f2f4',
+			/*navigationBarBackgroundColor:'#4DADF3',
+			navigationBarTextStyle: 'white',*/
+      enablePullDownRefresh: true,//系统刷新
+		};
+
+		data = {
+      tabTime:1,//默认昨天
+      details:'',//数据
+      roleType :'',//角色类型
+      isLeader:'',//是否是组长
+      employeeId:'',//id
+      res:'',//数据返回
+		};
+
+    methods = {
+      switchDate(code) {
+        if (this.tabTime != code) {
+          this.tabTime = code;
+          this.getData();// 请求接口
+        }
+      }
+    };
+    // 上拉刷新
+    onPullDownRefresh()
+    {
+      wx.showNavigationBarLoading(); //在标题栏中显示加载
+      //模拟加载
+      this.getData();
+      setTimeout(function()
+      {
+        wx.hideNavigationBarLoading(); //完成停止加载
+        wx.stopPullDownRefresh() //停止下拉刷新
+      }.bind(this),1000);
+    }
+    //工作台数据
+    async getData(){
+      const {data} = await api.console({
+        query: {
+          type : this.tabTime,
+        }
+      });
+      this.details = data;
+      this.$apply();
+    }
+    onShow() {
+    };
+
+    async getEmployeeDetail() {
+      let {data} = await api.getEmployeeDetail({
+        query:{
+          employeeId: this.employeeId
+        }
+      });
+      this.res = data;
+      this.$apply();
+    }
+    onLoad() {
+      this.roleType = wx.getStorageSync('session').roleType;//缓存里面的roleType
+      this.isLeader = wx.getStorageSync('session').isLeader;//缓存里面的isLeader
+      this.employeeId = wx.getStorageSync('session').employeeId;//缓存里面的employeeId
+      this.getEmployeeDetail();
+    };
+
+	}
+</script>

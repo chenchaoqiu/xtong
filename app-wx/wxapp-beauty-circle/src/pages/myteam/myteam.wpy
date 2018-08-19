@@ -1,0 +1,278 @@
+<style lang="less">
+  page {background-color: #f8f8f8;font-size: 30rpx;}
+  .header {
+    min-height: 70px;overflow: hidden;
+  }
+  .swiper-tab{
+    height: 40px;line-height: 40px;width: 100%; overflow: hidden;background: #ffffff;box-sizing: border-box;
+    border-bottom: 1rpx solid #eee;border-top:1rpx solid #eee; font-size: 30rpx; white-space: nowrap;position: fixed;top: 70px; left: 0;
+    z-index: 99;color:#666666
+  }
+  .swiper-box{margin-top: 40px;}
+  .swiper-tab-list{display: inline-block;width: 50%;height: 39px;text-align: center}
+  .swiper-tab-list.active{position: relative;color: #ff8589;}
+  .swiper-tab-list.active:after{ content: "";display: block;height:2px;width: 150rpx;background: #ff8589;position: absolute; bottom: 0;left: 110rpx;}
+  /*活动团队*/
+ .list{width: 692rpx;margin:30rpx auto 0;background: #fff;border: 1rpx solid #eee;border-radius: 10rpx;}
+  .list-top{width: 100%;height: 70rpx;line-height: 70rpx;font-size: 28rpx;position: relative;border-bottom: 1rpx solid #eee}
+  .list-top-mark{width: 79rpx;height: 70rpx;position: absolute;top:0;right: 0}
+  .list-content{display: flex;display: -webkit-flex;padding: 24rpx 20rpx 34rpx}
+  .list-content-l{flex: 1;-webkit-flex: 1}
+  .list-content-r{width: 90rpx;text-align: right;position: relative}
+  /*组织团队*/
+  .item{width: 692rpx;margin:30rpx auto 0;background: #fff;border: 1rpx solid #eee;border-radius: 10rpx;
+  display: flex;display: -webkit-flex;box-sizing: border-box;padding: 30rpx 68rpx 30rpx 20rpx;}
+  .item-avatar{width: 130rpx;height: 130rpx;border-radius: 50%}
+  .item-con{flex: 1;-webkit-flex: 1;margin-left: 34rpx;margin-top: 24rpx;}
+  .item-phone{width: 52rpx;height: 52rpx;margin-top: 39rpx;}
+  .refresh{text-align: center;color: #999999;font-size: 30rpx;padding-bottom: 10rpx;}
+  .loadmore{text-align: center;color: #999999;font-size: 30rpx;padding-top: 20rpx;padding-bottom: 80rpx;}
+  ::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    color: transparent;
+  }
+</style>
+<template>
+  <view class="header">
+    <navigation :title="navTitle" :isShow="isShowBack"></navigation>
+  </view>
+  <view class="swiper-tab">
+    <view class="swiper-tab-list {{currentTab==0 ? 'active' : ''}}" data-current="0"  @tap="tab(0)">活动团队</view>
+    <view class="swiper-tab-list {{currentTab==1 ? 'active' : ''}}" data-current="1"  @tap="tab(1)">组织团队</view>
+  </view>
+    <!--活动团队-->
+    <view wx:if="{{activity}}" style="margin-top: 40px;background: #fff">
+      <view class="refresh" hidden="{{hideHeader}}">刷新中...</view>
+      <scroll-view scroll-y="true" style="height: {{winHeight}}rpx;" bindscrolltoupper="upper" bindscrolltolower="lower" upper-threshold="-30" lower-threshold="30" >
+        <block wx:for="{{AList}}" wx:for-item="itemA" wx:key="{{index}}">
+          <navigator url="/pages/myteam/myteamDetial?activityId={{itemA.activityId}}&marketId={{itemA.marketId}}" class="list" hover-class="none">
+          <view class="list-top">
+            <text style="padding-left: 20rpx;color: #333">{{itemA.comName}}</text>
+            <image class="list-top-mark" src="../../images/mark{{itemA.status}}.png" ></image>
+          </view>
+          <view class="list-content">
+            <view class="list-content-l">
+              <text class="ellipsis-2" style="line-height: 48rpx;color: #333;font-size: 30rpx;">{{itemA.title}}</text>
+              <text style="font-size: 22rpx;color: #666">活动时间：{{itemA.time}}</text>
+            </view>
+            <view class="list-content-r">
+              <image src="../../images/next.png" style="width:24rpx;height: 44rpx;position: absolute;top:50%;margin-top: -22rpx;right:0;transform: translate(-50%,0); -webkit-translate: translate(-50%,0);-webkit-transform: translate(-50%,0);"></image>
+            </view>
+          </view>
+        </navigator>
+        </block>
+        <view class="loadmore" wx:if="{{AList.length !=0}}">{{loadmore}}</view>
+      </scroll-view>
+    </view>
+    <!--组织团队-->
+    <view wx:if="{{organization}}" style="margin-top: 40px;background: #fff">
+      <view class="refresh" hidden="{{hideHeader}}">刷新中...</view>
+      <scroll-view scroll-y="true" style="height: {{winHeight}}rpx;" scroll-top="{{Gtop}}" bindscrolltoupper="upper" bindscrolltolower="lower" upper-threshold="-30" lower-threshold="30" >
+        <block wx:for="{{GList}}" wx:for-item="itemG" wx:key="{{index}}">
+          <view class="item">
+          <image src="{{itemG.headImgUrl}}" class="item-avatar"></image>
+          <view class="item-con" style="overflow: hidden">
+            <view style="height: 30rpx;line-height: 30rpx;">
+              <text style="color:#333;max-width: 60%;display: block;float: left;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;">{{itemG.spreaderName}}</text>
+              <text style="color: #666;padding-left: 24rpx;display: block;float: left;">组员</text>
+            </view>
+            <view style="color: #666;font-size: 26rpx;margin-top: 20rpx;">{{itemG.mobile}}</view>
+          </view>
+          <image src="../../images/phone.png" class="item-phone"  @tap="dial({{itemG.mobile}})"></image>
+        </view>
+        </block>
+        <view class="loadmore" wx:if="{{GList.length !=0}}">{{loadmore}}</view>
+      </scroll-view>
+    </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import api from '../../api/api'
+  import navigation from '@/components/navigation'
+
+  export default class myteam extends wepy.page {
+    config = {
+//      navigationBarTitleText: '我的团队',
+      enablePullDownRefresh: false,
+    };
+    components = {
+      navigation
+    };
+    data = {
+      navTitle: '我的团队',
+      currentTab: 0,//默认我的团队
+      activity:true,//活动团队-默认显示
+      organization:false,//组织团队-默认隐藏
+      winWidth:"",//获取屏幕宽度
+      winHeight:"",//获取屏幕高度
+      swiperwinHeight:'',//下面swiper的高度
+      hideHeader:true,//刷新中默认true
+      loadmore:'',//加载更多-没有更多了
+      isReset: true,
+      page: 1,  //默认页数-第一页
+      pageSize: 0,
+      AList:[],//接口返回的活动团队列表
+      GList:[],//接口返回的组织团队列表
+      groupId:'',//我的团队组列表-组id
+      tabstatus:0,//设置选项卡状态 ，0是活动团队，1是组织团队
+      Atop:'',//活动团队scroll-view滚动条的高度
+      Gtop:'',//组织团队scroll-view滚动条的高度
+    };
+    methods = {
+        //选项卡
+      tab(e1, e){
+        this.currentTab = e1;
+        if (this.data.currentTab == e.target.dataset.current) {
+          return false;
+        } else if (e1 == 0) {
+          //活动团队
+          this.tabstatus = 0;//设置状态-给切换加载数据做判断
+          this.activity = true;
+          this.organization = false;
+          this.getActivityList();//请求组织团队列表
+        } else if (e1 == 1) {
+          //组织团队
+          this.tabstatus = 1;//设置状态-给切换加载数据做判断
+          this.activity = false;
+          this.organization = true;
+          this.Gtop = 0;//滚动条高度为0
+          this.getGroupList();//请求组织团队列表
+          this.$apply();
+        }
+      },
+//    拨打电话
+      dial(e1){
+        wx.makePhoneCall({
+          phoneNumber: e1,//仅为示例，并非真实的电话号码
+          success:function(){
+            console.log("拨打电话成功！")
+          },
+          fail:function(){
+            console.log("拨打电话失败！")
+          }
+        })
+      }
+    };
+    //    活动团队-刷新
+    upper() {
+			this.isReset = false;
+      this.hideHeader = false;
+      wx.showNavigationBarLoading(); //在标题栏中显示加载
+      //模拟加载
+      setTimeout(function () {
+        if (this.tabstatus == 0) {
+          this.getActivityList(false);
+        }else if(this.tabstatus == 1){
+          this.getGroupList(false);
+        }
+        wx.hideNavigationBarLoading(); //完成停止加载
+        wx.stopPullDownRefresh(); //停止下拉刷新
+        this.isReset = true;
+        this.hideHeader = true;
+      }.bind(this), 1500);
+      this.$apply();
+    }
+//    活动团队-上拉拉加载更多
+    lower() {
+      if (!this.isReset) {
+        return
+      }
+      if (this.AList.length < this.pageSize) {
+        this.page = this.page + 1;
+        if (this.tabstatus == 0) {
+          this.getActivityList(true);
+        }else if(this.tabstatus == 1){
+          this.getGroupList(true);
+        }
+//        this.loadmore = '加载更多';
+      } else {
+//        this.loadmore = '没有更多了';
+        return;
+      }
+      this.$apply();
+
+    }
+
+    //活动团队列表
+    async getActivityList(e) {
+      if (!e) {
+        this.page = 1;
+      }
+      const getAList = await api.activityList({
+        query: {
+            pageNo: this.page,//   第几页
+            pageSize: 8,   //显示几条
+        }
+      });
+      if (e) {
+          this.AList = this.AList.concat(getAList.data.list);
+          if (this.AList.length < getAList.data.totalSize) {//当加载出来的数据长度<总长度时
+            this.loadmore = '加载更多';
+          }else{
+            this.loadmore = '没有更多了';
+          }
+      } else {
+          this.AList = getAList.data.list;  //商品列表
+          this.pageSize = getAList.data.totalSize;
+          if (this.AList.length < this.pageSize) {//当加载出来的数据长度<总长度时
+            this.loadmore = '加载更多';
+          }else{
+            this.loadmore = '没有更多了';
+          }
+      }
+      for (var i in this.AList) {
+        this.groupId = this.AList[i].groupId; //销售包id
+      }
+      this.$apply();
+    }
+//组织团队列表
+    async getGroupList(e) {
+      if (!e) {
+        this.page = 1;
+      }
+      const getGList = await api.groupList({
+        query: {
+          pageNo: this.page,//   第几页
+          pageSize: 8,   //显示几条
+        }
+      });
+      if (e) {
+        this.GList = this.GList.concat(getGList.data.list);
+        if (this.GList.length < getGList.data.totalSize) {//当加载出来的数据长度<总长度时
+          this.loadmore = '加载更多';
+        }else{
+          this.loadmore = '没有更多了';
+        }
+      } else {
+        this.GList = getGList.data.list;  //商品列表
+        this.pageSize = getGList.data.totalSize;
+        if (this.GList.length < this.pageSize) {//当加载出来的数据长度<总长度时
+          this.loadmore = '加载更多';
+        }else{
+          this.loadmore = '没有更多了';
+        }
+      }
+      for (var i in this.GList) {
+        this.groupId = this.GList[i].groupId; //销售包id
+      }
+      this.$apply();
+    }
+
+    onLoad() {
+// 获取高度
+      wx.getSystemInfo({
+        success: function (res) {
+          this.winWidth = res.windowWidth;
+          var winHeight = res.windowHeight - 110;
+          var rpxR = 750 / this.winWidth;
+          this.winHeight = winHeight * rpxR;
+          //下面swiper的高度
+          this.swiperwinHeight = winHeight * rpxR - 222;
+        }.bind(this)
+      });
+      this.getActivityList(false);//获取组织团队列表
+    }
+  }
+</script>

@@ -1,0 +1,154 @@
+<style lang="scss">
+    page {
+        height: 100%;
+        max-height: 100%;
+        background-color: #f8f8f8;
+    }
+    .header {
+        min-height: 70px;
+    }
+    .img {
+        width: 118rpx;
+        height: 118rpx;
+        border: 1rpx solid #EEEEEE;
+        margin-right: 10px;
+    }
+    .module {
+        margin-top: 10px;
+    }
+    .footer {
+        height: 104rpx;
+        line-height: 104rpx;
+        text-align: center;
+        border: none;
+        background-color: #e6e6e6;
+        font-size: 36rpx;
+        color: #666;
+    }
+    .pink {
+        background-color: #ff8589;
+        color: #fff;
+    }
+    .weui-cells:after {
+        border: none;
+    }
+    .weui-cells:before {
+        border: none;
+    }
+
+</style>
+<template>
+    <view class="main-container">
+        <view class="header">
+            <navigation :title="navTitle" :isShow="show"></navigation>
+        </view>
+        <view class="main">
+            <checkbox-group bindchange="checkboxChange">
+                <view class="weui-cells module weui-cells_after-title" wx:for="{{checkboxItems}}" wx:key="item.companyId">
+                    <label class="weui-cell weui-check__label">
+                        <checkbox class="weui-check" value="{{item.companyId}}" checked="{{item.checked}}"/>
+
+                        <image class="img" src="{{item.companyLogo}}"></image>
+                        <view class="weui-cell__bd color-33 size-36">{{item.companyName}}</view>
+                        <view class="weui-cell__ft weui-cell__ft_in-radio">
+                            <icon class="weui-icon-checkbox_circle" type="circle" size="23" wx:if="{{!item.checked}}"></icon>
+                            <icon class="weui-icon-checkbox_success" type="success" size="23" color="#ff8589" wx:if="{{item.checked}}"></icon>
+                        </view>
+                    </label>
+                </view>
+            </checkbox-group>
+        </view>
+        <view @tap="submit" class="footer {{checkArr.length > 0 ? 'pink' : ''}}">
+            生成推广码
+        </view>
+    </view>
+
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import navigation from '@/components/navigation'
+  import api from '@/api/api'
+
+  export default class Facilitator extends wepy.page {
+    config = {
+      navigationBarTitleText: '服务商家',
+      enablePullDownRefresh: false,
+      navigationBarTextStyle: 'black'
+    };
+    components = {
+      navigation
+    };
+    data = {
+      navTitle: '服务商家',
+      checkboxItems: [],
+      checkArr: []
+    };
+    methods = {
+      checkboxChange(e) {
+        var checkboxItems = this.checkboxItems, values = e.detail.value;
+        this.checkArr = e.detail.value;
+        for (var i = 0, lenI = checkboxItems.length; i < lenI; ++i) {
+          checkboxItems[i].checked = false;
+
+          for (var j = 0, lenJ = values.length; j < lenJ; ++j) {
+            if(checkboxItems[i].companyId == values[j]){
+              checkboxItems[i].checked = true;
+              break;
+            }
+          }
+        }
+
+        this.$apply();
+      },
+      submit() {
+        this.companyQrCode();
+      }
+    };
+
+    async getcompanyList() {
+      const {data:{list}} = await api.getcompanyList({
+        query: {
+          isFilter: 0
+        }
+      });
+
+      for (let v of list) {
+        v.checked = false;
+      }
+      this.checkboxItems = list;
+      this.$apply();
+    }
+    async companyQrCode() {
+      if (!this.checkArr.length) {
+        return
+      }
+      const {imei_error_code} = await api.companyQrCode({
+        query: {
+          companyIds: this.checkArr
+        }
+      });
+
+      if (imei_error_code == 0) {
+        wx.showToast({
+          title: '成功',
+          icon: 'success',
+          duration: 1000
+        })
+
+        wx.setStorageSync('eCompany', true);
+
+        setTimeout(function () {
+          wx.navigateBack({
+            delta: 1
+          })
+        },1000)
+      }
+
+    }
+
+    onLoad() {
+      this.getcompanyList();
+    };
+  }
+</script>

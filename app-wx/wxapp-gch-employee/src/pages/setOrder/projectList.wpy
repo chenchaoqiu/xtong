@@ -1,0 +1,331 @@
+<style lang="scss">
+    page {background-color: #f2f2f4;}
+    ::-webkit-scrollbar{
+      width: 0;
+      height: 0;
+      color: transparent;
+    }
+    .color-mian{color:#26cad3}
+    .color-fuzhu{color:#e4393c}
+    .color-333{color:#333333}
+    .color-999{color:#999999}
+    .font-30{font-size: 30rpx;}
+    .font-24{font-size: 24rpx;}
+    .search{
+
+    }
+    .swiper-tab{
+        height: 80rpx;line-height: 80rpx;width: 100%; overflow: hidden;background: #ffffff;
+        font-size: 28rpx; white-space: nowrap;position: fixed;top: 100rpx; left: 0;
+        z-index: 99;color:#999999;box-sizing: border-box;border-top:1px solid #eee;border-bottom:1px solid #eee;
+    }
+    .swiper-box{margin-top: 180rpx;}
+    .swiper-tab-list{margin:0 22rpx;display: inline-block;text-align: center;width: 140rpx;height: 80rpx;}
+    .swiper-tab-list.active{position: relative;color: #3096f8;}
+    .swiper-tab-list.active:after{ content: "";display: block;height: 4rpx;width: 110rpx;background: #3096f8;position: absolute; bottom: 4rpx;left: 14rpx;border-radius: 16rpx;}
+    .list{width: 100%;background: #ffffff;border-bottom: 1px solid #eee;}
+    .list-con{padding: 30rpx 0rpx;margin:0 30rpx;display: flex;display: -webkit-flex;}
+    .con-img{width: 280rpx;height: 187rpx;}
+    .con-r{flex: 1;-webkit-flex: 1;margin-left: 40rpx;display: flex;display: -webkit-flex;;flex-direction: column;-webkit-flex-direction: column;justify-content: space-between;-webkit-justify-content:space-between;overflow: hidden}
+    .title{margin-top: 5rpx;line-height: 40rpx;display: -webkit-box;  -webkit-box-orient: vertical;  -webkit-line-clamp: 2;
+        overflow: hidden;}
+    .des{margin-top: 10rpx;display: -webkit-box;  -webkit-box-orient: vertical;  -webkit-line-clamp: 1;
+        overflow: hidden;}
+    .refresh{text-align: center;color: #999999;font-size: 30rpx;}
+    .loadmore{text-align: center;color: #999999;font-size: 30rpx;padding-top: 20rpx;padding-bottom: 80rpx;}
+    /*.page__bd{position: relative}*/
+
+    .weui-search-bar{width: 100%;height: 100rpx;position: fixed;top:0; left: 0;z-index: 999;
+      border-top:1px solid #eee;border-bottom:0;background: #fff!important;padding:20rpx 30rpx;
+    }
+    .weui-cells{position: fixed;top:100rpx;left: 0;width: 100%;z-index: 999;margin-top: 0!important;font-size: 30rpx;}
+    .weui-icon-search_in-box{top:16rpx}
+    .weui-search-bar__form{background: #f2f2f4!important;border: 0!important;}
+    .weui-search-bar__label{background: #f2f2f4!important;border: 0!important;}
+    .weui-search-bar__cancel-btn{color:#3096f8;font-size: 30rpx;}
+    .weui-search-bar__input{height: 60rpx;line-height: 60rpx;}
+    .weui-cells:after{position: static}
+    .button{
+      position: fixed;
+      bottom: 0;
+      width:100%;
+      font-size: 36rpx;
+      color: #fff;
+      text-align: center;
+      height:86rpx;
+      line-height: 86rpx;
+      background: #3096f8;
+      margin-top:134rpx;
+    }
+</style>
+<template>
+    <!--search-->
+    <view class="weui-search-bar">
+      <view class="weui-search-bar__form">
+        <view class="weui-search-bar__box">
+          <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
+          <input type="text" class="weui-search-bar__input" placeholder="搜索" value="{{inputVal}}"
+                 focus="{{inputShowed}}" bindinput="inputTyping"/>
+          <view class="weui-icon-clear" wx:if="{{inputVal.length > 0}}" bindtap="clearInput">
+            <icon type="clear" size="14"></icon>
+          </view>
+        </view>
+        <label class="weui-search-bar__label" hidden="{{inputShowed}}" bindtap="showInput">
+          <icon class="weui-icon-search" type="search" size="14"></icon>
+          <view class="weui-search-bar__text">搜索</view>
+        </label>
+      </view>
+      <view class="weui-search-bar__cancel-btn" hidden="{{!inputShowed}}" bindtap="hideInput">取消</view>
+    </view>
+    <!--swiper-tab-->
+    <scroll-view scroll-x="true" class="swiper-tab" scroll-left="{{scrollLeft}}" >
+        <view style="display: inline" wx:for="{{categoryList}}" wx:key="categoryListIndex">
+            <view class="ellipsis-1 swiper-tab-list {{currentTab==index ? 'active' : ''}}" data-current="{{item.categoryId-1}}" bindtap="swichNav({{index}})">{{item.name}}</view>
+        </view>
+    </scroll-view>
+    <view current="{{currentTab}}" class="swiper-box" duration="300" style="height:{{winHeight}}rpx;" bindchange="bindChange"  >
+        <view class="refresh" hidden="{{hideHeader}}">刷新中...</view>
+        <scroll-view scroll-y="true" style="height: {{winHeight}}rpx;" bindscrolltoupper="upper" bindscrolltolower="lower" upper-threshold="-20" lower-threshold="30" >
+            <block wx:for="{{newArr[currentTab]}}"  wx:if="{{newArr[currentTab].length !=0}}" wx:key="productListIndex">
+                <view @tap="projectList({{index}},{{currentTab}},{{item.salePackageId}})" class="list">
+                    <view class="list-con" >
+                        <view class="con-img">
+                            <image src="{{item.coverImgUrl}}" style="width: 280rpx;height: 187rpx;display: block;margin: 0 auto"></image>
+                        </view>
+                        <view class="con-r">
+                            <text class="ellipsis-2 font-30 color-333" style="line-height: 36rpx;">{{item.name}}</text>
+                            <text class="des font-24 color-999">{{item.subTitle}}</text>
+                            <view class="price">
+                                <text class="font-30" style="font-size: 28rpx;color: #e4393c">{{item.price}}</text></view>
+                        </view>
+                        <view>
+                          <icon style="margin-top:70rpx;" class="weui-icon-checkbox_circle" type="circle" size="23" wx:if="{{!item.checked}}"></icon>
+                          <icon style="margin-top:70rpx;" class="weui-icon-checkbox_success" type="success" size="23" color="#3096f8" wx:if="{{item.checked}}"></icon>
+                        </view>
+                    </view>
+                </view>
+            </block>
+            <view class="loadmore" wx:if="{{newArr[currentTab].length !=0}}">{{loadArr[currentTab]}}</view>
+            <view wx:if="{{newArr[currentTab].length ==0}}" class="font-30 color-999" style="text-align: center;padding-top: 400rpx;">哎呀 空空如也 换个页面继续看</view>
+        </scroll-view>
+    </view>
+    <view class="button" @tap="save">确认</view>
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+	export default class projectList extends wepy.page {
+		config = {
+			navigationBarTitleText: '项目列表',
+			enablePullDownRefresh: false,     //关闭系统刷新
+		}
+
+		data = {
+      inputShowed: false,
+      inputVal: "",
+      searchHeight:'',
+			winWidth: "",
+			winHeight: "",
+			currentTab: 0,
+			categoryList: [{categoryName:'343'},{categoryName:'342'}],  //分类列表
+			productList: [],   //分类商品列表
+			salePackageId: [],//销售包id
+			page: 1,
+			pageSize: 0,
+			scrollLeft: 0,
+			hideHeader: true,
+			loadmore: '',
+			index: 0,
+			load: false,
+      cateArr : '',//分类数组
+      newArr:[],//列表数组
+      lenArr:[],
+      loadArr:[],
+      chekeData:[],/*保存选择的salePackageId*/
+      chekeT:[],/*保存选择的项目列表*/
+		}
+
+		watch = {
+			index(n, o) {
+        this.scrollLeft = n * 92 ;
+        this.$apply();
+			},
+      chekeT(n,o){
+			    this.chekeData=[];
+			    n.forEach(function (t) {
+            this.chekeData=this.chekeData.concat([t.salePackageId])
+            this.$apply();
+          }.bind(this))
+      }
+		}
+		//         点击tab切换
+		swichNav(e) {
+			setTimeout(function () {
+				if (this.data.currentTab === (e.target ? e.target.dataset.wpyswichnavA : e)) {
+					return false;
+				} else {
+					this.currentTab = e.target ? e.target.dataset.wpyswichnavA : e;
+          this.index = this.currentTab;//监听点击滑动watch
+          if (this.newArr[this.currentTab]) {
+            this.$apply();
+          } else {
+            this.getDoneList();
+            this.$apply();
+          }
+				}
+			}.bind(this),10)
+			this.$apply();
+		}
+
+		methods = {
+      showInput() {
+        this.inputShowed = true;
+        this.$apply();
+      },
+      hideInput () {
+        this.inputVal = "";
+        this.getDoneList();
+        this.inputShowed = false;
+        this.$apply();
+      },
+      clearInput() {
+        this.inputVal = "";
+        this.$apply();
+      },
+      inputTyping(e) {
+        this.inputVal = e.detail.value;
+        this.getDoneList();
+        this.$apply();
+      },
+      projectList(e,e1,e2){
+          if(this.newArr[e1][e].checked){
+            this.newArr[e1][e].checked=false;
+            this.chekeT.forEach(function (c, ind, h) {
+              if(c.salePackageId==e2){
+                  h.splice(ind,1)
+              }
+            })
+          }else{
+            this.newArr[e1][e].checked=true;
+            this.chekeT=this.chekeT.concat([this.newArr[e1][e]])
+          }
+      },
+      save(){/*chekeT*/
+        wx.setStorageSync('chekeT', this.chekeT)
+        wx.navigateBack({
+          delta: 1
+        })
+      }
+    }
+
+		//        获取分类列表
+		async getCategoryList() {
+			const getCategoryList = await api.getList({
+				query: {
+//          shopId: 1, //门店id
+				}
+			});
+			var oldcategoryList = getCategoryList.data.list;      //列表list
+			this.categoryList = oldcategoryList; //根据sortOrder倒序
+//      console.log(this.categoryList.length);
+			this.getDoneList();  //按分类筛选商品列表接口
+			this.$apply();
+		}
+
+//    刷新
+		upper() {
+			this.hideHeader = false;
+			wx.showNavigationBarLoading(); //在标题栏中显示加载
+			//模拟加载
+
+			setTimeout(function () {
+				this.getDoneList(false);
+				wx.hideNavigationBarLoading(); //完成停止加载
+				wx.stopPullDownRefresh() //停止下拉刷新
+				this.hideHeader = true;
+			}.bind(this), 1500);
+			this.$apply();
+		}
+
+//    下拉加载更多
+		lower() {
+      if (this.newArr[this.currentTab].length < this.lenArr[this.currentTab]) {
+        this.page = this.page + 1;
+        this.getDoneList(true);
+        this.loadmore = '加载更多';
+      } else {
+        this.loadmore = '没有更多了';
+
+        return;
+      }
+      this.$apply();
+
+		}
+
+		//按分类筛选商品列表接口
+		async getDoneList(e) {
+			if (!e) {
+				this.page = 1;
+			}
+			const getProductList = await api.projectList({
+				query: {
+          categoryId: this.categoryList[this.currentTab].categoryId, //分类id
+          keyWord:this.inputVal,/*关键字搜索*/
+					pageNo: this.page,//   第几页
+					pageSize:8,   //显示几条
+				}
+			});
+			getProductList.data.list.forEach(function (c) {
+        if(this.chekeData.indexOf(c.salePackageId)!=-1){
+          c.checked=true;
+        }
+      }.bind(this))
+
+			if (e) {
+				this.productList = this.productList.concat(getProductList.data.list);
+        this.newArr[this.currentTab] = this.productList;
+        if(this.newArr[this.currentTab].length < this.lenArr[this.currentTab]){
+          this.loadArr[this.currentTab] = '加载更多';
+        }else{
+          this.loadArr[this.currentTab] = '没有更多了';
+        }
+
+			} else {
+				this.productList = getProductList.data.list;  //商品列表
+        this.newArr[this.currentTab] = this.productList;
+				this.pageSize = getProductList.data.totalSize;
+        this.lenArr[this.currentTab] = getProductList.data.totalSize;
+        if(this.newArr[this.currentTab].length < this.lenArr[this.currentTab]){
+          this.loadArr[this.currentTab] = '加载更多';
+        }else{
+          this.loadArr[this.currentTab] = '没有更多了';
+        }
+			}
+			for (var i in this.productList) {
+				this.salePackageId = this.productList[i].salePackageId; //销售包id
+//        console.log(this.salePackageId);
+			}
+			this.$apply();
+		}
+
+		async onLoad(options) {
+      this.chekeT=wx.getStorageSync('chekeT') || [];
+			this.index = options.currentTab;
+      // 获取高度
+      wx.getSystemInfo({
+        success: function (res) {
+          this.winWidth = res.windowWidth;
+          var winHeight = res.windowHeight;
+          var rpxR = 750 / this.winWidth;
+//          this.winHeight = winHeight * rpxR;
+          //下面swiper的高度
+          this.searchHeight = winHeight * rpxR - 100;
+          this.winHeight = winHeight * rpxR - 180;
+        }.bind(this)
+      });
+			this.getCategoryList();  //获取分类列表
+			this.currentTab = options.currentTab || 0; //跳转进入的currentTab
+		}
+
+	}
+</script>

@@ -1,0 +1,86 @@
+<style lang="scss">
+    .nav-bar {
+        width: 100%;
+        height: 62px;
+        position: fixed;
+        top: 0;
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        color: #fff;
+        background-color: #fff;
+        z-index: 100;
+        line-height: 62px;
+        padding-top: 8px;
+        .back-wrap {
+            position: absolute;
+            left: 8px;
+        }
+       /* .arrows-back {
+            width: 16rpx;
+            height: 29rpx;
+            vertical-align: middle;
+            margin-right: 6px;
+        }*/
+        .arrows-back{
+            padding-right:13px;
+            position:relative;
+            display: inline-block;
+            margin-left: 6px;
+            vertical-align: middle;
+        }
+        .arrows-back:after{
+            content:" ";
+            display:inline-block;
+            height:10px;
+            width:10px;
+            border-width:0 0 2px 2px;
+            border-color:#333;
+            border-style:solid;
+            -webkit-transform:matrix(.71,.71,-.71,.71,0,0);
+            transform:matrix(.71,.71,-.71,.71,0,0);
+            position:relative;
+            top:-2px;
+            position:absolute;
+            top:50%;
+            /*margin-top:-2px;*/
+            right:2px
+        }
+    }
+</style>
+<template>
+    <view class="nav-bar clearfix">
+        <navigator wx:if="{{!isShow}}" open-type="navigateBack" class="back-wrap color-66 pull-left size-28" hover-class="none">
+            <!--<image class="arrows-back" src="../images/back.png"></image>-->
+            <view class="arrows-back"></view>
+        </navigator>
+        <view class="color-33" style="padding-top: 5px">
+            {{title}}
+        </view>
+    </view>
+</template>
+<script>
+  import wepy from 'wepy'
+
+  export default class Navigation extends wepy.component {
+    data = {
+
+    }
+
+    props = {
+      title: String,
+      isShow: Boolean
+
+    }
+    onLoad() {
+
+    }
+    events = {
+
+
+    };
+    methods = {
+
+    }
+  }
+</script>

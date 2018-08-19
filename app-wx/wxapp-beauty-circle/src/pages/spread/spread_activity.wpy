@@ -1,0 +1,198 @@
+<style lang="scss">
+    page {
+        height: 100%;
+        max-height: 100%;
+        background-color: #f8f8f8;font-size: 30rpx;
+    }
+    .swiper-tab-list{display: inline-block;width: 50%;height: 78rpx;text-align: center}
+    .swiper-tab-list.active{position: relative;color: #ff8589;}
+    .swiper-tab-list.active:after{ content: "";display: block;height: 2rpx;width: 150rpx;background: #ff8589;position: absolute; bottom: 0;left: 110rpx;}
+    /*活动团队*/
+    .list{width: 692rpx;margin:30rpx auto 0;background: #fff;border: 1rpx solid #eee;border-radius: 10rpx;}
+    .list-top{width: 100%;height: 70rpx;line-height: 70rpx;font-size: 28rpx;position: relative;border-bottom: 1rpx solid #eee}
+    .list-top-mark{width: 79rpx;height: 70rpx;position: absolute;top:0;right: 0}
+    .list-content{display: flex;display: -webkit-flex;padding: 24rpx 20rpx 34rpx}
+    .list-content-l{flex: 1;-webkit-flex: 1}
+    .list-content-r{width: 90rpx;text-align: right;position: relative}
+    .header {
+        min-height: 70px;
+    }
+    .no-wrap {
+        text-align: center;
+        margin-top: 257rpx;
+        font-size: 32rpx;
+        color: #999;
+        .no-img {
+            width: 253rpx;
+            height: 205rpx;
+        }
+        .text-cell-1 {
+            margin-top: 11px;
+        }
+        .text-cell-2 {
+            margin-top: 3px;
+        }
+    }
+</style>
+<template>
+    <view class="main-container">
+        <view class="header">
+            <navigation :title="navTitle"></navigation>
+        </view>
+        <view class="main" style="height: 100%; overflow-y: scroll">
+            <block wx:if="{{list.length == 0}}">
+                <view class="no-wrap">
+                    <image class="no-img" src="../../images/no_a.png"></image>
+                    <view class="text-cell-1">莫着急</view>
+                    <view class="text-cell-2">商家正在筹划大活动！</view>
+                </view>
+            </block>
+            <block wx:else>
+                <!--bindscrolltoupper="upper" bindscrolltolower="lower" -->
+                <!--<scroll-view scroll-y="true" style="height: {{swiperwinHeight}}px;" upper-threshold="-30" lower-threshold="30" >-->
+                    <navigator wx:for="{{list}}" wx:key="{{item.marketSpreaderId}}" url="/pages/activity/activity_details?id={{item.marketSpreaderId}}" class="list" hover-class="none">
+                        <view class="list-top">
+                            <text style="padding-left: 20rpx;color: #333">{{item.companyName}}</text>
+                            <image class="list-top-mark" src="../../images/mark{{item.status}}.png" ></image>
+                        </view>
+                        <view class="list-content">
+                            <view class="list-content-l">
+                                <text class="ellipsis-2" style="line-height: 48rpx;color: #333;font-size: 30rpx;">{{item.activityTitle}}</text>
+                                <text style="font-size: 22rpx;color: #666">活动时间：{{item.timeSection}}</text>
+                            </view>
+                            <view class="list-content-r">
+                                <image src="../../images/next.png" style="width:24rpx;height: 44rpx;position: absolute;top:50%;margin-top: -22rpx;right:0"></image>
+                            </view>
+                        </view>
+                    </navigator>
+                    <!--<view class="loadmore" wx:if="{{productList.length !=0}}">{{loadmore}}</view>-->
+               <!-- </scroll-view>-->
+            </block>
+        </view>
+    </view>
+    <zanDialog></zanDialog>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import navigation from '@/components/navigation'
+  import api from '@/api/api'
+  import zanDialog from '@/components/zan-dialog'
+
+  export default class SpreadActivity extends wepy.page {
+    config = {
+      navigationBarTitleText: '推广活动',
+      enablePullDownRefresh: false,
+      navigationBarTextStyle: 'black',
+    };
+    components = {
+      navigation,
+      zanDialog
+    };
+    data = {
+      navTitle: '推广活动',
+      list:[],
+      winWidth:"",//获取屏幕宽度
+      winHeight:"",//获取屏幕高度
+      swiperwinHeight:'',//下面swiper的高度
+      hideHeader:true,//刷新中默认true
+      loadmore:'',//加载更多-没有更多了
+      isReset: true,
+    };
+    methods = {
+
+    };
+    showAccreditDialog() {
+      this.$invoke('zanDialog', 'showZanDialog', {
+        title: '是否授权',
+        content: '系统检测你还未授权, 打开授权【用户信息】开启更多功能',
+        showCancel: true,
+        buttons:[],
+        openType: 'getUserInfo',
+        isGo: true
+      })
+        .then(() => {
+
+        })
+        .catch(() => {
+          wx.navigateBack({
+            delta: 1
+          })
+        })
+    }
+    //    刷新
+    upper() {
+      this.hideHeader = false;
+      wx.showNavigationBarLoading(); //在标题栏中显示加载
+      //模拟加载
+
+      setTimeout(function () {
+        this.getDoneList(false);
+        wx.hideNavigationBarLoading(); //完成停止加载
+        wx.stopPullDownRefresh() //停止下拉刷新
+        this.hideHeader = true;
+      }.bind(this), 1500);
+      this.$apply();
+    }
+//    下拉加载更多
+    lower() {
+      if (this.productList.length < this.pageSize) {
+        this.page = this.page + 1;
+        console.log(this.page);
+        this.getDoneList(true);
+        this.loadmore = '加载更多';
+      } else {
+        this.loadmore = '没有更多了';
+        return;
+      }
+      this.$apply();
+
+    }
+    async getActiveList() {
+      const {data:{list}} = await api.getActiveList({
+        query: {
+
+        }
+      });
+
+      this.list = list;
+      this.$apply();
+    }
+    //按分类筛选商品列表接口
+    async getDoneList(e) {
+      if (!e) {
+        this.page = 1;
+      }
+      const getProductList = await api.getProductList({
+        query: {
+//          shopId:1, //门店Id
+          categoryId: this.categoryList[this.currentTab].categoryId, //分类id
+          pageNo: this.page,//   第几页
+          pageSize: 8,   //显示几条
+        }
+      });
+      if (e) {
+        this.productList = this.productList.concat(getProductList.data.list);
+        this.loadmore = '加载更多';
+      } else {
+        this.productList = getProductList.data.list;  //商品列表
+        this.pageSize = getProductList.data.totalSize;
+      }
+      for (var i in this.productList) {
+        this.salePackageId = this.productList[i].salePackageId; //销售包id
+      }
+      this.$apply();
+    }
+
+    onLoad() {
+      // 获取高度
+      this.$parent.verifyAccredit(1);
+      let query = wepy.createSelectorQuery();
+      query.select('.main').boundingClientRect().exec((res) => {
+        this.swiperwinHeight = res[0].height
+        this.$apply();
+      });
+      this.getActiveList();
+    };
+  }
+</script>

@@ -1,0 +1,330 @@
+<style lang="less">
+    page {
+        height: 100%;
+    }
+    .main-container {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    .view-body {
+        flex: 1;
+        max-height: 100%;
+        overflow: auto;
+        -webkit-overflow-scrolling:touch;
+        .item+.item {
+            margin-top: 20rpx;
+        }
+        .item {
+            background-color: #fff;
+            >.flex-box {
+                padding: 22rpx 30rpx;
+                font-size: 26rpx;
+            }
+            .row {
+                text {
+                    padding-left: 10rpx;
+                }
+                .vip {
+                    color: #DEB48C;
+                    padding-left: 24rpx;
+                    width: 50rpx;
+                    height: 24rpx;
+                }
+            }
+            .state {
+                color: #3096F8;
+            }
+            .project-list {
+                background-color: #f9f9f9;
+                padding: 24rpx 0;
+                .flex-box {
+                    padding: 0 30rpx;
+                    font-size: 26rpx;
+                }
+                .flex-box+.flex-box {
+                    margin-top: 8rpx;
+                }
+            }
+        }
+        .icon {
+            width: 32rpx;
+            height: 32rpx;
+            margin-right: 24rpx;
+            display: block;
+        }
+    }
+    .header {
+        background-image:linear-gradient( 0deg, rgb(48,150,248) 0%, rgb(63,162,246) 16%, rgb(77,173,243) 100%);
+        color: #fff;
+        padding: 30rpx 0;
+        text-align: center;
+        margin-bottom: 25rpx;
+        .cell {
+            vertical-align: middle;
+        }
+        .data {
+            font-size: 60rpx;
+        }
+        .reality {
+            color: #eee;
+
+        }
+        .label {
+            display: inline-block;
+        }
+        .num {
+            color: #fff;
+        }
+        .order {
+            border-left: 2rpx solid #ddd;
+        }
+    }
+    .switch-date-wrap {
+        margin-left: 40rpx;
+        width: 240rpx;
+        height: 50rpx;
+        line-height: 50rpx;
+        font-size: 26rpx;
+        text-align: center;
+        border-radius: 4px;
+        color: #3096F8;
+        border: 1rpx solid #3096F8;
+        will-change: all;
+        overflow: hidden;
+        view {
+            display: inline-block;
+            width: 50%;
+        }
+        .day {
+            border-top-left-radius: 1px;
+            border-bottom-left-radius: 1px;
+        }
+        .month {
+            border-bottom-right-radius: 1px;
+            border-top-right-radius: 1px;
+        }
+        .active {
+            background-color: #3096F8;
+            color: #fff;
+        }
+    }
+    .select-date {
+        text-align: right;
+        width: 60%;
+        .arrows {
+            margin-top: -4rpx;
+        }
+        .minus {
+            padding: 0 40rpx;
+        }
+        .add{
+            padding: 0 40rpx;
+        }
+        .date {
+            margin: 0;
+        }
+    }
+    .sp-mb-20 {
+        margin-bottom: 20rpx;
+    }
+    .no-data {
+        width: 528rpx;
+        height: 428rpx;
+        font-size: 0;
+        position: absolute;
+        left: 50%;
+        margin-left: -264rpx;
+        margin-top: 150rpx;
+    }
+</style>
+<template>
+    <view class="main-container">
+        <view class="view-head">
+            <view class="header">
+                <view class="table">
+                    <view class="cell size-28">成交订单金额</view>
+                    <view class="cell size-28">成交订单数</view>
+                </view>
+                <view class="table data">
+                    <view class="cell">{{res.paidTotalAmount}}</view>
+                    <view class="cell order">{{res. orderNum}}</view>
+                </view>
+                <view class="table">
+                    <view class="cell reality size-24">
+                        实收业绩：<text class="num size-30">{{res.reallyAchieve}}</text>
+                    </view>
+                    <view class="cell reality size-24">
+                        待审核：<text class="num size-30">{{res.orderNeedAuditNum}}</text> 笔 已审核：<text class="num size-30">{{res.orderAuditedNum}}</text> 笔
+                    </view>
+                </view>
+            </view>
+            <view class="table sp-mb-20">
+                <view class="cell">
+                    <view class="switch-date-wrap">
+                        <view class="{{switchDate && 'active'}} day" @tap="switchDate({{true}})">日报</view>
+                        <view class="{{!switchDate && 'active'}} month" @tap="switchDate({{false}})">月报</view>
+                    </view>
+                </view>
+                <view class="cell select-date size-28">
+                    <image src="../../images/left.png" class="arrows minus" @tap="minus"></image> <text class="date">{{year}}年 {{month}}月 <text wx:if="{{switchDate}}">{{day}}日</text> </text>
+                    <image src="../../images/right.png" class="arrows add" @tap="add"></image>
+                </view>
+            </view>
+        </view>
+        <view class="view-body">
+            <block wx:if="{{res.orderItems.length}}">
+                <view class="item" wx:for="{{res.orderItems}}" wx:key="{{item.memberId}}">
+                    <view class="flex-box">
+                        <view>
+                            <image class="icon" src="../../images/toux.png"/>
+                        </view>
+                        <view class="flex-1">
+                            <view class="row">{{item.memberName}}<image src="{{item.tagLogo}}" class="vip"></image> </view>
+                        </view>
+                        <view class="state">
+                            <block wx:if="{{item.auditStatus == 0}}">待审核</block>
+                            <block wx:elif="{{item.auditStatus == 1}}">重新审核</block>
+                            <block wx:else>已通过</block>
+                        </view>
+                    </view>
+                    <view class="project-list">
+                        <view class="flex-box color-66" wx:for="{{item.orderSalePackageItems}}" wx:key="{{item.salePackageId}}">
+                            <view class="flex-1">
+                                <view class="ellipsis-1">{{item.salePackageName}}</view>
+                            </view>
+                            <view>
+                                x{{item.buyNum}}
+                            </view>
+                        </view>
+                    </view>
+                    <view class="flex-box color-66">
+                        <view class="flex-1">
+                            {{item.addTime}}
+                        </view>
+                        <view>
+                            共{{item.productNum}}个项目：<text class="color-33 size-30">{{item.totalAmount}}元</text>
+                        </view>
+                    </view>
+                </view>
+            </block>
+            <block wx:else>
+                <image class="no-data" src="../../images/no_data.png"></image>
+            </block>
+        </view>
+    </view>
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+	import dateFormat from '../../utils/util'
+
+	export default class Performance extends wepy.page {
+		config = {
+			navigationBarTitleText: '我的业绩',
+			backgroundColor: '#ebf0ef',
+			navigationBarBackgroundColor:'#4DADF3',
+			navigationBarTextStyle: 'white',
+			disableScroll: true
+
+		};
+
+		onLoad() {
+			let {employeeId} = wx.getStorageSync('session');
+			this.employeeId = employeeId;
+			this.getEmployeeAchieve();
+		}
+
+		data = {
+			switchDate: true,
+			date: new Date(),
+			res: {
+
+			}
+		};
+
+		computed = {
+			day () {
+				return this.date.getDate();
+			},
+			month() {
+				return this.date.getMonth() + 1;
+			},
+			year() {
+				return this.date.getFullYear();
+			},
+			beginTime() {
+				if (this.switchDate) {
+					return this.year + '-' + this.month + '-' + this.day+' 00:00:00';
+				}
+				return this.year + '-' + this.month + '-' + '01' +' 00:00:00';
+			},
+			endTime() {
+				if (this.switchDate) {
+					return this.year + '-' + this.month + '-' + this.day+' 23:59:59';
+				} else {
+					return this.year + '-' + this.month + '-' + new Date(new Date(this.year+'/'+(this.month+1)+'/'+'01')- 1000*3600*24).getDate() +' 23:59:59';
+				}
+			}
+
+		}
+
+		methods = {
+			switchDate(b, e) {
+				if (b != this.switchDate) {
+					this.switchDate = b;
+
+					setTimeout(()=>{
+						this.getEmployeeAchieve();
+					},200)
+				}
+			},
+			minus() {
+				if (this.switchDate) {
+					this.date = new Date(this.date.getTime() -  1000*3600*24);
+				} else {
+					if ((this.month-1)==0) {
+						this.date = new Date(this.year-1 +'/'+ 12 +'/'+this.day);
+					} else {
+						this.date = new Date(this.year+'/'+(this.month-1)+'/'+this.day);
+					}
+				}
+				setTimeout(()=>{
+					this.getEmployeeAchieve();
+				},200)
+
+			},
+			add() {
+				if (this.switchDate) {
+					this.date = new Date(this.date.getTime() +  1000*3600*24);
+
+				} else {
+					if ((this.month+1)==13) {
+						this.date = new Date(new Date(this.year+1+'/'+ 1 +'/'+this.day));
+					} else {
+						this.date = new Date(this.year+'/'+(this.month+1)+'/'+this.day);
+					}
+				}
+				setTimeout(()=>{
+					this.getEmployeeAchieve();
+				},200)
+
+			}
+
+		};
+
+		async getEmployeeAchieve() {
+			const {data} = await api.getEmployeeAchieve({
+				query: {
+					employeeIds: this.employeeId,
+					addTimeBegin: this.beginTime,
+					addTimeEnd: this.endTime
+				}
+			});
+
+			this.res = data;
+			console.log(data)
+			this.$apply();
+		}
+	}
+</script>

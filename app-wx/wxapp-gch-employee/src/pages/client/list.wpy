@@ -1,0 +1,254 @@
+<style lang="less">
+    page {
+        height: 100%;
+    }
+    .main-container {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    .view-body {
+        flex: 1;
+        max-height: 100%;
+        padding-top: 20rpx;
+        overflow: auto;
+        -webkit-overflow-scrolling:touch;
+        .flex-box+.flex-box {
+            border-top: 1rpx solid #EEEEEE;
+        }
+        .flex-box {
+            align-items: flex-start;
+            background-color: #fff;
+            padding: 20rpx 40rpx;
+            font-size: 30rpx;
+            .row {
+                text {
+                    padding-left: 10rpx;
+                }
+                margin-top: 12rpx;
+            }
+            .remark {
+                margin-left: 12rpx;
+                color: #666;
+            }
+            .vip {
+                color: #DEB48C;
+                padding-left: 24rpx;
+                width: 50rpx;
+                height: 24rpx;
+            }
+        }
+    }
+    .header {
+        padding: 20rpx 30rpx 0 30rpx;
+        background-color: #fff;
+        .search-wrap {
+            .search-input {
+                width: 100%;
+                height: 56rpx;
+                background-color: #F2F2F2;
+                border-radius: 5px;
+                padding-left: 12rpx;
+                font-size: 28rpx;
+            }
+            .search-btn {
+                padding-left: 20rpx;
+            }
+            margin-bottom: 20rpx;
+        }
+        .tab-wrap {
+            color: #666;
+            font-size: 30rpx;
+            text {
+                padding: 20rpx 10rpx;
+                display: inline-block;
+                border-bottom: 4rpx solid transparent;
+            }
+            .active {
+                color: #3096F8;
+                border-bottom: 4rpx solid #3096F8;
+            }
+
+        }
+    }
+    .icon-applyPlan{
+        position: fixed;
+        bottom:100rpx;
+        right: 30rpx;
+        z-index: 998;
+        display: block;
+        width: 100rpx;
+        height: 100rpx;
+    }
+</style>
+<template>
+    <view class="main-container">
+        <view class="header">
+            <view class="flex-box search-wrap">
+                <view class="flex-1">
+                    <input @input="setVal" class="search-input" placeholder="请输入客户名称/手机号码查询" type="text" />
+                </view>
+                <view>
+                    <text @tap="search" class="size-30 color-66 search-btn">搜索</text>
+                </view>
+            </view>
+            <view class="flex-box tab-wrap">
+                <view class="flex-1">
+                    <text class="{{tabNum == 0 && 'active'}}" @tap="tab(0)">全部({{totalNum}})</text>
+                </view>
+                <view class="flex-1 text-center">
+                    <text class="{{tabNum == 1 && 'active'}}"  @tap="tab(1)">体验客({{expNum}})</text>
+                </view>
+                <view class="flex-1 text-right">
+                    <text class="{{tabNum == 2 && 'active'}}"  @tap="tab(2)">成交客({{dealNum}})</text>
+                </view>
+            </view>
+        </view>
+        <view id="body" class="view-body">
+            <scroll-view scroll-y style="height: {{height}}px" scroll-with-animation="{{true}}" bindscrolltolower="lower">
+                <block wx:for="{{list}}" wx:key="">
+                    <navigator class="flex-box" url="/pages/client/details?id={{item.memberId}}">
+                        <view class="flex-1">
+                            <view class="">{{item.name}} <image src="{{item.tagLogo}}" class="vip"></image><!--<text class="remark">({{item.remark}})</text>--></view>
+                            <view class="row color-66">管理员：<text class="color-33">{{item.belongEmployeeName}}</text></view>
+                        </view>
+                        <view class="size-28 color-66">{{item.bizzPartnerName}}</view>
+                    </navigator>
+                </block>
+                <view wx:if="{{list.length == totalSize}}" class="text-center color-99 size-28" style="padding: 24rpx">没有更多客户数据</view>
+            </scroll-view>
+        </view>
+    </view>
+
+    <navigator wx:if="{{roleType!=5 && roleType!=6}}" url="/pages/client/add">
+        <image src="../../images/icon-applyPlan.png" class="icon-applyPlan"></image>
+    </navigator>
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+
+	export default class List extends wepy.page {
+		config = {
+			navigationBarTitleText: '客户管理',
+			backgroundColor: '#ebf0ef',
+			disableScroll: true
+		};
+
+		onLoad(o) {
+			this.bizzPartnerId = o.bizzPartnerId || '';
+			let {roleType} = wx.getStorageSync('session');
+			this.roleType = roleType;
+		}
+
+		onReady() {
+			let query = wepy.createSelectorQuery();
+			query.select('#body').boundingClientRect().exec((res) => {
+				this.height = res[0].height;
+				this.$apply();
+			});
+		}
+
+		onShow() {
+			this.getMemberList();
+        }
+
+		data = {
+			tabNum: 0,
+			list: [],
+			dealNum: 0,
+			totalNum: 0,
+			expNum: 0,
+			seachWord: '',
+			pageNo: 1,
+			totalSize: 1,
+			height: 507,
+			roleType: '',
+			cacheTotalSize: 1,
+		};
+
+		computed = {
+
+		}
+
+		wacth = {
+			totalSize(newVal,oldVal) {
+                this.cacheTotalSize = oldVal;
+            }
+        }
+
+		methods = {
+			tab(index, e) {
+				this.totalSize = 1;
+
+				if (this.tabNum != index) {
+					this.tabNum = index;
+					this.pageNo = 1;
+					this.list = [];
+					this.getMemberList();
+				} else {
+					setTimeout(function () {
+						this.totalSize = this.cacheTotalSize;
+					},50)
+                }
+			},
+			search() {
+				this.pageNo = 1;
+				this.getSeachList();
+			},
+			setVal(e) {
+				this.seachWord = e.detail.value;
+			},
+			lower() {
+				this.pageNo = this.pageNo + 1;
+				this.getMemberList();
+			}
+		};
+
+		async getSeachList() {
+			let {data:{list,totalNum,expNum, dealNum,totalSize}} = await api.memberList({
+				query:{
+					searchWord:this.seachWord,
+					type:this.tabNum || '',
+					bizzPartnerId: this.bizzPartnerId,
+					pageNo: this.pageNo,
+					pageSize: 10
+				}
+			});
+
+			this.totalSize = totalSize;
+
+			this.totalNum = totalNum;
+			this.expNum = expNum;
+			this.dealNum =  dealNum;
+			this.list = list;
+			this.$apply();
+        }
+
+		async getMemberList(id='') {
+			if (this.list.length == this.totalSize) {
+				return
+			}
+
+			let {data:{list,totalNum,expNum, dealNum,totalSize}} = await api.memberList({
+				query:{
+					searchWord:this.seachWord,
+					type:this.tabNum || '',
+					bizzPartnerId: this.bizzPartnerId,
+					pageNo: this.pageNo,
+					pageSize: 10
+				}
+			});
+
+			this.totalSize = totalSize;
+
+			this.totalNum = totalNum;
+			this.expNum = expNum;
+			this.dealNum =  dealNum;
+			this.list = [...this.list,...list];
+
+			/*this.list = list;*/
+			this.$apply();
+		}
+	}
+</script>

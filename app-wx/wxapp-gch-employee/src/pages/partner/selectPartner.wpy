@@ -1,0 +1,381 @@
+<style lang="less">
+    page{
+        background: #f2f2f4;
+        height: 100%;
+    }
+    .main-container {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    .view-body {
+        flex: 1;
+        max-height: 100%;
+        overflow: auto;
+        -webkit-overflow-scrolling:touch;
+        margin-top: 20rpx;
+    }
+    .view-footer {
+        height: 96rpx;
+        background-color: #3096F8;
+        border-top: 1rpx solid #eee;
+        box-sizing: border-box;
+        padding: 20rpx 35rpx;
+        text-align: center;
+        font-size: 30rpx;
+        color: #fff;
+    }
+    .list-warpper {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+    }
+
+    .list-scroll {
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+    }
+    .list-scroll.top{
+        padding-top: 100rpx;
+    }
+
+    /* 样式控制  */
+
+    .list-title {
+        background: #fff;
+        color: #666;
+        font-size: 30rpx;
+        line-height: 1;
+        padding-left: 30rpx;
+        padding-top: 40rpx;
+        padding-bottom: 20rpx;
+    }
+    #index0 .list-title{color: #333!important;}
+
+    .list-name {
+        position: relative;
+        font-size: 28rpx;
+        /*padding-left: 30rpx;*/
+        color: #999;
+    }
+    .list-name:first-child{margin-top: 20rpx}
+    .list-name.border::after {
+        content: "";
+        position: absolute;
+        left: 30rpx;
+        right: 0;
+        top: 0;
+        height: 1px;
+        background: #f5f5f5;
+    }
+
+    .list-right-wrapper {
+        position: absolute;
+        top: 100rpx;
+        right: 10rpx;
+        padding: 10rpx 0;
+        border-radius: 20rpx;
+        z-index: 2;
+    }
+
+    .right-item {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rpx 10rpx;
+        font-size: 26rpx;
+        color: #666;
+    }
+
+    .list-search {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: 90rpx;
+        padding: 10rpx 30rpx;
+        box-sizing: border-box;
+        z-index: 20;
+        background: #FFF;
+    }
+
+    .search-title {
+        flex-shrink: 0;
+        font-size: 28rpx;
+        padding-right: 10rpx;
+    }
+
+    .list-search-box {
+        display: flex;
+        align-items: center;
+        padding: 0 30rpx;
+        width: 100%;
+        height: 70rpx;
+        background: #f2f2f4;
+        border-radius: 90rpx;
+        font-size: 28rpx;
+        box-sizing: border-box;
+    }
+
+    .list-search-box input {
+        width: 100%;
+        padding-left: 10rpx;
+    }
+
+    .search-button {
+        /* width: 100rpx; */
+        flex-shrink: 0;
+        height: 60rpx;
+        line-height: 60rpx;
+        font-size: 28rpx;
+        margin-left: 10rpx;
+    }
+
+    /* 热门城市横排显示样式  */
+
+    .list-horizontal {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 10rpx;
+        padding-right: 50rpx;
+    }
+
+    .list-horizontal .list-name {
+        padding: 5rpx 20rpx;
+        border: 1px #ccc solid;
+        border-radius: 10rpx;
+        margin: 10rpx;
+    }
+    .list-name {
+        padding-bottom: 0;
+        .flex-box {
+            padding: 0 28rpx;
+            .right {
+                padding-left: 24rpx;
+            }
+            .center{
+                flex:1;
+                padding: 30rpx 0;
+                display: flex;
+                justify-content: space-between;
+                .icon-phone{
+                    display: block;
+                    width: 24rpx;
+                    height: 44rpx;
+                    padding-top: 20rpx;
+                }
+            }
+            border-bottom: 1rpx solid #eee;
+        }
+        .name {
+            font-size: 30rpx;
+            line-height: 1;
+            color: #333;
+        }
+        .money {
+            font-size: 26rpx;
+            line-height: 1;
+            color:#999;
+            padding-top: 24rpx;
+        }
+    }
+    .list-item-wrap .list-name:last-child .center{border-bottom: 0!important;}
+
+    /* 无数据  */
+    .nodata {
+        padding-top: 400rpx;
+        text-align: center;
+        font-size: 32rpx;
+        color: #ddd;
+    }
+    .wrapper {
+        height: 100vh;
+    }
+    /* 关闭滚动条  */
+    ::-webkit-scrollbar{
+        width: 0;
+        height: 0;
+        color: transparent;
+    }
+
+    .list-search {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: 90rpx;
+        padding: 10rpx 30rpx;
+        box-sizing: border-box;
+        z-index: 20;
+        background: #FFF;
+    }
+
+    .search-title {
+        flex-shrink: 0;
+        font-size: 28rpx;
+        padding-right: 10rpx;
+    }
+
+    .list-search-box {
+        display: flex;
+        align-items: center;
+        padding: 0 30rpx;
+        width: 100%;
+        height: 70rpx;
+        background: #f5f5f5;
+        border-radius: 90rpx;
+        font-size: 28rpx;
+        box-sizing: border-box;
+    }
+
+    .list-search-box input {
+        width: 100%;
+        padding-left: 10rpx;
+    }
+    .search-button {
+        /* width: 100rpx; */
+        flex-shrink: 0;
+        height: 60rpx;
+        line-height: 60rpx;
+        font-size: 28rpx;
+        margin-left: 10rpx;
+    }
+    .list-item-wrap {
+        background-color: #fff;
+    }
+    .list-mt20{margin-top: 20rpx;}
+
+    .weui-search-bar{width: 100%;height: 100rpx;position: fixed;top:0; left: 0;z-index: 999;
+        border-top:1px solid #eee;border-bottom:0;background: #fff!important;padding:20rpx 30rpx;
+    }
+    .weui-cells{position: fixed;top:100rpx;left: 0;width: 100%;z-index: 999;margin-top: 0!important;font-size: 30rpx;}
+    .weui-icon-search_in-box{top:16rpx}
+    .weui-search-bar__form{background: #f2f2f4!important;border: 0!important;}
+    .weui-search-bar__label{background: #f2f2f4!important;border: 0!important;}
+    .weui-search-bar__cancel-btn{color:#3096f8;font-size: 30rpx;}
+    .weui-search-bar__input{height: 60rpx;line-height: 60rpx;}
+    .weui-cells:after{position: static}
+</style>
+<template>
+    <view class="main-container">
+        <view class="view-body">
+            <view class='wrapper'>
+                <view class='list-warpper'>
+                    <block wx:if="{{list.length != 0 }}">
+                        <view class="list-item-wrap">
+                            <radio-group class="task-list" bindchange="checkboxChange">
+                                <block wx:for="{{list}}" wx:key="{{item.bizzPartnerId}}">
+                                    <label class='list-name' >
+                                        <!--{{city.name}}-->
+                                        <view class="flex-box" >
+                                            <view class="center">
+                                                <view>
+                                                    <view class="name">
+                                                        {{item.name}}
+                                                    </view>
+                                                    <view class="money">
+                                                        <text>累计推荐客户数：{{item.totalMemberNum}}个</text>
+                                                        <text style="padding-left: 24rpx;">累计成交金额：{{item.totalOrderMoney}}</text>
+                                                    </view>
+                                                </view>
+                                            </view>
+                                            <view>
+                                                <radio class="weui-check" value="{{item.bizzPartnerId}}" checked="{{item.checked}}"/>
+                                                <view class="weui-cell__hd chekcbox-icon weui-check__hd_in-checkbox">
+                                                    <icon   type="circle" size="23" wx:if="{{!item.checked}}"></icon>
+                                                    <icon   type="success" size="23" color="#3096f8" wx:if="{{item.checked}}"></icon>
+                                                </view>
+                                            </view>
+                                        </view>
+                                    </label>
+                                </block>
+                            </radio-group>
+                        </view>
+                    </block>
+                    <block wx:else>
+                        <view class='nodata'>
+                            <view>当前还没有合作商</view>
+                        </view>
+                    </block>
+                </view>
+            </view>
+        </view>
+        <view class="view-footer" @tap="save">
+            确定
+        </view>
+    </view>
+
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+
+	export default class SelectPartner extends wepy.page {
+		config = {
+			navigationBarTitleText: '合作商',
+		};
+
+		onLoad(o) {
+			this.getBeautyCircleList(o.id);
+		}
+
+		data = {
+			list: [],
+			cacheList: [],
+			rightArr: [],
+			value: '',
+			inputShowed: false,
+			inputVal: "",
+			checkboxItems: []
+
+		};
+
+		methods = {
+			checkboxChange(e) {
+				var radioItems = this.list;
+				for (let i = 0, len = radioItems.length; i < len; ++i) {
+					this.list[i].checked = radioItems[i].bizzPartnerId == e.detail.value;
+				}
+
+				this.$apply();
+			},
+            save() {
+				let data = null;
+                for (let v of this.list) {
+                    v.checked && (data = v);
+                }
+
+                if (data) {
+	                wx.setStorageSync('partner', data);
+	                wx.navigateBack({delta: 1});
+                }
+            }
+		};
+
+		async getBeautyCircleList(id) {
+			const {data:{list}} = await api.getSourceList({
+				query:{
+					name:this.inputVal
+				}
+			});
+
+			for (let v of list) {
+				if (v.bizzPartnerId == id) {
+					v.checked = true;
+                } else {
+					v.checked = false;
+                }
+
+            }
+
+			this.list = list;
+			this.$apply();
+		}
+	}
+</script>

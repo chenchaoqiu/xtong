@@ -1,0 +1,135 @@
+<style lang="scss">
+  page {
+    background-color: #f8f8f8;
+    border-top:1px solid #ddd;
+  }
+  view.bk{
+    background: #fff;
+    margin:30rpx 20rpx 0;
+    box-shadow:0 0 22rpx #f3f1fc;
+    -moz-box-shadow:0 0 22rpx #f3f1fc;
+    -webkit-box-shadow:0 0 22rpx #f3f1fc;
+    -o-box-shadow:0 0 22rpx #f3f1fc;
+    border-radius: 5rpx;
+    overflow: hidden;
+  }
+  .curler{
+    height:88rpx;
+    line-height: 88rpx;
+    font-size: 36rpx;
+    color: #333;
+    padding:0 20rpx;
+  }
+  .c_Top{
+    font-size: 28rpx;
+    color: #333;
+    height:70rpx;
+    line-height: 70rpx;
+    border-bottom: 1rpx solid #eee;
+    padding: 0 20rpx;
+  }
+  .c_text{
+    padding:20rpx 20rpx;
+    width:88%;
+  }
+  .c_text view:first-child{
+    font-size: 30rpx;
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 16rpx;
+  }
+  .c_text view:nth-child(2){
+    font-size: 22rpx;
+    color: #666;
+  }
+  .list-content-r{
+    width:16rpx;
+    height: 29rpx;
+    position: absolute;
+    bottom: 5rpx;
+    margin-top: -22rpx;
+    right:-40rpx;
+  }
+</style>
+<template>
+  <view class="header">
+    <navigation :title="navTitle"></navigation>
+  </view>
+  <view>
+    <view style="margin-bottom: 30rpx;margin-top: 0px;">
+      <view class="bk" wx:for="{{attr}}" wx:key="index">
+        <navigator url="/pages/order_det/order-det?id={{item.orderSn}}" hover-class="weui-cell_active">
+          <view class="c_Top">订单编号：{{item.orderSn}}</view>
+          <view class="c_text">
+            <view style="position: relative">
+              <text class="ellipsis-2">{{item.activityTitle}}</text>
+              <image wx:if="{{item.activityId}}" class="list-content-r" src="../../images/next.png"></image>
+            </view>
+            <view>创建时间: {{item.buyTime}}</view>
+          </view>
+        </navigator>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import api from '../../api/api'
+  import navigation from '@/components/navigation'
+
+
+  export default class Cart extends wepy.page {
+    config = {
+      navigationBarTitleText: '推广订单',
+      backgroundColor: '#f4f4f4',
+    };
+    components = {
+      navigation
+    };
+    data = {
+      navTitle:'推广订单',
+      attr:[],
+      leng:1,
+    };
+
+
+    onPullDownRefresh(){
+
+    }
+
+    onReachBottom(e){//监控滚动到底部
+      if(!this.leng){return ;}
+      this.ajxa(++this.leng);
+    }
+    async ajxa(e){
+      /*加载列表*/
+        const json = await api.spreadOrder({
+        query: {
+          pageNo:e,
+          pageSize:15,
+        }
+      });
+      if(e>1){
+        this.attr=this.attr.concat(json.data.list);
+      }else{
+        this.attr=json.data.list;
+      }
+      if(this.attr.length == json.data.totalSize){
+        this.leng=false;
+      }
+      console.log(json)
+      this.$apply();
+    }
+
+
+
+    methods = {
+
+    };
+
+
+    onLoad(e) {
+      this.ajxa(1);
+    }
+  }
+</script>

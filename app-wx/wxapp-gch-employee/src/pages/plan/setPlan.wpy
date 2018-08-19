@@ -1,0 +1,387 @@
+<style lang="less">
+  page{background: #f2f2f4}
+  ::-webkit-scrollbar{
+    width: 0;
+    height: 0;
+    color: transparent;
+  }
+  .oneline-overflow{overflow: hidden;text-overflow: ellipsis;white-space: nowrap}
+  .input-textarea textarea{
+    width: 100%;
+    background: #fff;
+    padding: 15rpx 30rpx;
+    box-sizing: border-box;
+    overflow: hidden;
+    height: 280rpx!important;
+    line-height: 1.5;
+    font-size: 28rpx;
+    letter-spacing: 5rpx;
+  }
+  .list-warpper{
+    color: #666;
+    width: 100%;
+    background: #fff;
+    box-sizing: border-box;
+    /*margin-top: 20rpx;*/
+    padding: 0 30rpx;
+    border: 1px solid #fff;
+    /*padding-bottom: 30rpx;*/
+    .list{
+      font-size: 28rpx;
+      line-height: 1;
+      padding: 30rpx 0;
+      border-bottom: 1px solid #eee;
+    }
+  }
+  .list:last-child{border-bottom: 0}
+  .arrows{
+    width: 16rpx;
+    height: 30rpx;
+  }
+  .bottom{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 94rpx;
+    font-size: 36rpx;
+    line-height: 94rpx;
+    background: #999;
+    color: #fff;
+    text-align: center;
+  }
+  .bottom-active{
+    background: #3096f8!important;
+  }
+  button:after{border:0;}
+  .customeSource{
+    font-size: 28rpx;
+    line-height: 1;
+    padding: 30rpx 0;
+    color:#333;
+    border-bottom: 1px solid #eee;
+    .duijie-list-item{
+      margin-bottom: 60rpx;
+      text{
+        display: block;
+        float: left;
+      }
+      image{
+        display: block;
+        float: left;
+        width: 34rpx;
+        height: 34rpx;
+        padding-left: 30rpx;
+        margin-top: -2rpx;
+      }
+    }
+    .duijie-list-item:last-child{
+      padding-bottom: 0;
+    }
+  }
+
+  /*子计划*/
+  .sonPlan{
+    padding: 30rpx 30rpx;
+    background: #fff;
+    font-size: 28rpx;
+    color:#333;
+    margin-top: 20rpx;
+    margin-bottom: 120rpx;
+    .sonPlan-title{
+
+    }
+    .sonPlan-list{
+      border: 1px solid #eee;
+      margin-top: 32rpx;
+      padding: 0 20rpx;
+      .sonPlan-list-time{
+        font-size: 26rpx;
+        padding: 20rpx 0;
+        border-bottom: 1px solid #eee;
+      }
+      .sonPlan-list-item{
+        line-height: 1;
+        padding-top: 30rpx;
+        font-size: 28rpx;
+      }
+      .sonPlan-list-item:last-child{
+        padding-bottom: 30rpx;
+      }
+      .sonPlan-list-flex{
+        display: flex;
+        line-height: 1.5;
+      }
+    }
+    .add-sonPlan{
+      height: 60rpx;
+      border: 1px solid #41ace9;
+      border-radius: 5rpx;
+      color:#41ace9;
+      font-size: 26rpx;
+      line-height: 60rpx;
+      text-align: center;
+      margin-top: 30rpx;
+    }
+  }
+  .order-sonPlan-list{
+    border: 1px solid #eee;
+    padding: 0 20rpx;
+    margin-bottom: 30rpx;
+    .order-sonPlan-list-time{
+      font-size: 26rpx;
+      padding: 20rpx 0;
+      border-bottom: 1px solid #eee;
+    }
+    .order-sonPlan-list-item{
+      line-height: 1;
+      padding-top: 30rpx;
+      font-size: 28rpx;
+    }
+    .order-sonPlan-list-item:last-child{
+      padding-bottom: 30rpx;
+    }
+    .order-sonPlan-list-flex{
+      display: flex;
+      line-height: 1.5;
+    }
+  }
+</style>
+<template>
+  <view style="height: 1px;width: 100%;background: #eee;"></view>
+  <view class="input-textarea">
+    <textarea bindblur="bindTextAreaBlur" value="{{planDetail.visitContent}}"  placeholder="请设立客户来访计划 " maxlength="100" adjust-position="false"/>
+  </view>
+
+  <view class="list-warpper">
+    <view class="list" style="border-top:1px solid #eee">
+      <text>来访人：</text>
+      <text class="color-33 oneline-overflow" style="max-width: 70%;display:block;float: right;">{{planDetail.name}} ({{planDetail.bizzPartnerName}})</text>
+    </view>
+
+    <!--<view class="list">
+      <picker bindchange="bindVisitChange" value="{{visitIndex}}" range="{{visitArray}}" >
+        <text>来访类型：</text>
+        <image src="../../images/arrows.png" class="arrows" style="float: right;"></image>
+        <block wx:if="{{visitIndex ==''}}">
+          <text class="color-33" style="float: right;padding-right: 16rpx">{{planDetail.visitTypeValue}}</text>
+        </block>
+        <block else>
+          <text class="color-33" style="float: right;padding-right: 16rpx">{{visitArray[visitIndex]}}</text>
+        </block>
+      </picker>
+    </view>-->
+
+    <navigator url="/pages/plan/comeType" hover-class="none" class="list">
+      <text>来访类型：</text>
+      <image src="../../images/arrows.png" class="arrows" style="float: right;"></image>
+      <block wx:if="{{comeType != ''}}">
+        <text class="color-33" style="float: right;padding-right: 16rpx">{{comeType}}</text>
+      </block>
+      <block wx:else>
+        <text style="float: right;padding-right: 16rpx">{{planDetail.visitTypeValue}}</text>
+      </block>
+    </navigator>
+
+
+    <view class="list" >
+      <picker mode="date" value="{{date}}"  bindchange="bindDateChange">
+        <text>来访申请时间：</text>
+        <image src="../../images/arrows.png" class="arrows" style="float: right;"></image>
+        <text class="color-33" style="float: right;padding-right: 16rpx"> {{dateShow}}</text>
+      </picker>
+    </view>
+
+    <navigator url="/pages/plan/correlationOrder?memberId={{planDetail.memberId}}" hover-class="none" class="list clearfix" style="border-bottom: 0!important;">
+        <text>关联订单：</text>
+        <image src="../../images/arrows.png" class="arrows" style="float: right;"></image>
+      <text style="float: right;padding-right: 10rpx">选择(可选)</text>
+    </navigator>
+    <block wx:for="{{correlationOrder}}">
+      <view class="order-sonPlan-list clearfix">
+        <view class="order-sonPlan-list-time">
+          <text >{{item.orderSn}}</text>
+        </view>
+        <view class="color-33" style="font-size: 30rpx;margin-top: 30rpx;">体验项目</view>
+        <block wx:for="{{item.salePackageItems}}" wx:for-item="itemb">
+          <view class="order-sonPlan-list-item" style="color:#666;">
+            {{itemb.salePackageName}}
+          </view>
+        </block>
+      </view>
+    </block>
+  </view>
+
+  <!--子计划-->
+  <view class="sonPlan clearfix" style="padding-bottom: 120rpx">
+    <view class="sonPlan-title">
+      <text>子计划</text>
+      <text style="float: right;font-size: 24rpx;color:#999;padding-top: 3rpx;">{{sonListArr.length}}个计划</text>
+    </view>
+
+    <block wx:for="{{sonListArr}}" wx:if="{{sonListArr.length != 0}}" wx:key="key">
+      <view class="sonPlan-list">
+        <view class="sonPlan-list-time">
+          <text >{{item.bdate}}</text>
+          <text style="padding-left: 26rpx;">{{item.bTime}}-{{item.eTime}}</text>
+          <text style="float: right;color: #dec45e">{{item.statusValue}}</text>
+        </view>
+        <view class="sonPlan-list-item">
+          <text style="display: block;float: left;width: 120rpx;color: #666;">地点：</text>
+          <text>{{item.place}}</text>
+        </view>
+        <view class="sonPlan-list-item sonPlan-list-flex">
+          <view style="float: left;color: #666;width: 120rpx;">任务：</view>
+          <view style="float: left;max-width: 86%">{{item.executeContent}}</view>
+        </view>
+        <view class="sonPlan-list-item" style="margin-bottom: 30rpx" >
+          <text style="display: block;float: left;width: 120rpx;color: #666;">执行人：</text>
+          <text class="oneline-overflow" style="max-width: 60%;display: block;float: left">{{item.employeeIName}}</text>
+          <!--<text style="display: block;float: right;color: #666;font-size: 26rpx;">{{item.finishExecutorNum}}/{{item.executorNum}}已完成</text>-->
+        </view>
+      </view>
+    </block>
+    <view @tap="abc"  class="add-sonPlan">
+      <text style="padding-right: 24rpx">+</text>
+      <text>添加子计划</text>
+    </view>
+  </view>
+
+  <view class="bottom {{ sonListArr.length != 0 ? 'bottom-active':''}}" @tap="save">保存</view>
+
+</template>
+<script>
+  import wepy from 'wepy'
+  import {dateFormat} from '../../utils/util'
+  import api from '../../api/api'
+
+  export default class setPlan extends wepy.page {
+    config = {
+      navigationBarTitleText: '设立计划',
+      enablePullDownRefresh: false,     //关闭系统刷新
+    }
+    data = {
+      textareaInput:'',//输入框
+      visitIndex:'',//来访类型索引
+      visitArray: ['参观', '会诊', '体检'],//来访类型
+      visitType:'',//来访类型
+      date:'',//选择的时间
+      dateShow:'',//选择的时间-显示年月日格式
+      planId:'',//计划id
+      planDetail:[],//设立计划详情返回数据
+      sonListArr:[],//concat缓存里面的子计划
+      correlationOrder:[],//关联订单
+      comeTypeNum:[],
+      comeType:[],
+    }
+    // textarea
+    bindTextAreaBlur(e) {
+      this.textareaInput = e.detail.value;
+      this.remark  = this.textareaInput;
+    }
+    bindFormSubmit(e) {
+      this.textareaInput = e.detail.value;
+    }
+    // 选择来访类型
+    bindVisitChange(e) {
+      this.visitIndex = e.detail.value;
+      this.visitType = ~~ e.detail.value + 1;
+    }
+    // 选择来访时间
+    bindDateChange(e) {
+      this.date = e.detail.value;
+      this.dateShow = dateFormat(new Date(this.date),'YYYY年MM月DD日');//初始化当前日期
+    }
+    components = {
+    }
+
+    methods = {
+      abc(){
+        wx.setStorageSync('sonPlan');
+        wx.setStorageSync('isSon',true);
+        wx.navigateTo({
+          url:'/pages/plan/sonPlan?time=' + this.date
+        })
+      },
+      //设立计划
+      async save(){
+        if(this.sonListArr.length != 0){
+          const json = await api.planSetup({
+            query: {
+              planId : this.planId,//计划id
+              bizzPartnerId:this.planDetail.bizzPartnerId,//合作商id
+              memberId:this.planDetail.memberId,//用户id
+              visitType:this.comeTypeNum ||   this.visitType,//来访类型
+              visitContent:this.textareaInput,//备注
+              visitBeginTimeString:this.date,//来访时间
+              orderSnList:this.correlationOrder,//订单id
+              planSonList:this.sonListArr,//子计划
+            }
+          });
+          if(json.imei_error_code == 0){
+            wx.setStorageSync('sonPlan');//清空子计划缓存
+            wx.setStorageSync('planMyteam');//清空子计划缓存
+            wx.setStorageSync('correlationOrder');//清空关联订单缓存
+            wx.navigateBack({
+              delta: 2
+            })
+          }
+        }
+
+      }
+    }
+
+    onShow(){
+      let arr=[];
+      var sonPlan = wx.getStorageSync('sonPlan');//获取缓存数据
+      var isSon = wx.getStorageSync('isSon');
+      if(sonPlan != '' && isSon){
+        wx.setStorageSync('isSon',false);
+        arr.push(sonPlan);
+        // console.log(arr)
+        this.sonListArr = this.sonListArr.concat(arr);
+        // 子计划时间
+        for(var i in this.sonListArr){
+          this.sonListArr[i].bdate = dateFormat(new Date(this.date),'MM月DD日');//子计划开始日期
+          this.sonListArr[i].bTime = this.sonListArr[i].beginTimeString.substr(11,6);//子计划开始时间
+          this.sonListArr[i].eTime = this.sonListArr[i].endTimeString.substr(11,6);//子计划借宿时间
+        }
+      }
+      this.correlationOrder = wx.getStorageSync('correlationOrder');//获取缓存数据
+
+      this.comeTypeNum = wx.getStorageSync('comeTypeNum');//来访类型
+      this.comeType = wx.getStorageSync('comeType');//来访类型
+    }
+
+    //设立计划详情
+    async getsetupDetail(){
+      const json = await api.setupDetail({
+        query: {
+          planId : this.planId
+        }
+      });
+      this.planDetail = json.data;
+      this.visitType = this.planDetail.visitType;//来访类型
+      this.date = this.planDetail.applyVisitBeginTime;//来访时间
+      this.dateShow = dateFormat(new Date(this.planDetail.applyVisitBeginTime),'YYYY年MM月DD日');//来访时间格式
+
+      this.$apply();
+    }
+
+    async onLoad(options) {
+      this.startTime = dateFormat(new Date(),'YYYY-MM-DD');//初始化当前日期
+      this.planId = options.planId;
+      wx.setStorageSync('sonPlan');//清空子计划缓存
+      this.sonListArr = [];//清空数组
+      wx.setStorageSync('correlationOrder');
+      this.correlationOrder=[];
+      this.comeTypeNum=[];
+      this.comeType=[];
+      wx.setStorageSync('comeTypeNum');
+      wx.setStorageSync('comeType');
+      this.getsetupDetail();//获取设立计划详情
+
+      wx.setStorageSync('isSon',false);
+    }
+  }
+</script>

@@ -1,0 +1,473 @@
+<style lang="less" scoped>
+  page{-webkit-overflow-scrolling:touch;}
+  .font-26{
+    font-size: 26rpx;
+  }
+  ::-webkit-scrollbar{
+    width: 0;
+    height: 0;
+    color: transparent;
+  }
+  .oneline-overflow{overflow: hidden;text-overflow: ellipsis;white-space:nowrap}
+  .select-days{
+    position: fixed;
+    top:0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+    height: 86rpx;
+    box-sizing: border-box;
+    padding: 16rpx 30rpx;
+    display: flex;
+    border-top: 1px solid #eee;
+    background: #fff;
+    .select-days-item{
+      flex: 1;
+      box-sizing: border-box;
+      border-top:1px solid #eee;
+      border-bottom:1px solid #eee;
+      border-left:1px solid #eee;
+      text-align: center;
+      font-size: 28rpx;
+      height: 54rpx;
+      line-height: 54rpx;
+    }
+    .select-days-item:last-child{
+      border-right:1px solid #eee;
+    }
+    .active{
+      color: #fff;
+      background: #3096f8;
+      border-top:1px solid #3096f8;
+      border-bottom:1px solid #3096f8;
+      border-left:1px solid #3096f8;
+    }
+  }
+  .chart-wrapper{
+    font-size: 26rpx;
+    line-height: 1;
+    padding:30rpx 30rpx;
+    height: 600rpx;
+  }
+  .container {
+  }
+  .circle{
+    display: block;margin-top:10rpx ;margin-right: 20rpx;float: left;width: 10rpx;height: 10rpx;border-radius: 50%;
+  }
+
+  .data{
+    position: fixed;
+    top:85rpx;
+    left: 0;
+    z-index: 99;
+    width: 100%;
+    display: flex;
+    background: #53aff4;
+    /*background-image: linear-gradient( -180deg, rgb(53,163,238) 0%, rgb(91,178,246) 100%);*/
+    .item{
+      flex: 1;
+      color:#f2f2f4;
+      text-align: center;
+      padding: 40rpx 0;
+      border-right: 1px solid #42a3f7;
+      line-height: 1;
+      .title{
+        font-size: 26rpx;
+        display: block;
+      }
+      .num{
+        font-size: 50rpx;
+        display: block;
+        margin-top: 16rpx;
+      }
+      .real-num{
+        font-size: 22rpx;
+      }
+    }
+    item:last-child{
+      border-right: 0;
+    }
+  }
+
+  .list-warpper{
+    margin-top:310rpx;
+    background: #fff;
+    width: 100%;
+    .list-title{
+      font-size: 30rpx;
+      line-height: 1;
+      padding: 20rpx 30rpx;
+      border-top: 1px solid #eee;
+      border-bottom: 1px solid #eee;
+      color:#666;
+    }
+    .tab{
+      width: 100%;
+      display: flex;
+      font-size: 28rpx;
+      line-height: 1;
+      .tab-item{
+        flex: 1;
+        text-align: center;
+        padding:32rpx 0 0;
+      }
+    }
+    .tab .active{
+      color: #3096f8;
+      position: relative;
+    }
+    .tab .active:after{ content: "";
+      display: block;
+      height: 4rpx;
+      width: 120rpx;
+      background: #3096f8;
+      position: absolute;
+      top: 68rpx;
+      left: 16rpx;
+      border-radius: 16rpx;
+    }
+
+  }
+
+  .table{
+    padding: 30rpx 30rpx;
+    box-sizing: border-box;
+    font-size: 28rpx;
+    line-height: 1;
+    text-align: center;
+    .table-title{
+      padding: 22rpx 0;
+      background: #ddd;
+      display: flex;
+      view{
+        flex: 1;
+      }
+    }
+    .table-list{
+      padding: 22rpx 0;
+      border-left: 1px solid #ddd;
+      border-right: 1px solid #ddd;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      view{
+        flex: 1;
+      }
+    }
+  }
+</style>
+<template>
+  <cover-view class="select-days">
+    <cover-view class="select-days-item {{tabTime==1 ? 'active' : ''}}" @tap="switchDate(1)">昨天</cover-view>
+    <cover-view class="select-days-item {{tabTime==2 ? 'active' : ''}}" @tap="switchDate(2)">近7天</cover-view>
+    <cover-view class="select-days-item {{tabTime==3 ? 'active' : ''}}" @tap="switchDate(3)">近30天</cover-view>
+  </cover-view>
+
+  <cover-view class="data clearfix">
+    <cover-view class="item">
+      <cover-view class="title">接待客户量</cover-view>
+      <cover-view class="num">{{details.receptionNum}}</cover-view>
+    </cover-view>
+    <cover-view class="item">
+      <cover-view class="title">订单数量</cover-view>
+      <cover-view class="num">{{details.orderNum}}</cover-view>
+    </cover-view>
+    <cover-view class="item">
+      <cover-view class="title">成交金额</cover-view>
+      <cover-view class="num">{{details.achieve}}</cover-view>
+      <cover-view class="real-num">实收金额：{{details.realAchieve}}</cover-view>
+    </cover-view>
+  </cover-view>
+
+  <view class="list-warpper">
+    <navigator url="/pages/orderManage/orderManage" class="list-title clearfix" hover-class="none">
+      <view style="float: left">
+        <image src="../../images/icon-data.png" style="display: block;float: left;width: 28rpx;height: 28rpx"></image>
+        <text class="color-33" style="padding-left: 16rpx">交易数据</text>
+      </view>
+      <view style="float: right">
+        <text style="display: block;float: left;font-size: 24rpx;color:#666;padding-top: 2rpx;padding-right: 20rpx;">查看详情</text>
+        <image src="../../images/arrows.png" style="display: block;float: left;width: 16rpx;height: 30rpx"></image>
+      </view>
+    </navigator>
+
+    <view class="tab">
+      <view class="tab-item " ></view>
+      <view class="tab-item {{tabIndex == 0 ? 'active' : ''}}"  @tap="tab(0)">交易金额</view>
+      <view class="tab-item " ></view>
+      <view class="tab-item {{tabIndex == 1 ? 'active' : ''}}"  @tap="tab(1)">交易笔数</view>
+      <view class="tab-item " ></view>
+    </view>
+
+    <view class="container clearfix" >
+      <lineEcharts  :ec="ac" />
+
+      <view style="display: flex;width: 90%;margin: 30rpx auto;font-size: 26rpx">
+        <block wx:if="{{tabIndex == 0}}">
+          <view style="float: left;flex: 1">
+            <text class="circle" style="background:#3096f8 "></text>
+            <text >最高：5月2号 6000元</text>
+          </view>
+          <view style="float: left;flex: 1">
+            <text class="circle" style="background: #3096f8"></text>
+            <text >最低：5月2号 6000元</text>
+          </view>
+        </block>
+        <block wx:if="{{tabIndex == 1}}">
+          <view style="float: left;flex: 1">
+            <text class="circle" style="background:#3096f8 "></text>
+            <text >最高：5月2号 20笔</text>
+          </view>
+          <view style="float: left;flex: 1">
+            <text class="circle" style="background: #3096f8"></text>
+            <text >最低：5月2号 6000笔</text>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <navigator url="/pages/client/list" class="list-title clearfix" hover-class="none" style="margin-top: 40rpx">
+      <view style="float: left">
+        <image src="../../images/toux.png" style="display: block;float: left;width: 28rpx;height: 28rpx"></image>
+        <text class="color-33" style="padding-left: 16rpx">客户分析</text>
+      </view>
+      <view style="float: right">
+        <text style="display: block;float: left;font-size: 24rpx;color:#666;padding-top: 2rpx;padding-right: 20rpx;">查看详情</text>
+        <image src="../../images/arrows.png" style="display: block;float: left;width: 16rpx;height: 30rpx"></image>
+      </view>
+    </navigator>
+
+    <view class="container clearfix"  >
+      <echarts  :ec="ec" />
+
+      <view style="display: flex;width: 70%;margin: 0 auto;font-size: 26rpx">
+        <view style="float: left;flex: 1">
+          <text class="circle" style="background:#37A2DA "></text>
+          <text >顾客数 20 人</text>
+        </view>
+        <view style="float: left;flex: 1">
+          <text class="circle" style="background: #FF9F7F"></text>
+          <text >体验客 {{TypeList[0].portion}}%</text>
+        </view>
+      </view>
+    </view>
+
+    <navigator url="/pages/partner/partner" class="list-title clearfix" hover-class="none" style="margin-top: 40rpx">
+      <view style="float: left">
+        <image src="../../images/icon-switch.png" style="display: block;float: left;width: 28rpx;height: 28rpx"></image>
+        <text class="color-33" style="padding-left: 16rpx">客户来源</text>
+      </view>
+      <view style="float: right">
+        <text style="display: block;float: left;font-size: 24rpx;color:#666;padding-top: 2rpx;padding-right: 20rpx;">查看详情</text>
+        <image src="../../images/arrows.png" style="display: block;float: left;width: 16rpx;height: 30rpx"></image>
+      </view>
+    </navigator>
+
+    <view class="table" style="margin-bottom: 134rpx;">
+      <view class="table-title">
+        <view>合作商</view>
+        <view>推荐客户</view>
+        <view>体验客</view>
+        <view>成交客</view>
+      </view>
+      <block wx:for="{{GroupDetails}}" wx:key="{{item.bizzPartnerId}}">
+        <view class="table-list">
+          <view class="oneline-overflow" >{{item.bizzPartnerName}}</view>
+          <view>{{item.memberNum }}</view>
+          <view>{{item.memberNumExp}}</view>
+          <view>{{item.memberNumSale}}</view>
+        </view>
+      </block>
+    </view>
+
+  </view>
+
+  <view class="footer">
+    <view class="nav-foot-wrap">
+      <navigator class="cell" url="/pages/schedule/schedule" open-type="redirect" hover-class="none">
+        <image src="../../images/day.png"></image>
+        <view class="nav-title ">日程</view>
+      </navigator>
+
+      <view class="cell" >
+        <image src="../../images/data_a.png"></image>
+        <view class="nav-title active">数据</view>
+      </view>
+      <navigator class="cell" url="/pages/workbench/bossWorkbench" open-type="redirect" hover-class="none" >
+        <image src="../../images/work.png"></image>
+        <view class="nav-title ">工作台</view>
+      </navigator>
+    </view>
+  </view>
+
+
+</template>
+<script>
+	import wepy from 'wepy'
+  import Echarts from './echart';
+  import lineEcharts from './lineEchart';
+	import api from '../../api/api'
+
+	export default class manageSurvey extends wepy.page {
+
+		config = {
+			navigationBarTitleText: '经营概况',
+		};
+
+    components = {
+      echarts: Echarts,
+      lineEcharts :lineEcharts,
+    }
+    data = {
+      tabTime:1,//天数默认昨天
+      tabIndex:0,//默认交易金额
+      details:'',//接口返回
+      TypeList:'',//客户分析
+      GroupDetails:'',
+      //饼图
+      ec: {
+        option : {
+          backgroundColor: "#ffffff",
+          color: [ "#FF9F7F","#37A2DA"],
+          series: [{
+            label: {
+              normal: {
+                fontSize: 14
+              }
+            },
+            type: 'pie',
+            center: ['50%', '50%'],
+            radius: [0, '60%'],
+            data: [{
+              value: '',
+              name: '体验客'
+            }, {
+              value: '',
+              name: '成交客'
+            },
+            ],
+            itemStyle: {
+              emphasis: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 2, 2, 0.3)'
+              }
+            }
+          }]
+        }
+      },
+
+      //折线图
+      ac:{
+        option : {
+          tooltip : {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'cross',
+              label: {
+                backgroundColor: '#6a7985'
+              }
+            }
+          },
+          legend: {
+            data:['搜索引擎']
+          },
+          toolbox: {
+            feature: {
+              saveAsImage: {}
+            }
+          },
+          grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+          },
+          xAxis : [
+            {
+              type : 'category',
+              boundaryGap : false,
+              data : ['周一','周二','周三','周四','周五','周六','周日']
+            }
+          ],
+          yAxis : [
+            {
+              type : 'value'
+            }
+          ],
+          series : [
+            {
+              name:'搜索引擎',
+              type:'line',
+              stack: '总量',
+              label: {
+                normal: {
+                  show: true,
+                  position: 'top'
+                }
+              },
+              areaStyle: {normal: {}},
+              data:[10, 20, 30, 40, 50, 60, 86]
+            }
+          ]
+        }
+      },
+      //折线图
+    }
+
+		methods = {
+// 选择今天-近7天-近30天
+      switchDate(code) {
+        if (this.tabTime != code) {
+          this.tabTime = code;
+          this.getData();// 请求接口
+        }
+      },
+      //         点击tab切换
+      tab(e) {
+        if(e ==0){
+          this.tabIndex = 0;
+        }else if(e == 1){
+          this.tabIndex = 1;
+        }
+        this.$apply();
+      },
+		}
+    //工作台数据
+    async getData(){
+      const {data} = await api.console({
+        query: {
+          type : this.tabTime,
+        }
+      });
+      this.details = data;
+      this.$apply();
+    }
+
+    //数据概况-客户类型汇总
+    async getTypeList(){
+      const {data} = await api.typeList({
+        query: {
+        }
+      });
+      this.TypeList = data;
+      this.ec.option.series[0].data[0].value = this.TypeList[0].portion ;//体验客
+      this.ec.option.series[0].data[1].value= this.TypeList[1].portion ;//成交客
+      this.$apply();
+    }
+
+    //数据概况-客户类型汇总
+    async getGroupByBizzPartner(){
+      const {data} = await api.groupByBizzPartner({
+        query: {
+        }
+      });
+      this.GroupDetails = data;
+      this.$apply();
+    }
+    onLoad() {
+      this.getData();//获取数据
+      this.getTypeList();//数据概况-客户类型汇总
+      this.getGroupByBizzPartner();
+    }
+	}
+</script>

@@ -1,0 +1,203 @@
+<style lang="less">
+  page{
+    background: #f2f2f2;
+    border-top: 1rpx solid #eee;
+  }
+  .setorder-user{
+    padding: 8rpx 30rpx 25rpx;
+    background: #fff;
+    font-size: 36rpx;
+    border-bottom: 1rpx solid #eee;
+    > view:first-child{
+      height:72rpx;
+      line-height:72rpx;
+      color: #666;
+      font-size: 30rpx;
+    }
+    > view:nth-child(n+2){
+      height:58rpx;
+      line-height: 58rpx;
+      overflow: hidden;
+      color: #333;
+      image{
+        width:16rpx;
+        height:30rpx;
+        margin-top: 14rpx;
+        margin-left: 16rpx;
+      }
+      text.vip{
+        color: #deb48c;
+        margin-left: 10rpx;
+      }
+      text.none{
+        color: #666;
+      }
+    }
+  }
+  .weui-cell:before,.weui-cells:before,.weui-cells:after{
+     border:none;
+  }
+  .weui-cell{
+    padding: 20rpx 0 68rpx;
+  }
+  .moy{
+    position: absolute;
+    width: 100%;
+    bottom: 20rpx;
+    padding-left: 84rpx;
+    box-sizing: border-box;
+    font-size: 28rpx;
+    color: #666;
+      left: 0;
+  }
+  .button{
+     position: fixed;
+     bottom: 0;
+     width:100%;
+     font-size: 36rpx;
+     color: #fff;
+     text-align: center;
+     height:86rpx;
+     line-height: 86rpx;
+     background: #3096f8;
+     margin-top:134rpx;
+  }
+  .vip {
+    padding-left: 24rpx;
+    width: 50rpx !important;
+    height: 24rpx !important;
+  }
+</style>
+<template>
+  <view class="setorder-user">
+    <view>客户</view>
+    <view>
+      <text class="pull-left">{{order.memberName}}</text><image src="{{order.tagLogo}}" class="vip pull-left"></image>
+    </view>
+  </view>
+  <!--收款金额-->
+  <view class="setorder-user">
+    <view>收款金额</view>
+    <view>
+      <text class="pull-left" style="font-size: 46rpx;color: #333;">￥</text>
+      <input style="margin-top: 4rpx;" bindinput="unpaidTotalAmount" class="pull-left" type="digit" maxlength="{{order.moy.length}}" placeholder="{{order.moy}}" />
+    </view>
+  </view>
+
+  <view style="padding-bottom: 130rpx;">
+    <view class="gjr" style="background: #fff;width: 100%;">
+      <view style="overflow: hidden;font-size: 30rpx;color: #333;padding:0 20rpx;line-height: 99rpx;">
+        <text style="float:left;color: #666;">选择支付方式</text>
+      </view>
+      <view class="weui-cells pay-module weui-cells_after-title">
+        <checkbox-group bindchange="checkboxChange">
+          <label class="weui-cell weui-check__label" style="position:relative;margin:0 30rpx;{{index==0?'':'border-top: 1px solid #e5e5e5;'}}" wx:for="{{checkboxItems}}" wx:key="value">
+            <checkbox class="weui-check" value="{{item.payType}}" checked="{{item.checked}}"/>
+            <image style="width:64rpx;height:64rpx;border-radius: 50%;margin-right: 20rpx;" class="pay-logo" src="{{item.src}}"></image>
+            <view class="weui-cell__bd color-33" style="font-size: 32rpx;color: #333;">{{item.name}}</view>
+            <view class="weui-cell__ft weui-cell__ft_in-radio">
+              <icon class="weui-icon-checkbox_circle" type="circle" size="23" wx:if="{{!item.checked}}"></icon>
+              <icon class="weui-icon-checkbox_success" type="success" size="23" color="#3096f8" wx:if="{{item.checked}}"></icon>
+            </view>
+            <view class="moy">
+              <input style="width: 100%;" bindblur="bindblurs({{index}})" bindfocus="bindfocu({{index}})" focus="{{check[index]}}" @tap.stop="false" bindinput="money_mode({{index}})" class="pull-left" type="digit" placeholder="请输入金额" />
+            </view>
+          </label>
+        </checkbox-group>
+      </view>
+    </view>
+  </view>
+
+  <view class="button" @tap="save">确认</view>
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+
+	export default class receipt extends wepy.page {
+		config = {
+			navigationBarTitleText: '收款',
+			backgroundColor: '#ebf0ef'
+		};
+
+		data = {
+		    check:[],
+      order:[],/*页面对接*/
+      checkboxItems: [
+        {name: '支付宝支付', payType: 3, src: '../../images/zfb.png'},
+        {name: '微信支付', payType: 1, src: '../../images/wx.png'},
+        {name: '现金支付', payType: 2,  src: '../../images/xj.png'},
+        {name: 'POS支付', payType: 4, src: '../../images/pos.png'}
+      ]
+		};
+
+		onShareAppMessage(res){
+
+		}
+
+
+		methods = {
+      checkboxChange: function (e) {
+        /*支付方式选择变化*/
+//        console.log('checkbox发生change事件，携带value值为：', e.detail.value);
+        var checkboxItems = this.checkboxItems, values = e.detail.value;
+        for (var i = 0, lenI = checkboxItems.length; i < lenI; ++i) {
+          checkboxItems[i].checked = false;
+          for (var j = 0, lenJ = values.length; j < lenJ; ++j) {
+            if(checkboxItems[i].payType == values[j]){
+//                console.log(i)
+              checkboxItems[i].checked = true;
+              break;
+            }
+          }
+        }
+
+        this.setData({
+          checkboxItems: checkboxItems
+        });
+      },
+      unpaidTotalAmount(e){
+          /*总额*/
+          this.order.val=e.detail.value
+      },
+      money_mode(e,e1){
+          /*选择方式额度*/
+        this.checkboxItems[e].amount=e1.detail.value;
+      },
+      bindfocu(e){
+          this.check[e]=true;
+        this.checkboxItems[e].checked=true;
+      },
+      bindblurs(e,e1){
+        this.check[e]=false;
+        if(e1.detail.value==''){
+//          this.checkboxItems[e].checked=false;
+        }
+      },
+      async save(){
+          const pri=[];
+          this.checkboxItems.forEach(function (c,ind) {
+            if(c.checked==true && c.amount>0){
+                pri.push({amount:c.amount,payType:c.payType})
+            }
+          })
+        const json = await api.repay({
+          query: {
+            orderSn:this.order.orderSn,
+            payDetail:pri,
+            repayAmount:this.order.val>0?this.order.val:this.order.moy
+          }
+        });
+          if(json.imei_error_code==0){
+            wx.navigateBack({
+              delta: 2
+            })
+          }
+      }
+		};
+
+    onLoad(e) {
+      this.order=e;
+    }
+	}
+</script>

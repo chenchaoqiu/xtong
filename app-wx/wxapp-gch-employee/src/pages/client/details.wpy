@@ -1,0 +1,520 @@
+<style lang="less">
+    page {
+        height: 100%;
+    }
+    .main-container {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+    .view-body {
+        flex: 1;
+        max-height: 100%;
+        overflow: auto;
+        -webkit-overflow-scrolling:touch;
+    }
+    .view-footer {
+        height: 96rpx;
+        background-color: #fff;
+        border-top: 1rpx solid #eee;
+        box-sizing: border-box;
+        padding: 20rpx 35rpx;
+        text-align: right;
+        font-size: 30rpx;
+        .btn {
+            display: inline-block;
+            background-color: #3096F8;
+            color: #fff;
+            padding: 4rpx 12rpx;
+            border-radius: 3px;
+        }
+        .btn+.btn {
+            margin-left: 25rpx;
+        }
+    }
+    .module-wrap {
+        margin-top: 20rpx;
+        padding: 0 30rpx;
+        background-color: #fff;
+        .title {
+            font-size: 32rpx;
+            color: #333;
+        }
+        .header {
+            >view  {
+                padding: 18rpx 0;
+            }
+            border-bottom: 1rpx solid #ddd;
+        }
+        .info-wrap {
+            >.flex-box {
+                padding: 18rpx 0;
+            }
+            >.flex-box+.flex-box {
+                border-top: 1rpx solid #EEEEEE;
+            }
+            .address {
+                max-width: 80%;
+            }
+            .column {
+                flex-direction: column;
+                align-items: flex-start;
+                .joint {
+                    padding-left: 30rpx;
+                    margin-top: 20rpx;
+                    .phone {
+                        padding: 0 24rpx;
+                    }
+                    .phone-icon {
+                        width: 34rpx;
+                        height: 34rpx;
+                        display: block;
+                        margin-top: -4rpx;
+                    }
+                }
+                .label {
+                    padding-right: 10rpx;
+                }
+            }
+        }
+    }
+    .sp-mt-10 {
+        margin-top: 10rpx;
+    }
+    .tab-wrap {
+        border-top: 1rpx solid #EEEEEE;
+        padding-bottom: 0 !important;
+        .flex-1 {
+            padding-bottom: 16rpx;
+            border-bottom: 2rpx solid transparent;
+            position: relative;
+        }
+        .flex-1:after {
+
+        }
+        .active {
+            color: #3096F8;
+            border-bottom: 2rpx solid #3096F8;
+        }
+    }
+    .list-wrap {
+        margin-top: 10rpx;
+        font-size: 30rpx;
+        //沟通记录
+        .msg-item+.msg-item {
+            border-top: 1rpx solid #ddd;
+        }
+        .msg-item {
+            padding: 30rpx;
+            padding-bottom: 20rpx;
+            background-color: #fff;
+        }
+
+        .user-logo {
+            width: 100rpx;
+            height: 100rpx;
+            border-radius: 100%;
+            display: block;
+        }
+        .msg {
+            padding-left: 130rpx;
+        }
+        .row {
+            text {
+                padding-left: 10rpx;
+            }
+            .info {
+                margin-left: 10rpx;
+                padding-left: 18rpx;
+                border-left: 1rpx solid #A9A9A9;
+            }
+        }
+        //任务
+        .list+.list {
+            margin-top: 20rpx;
+        }
+        .list{
+            padding: 24rpx 30rpx;
+            background: #fff;
+            .list-top{
+                font-size: 26rpx;
+                line-height: 1;
+                color:#666;
+                padding-bottom: 24rpx;
+                border-bottom: 1px solid #eee;
+            }
+            .list-des{
+                .list-des-item{
+                    font-size: 30rpx;
+                    line-height: 1;
+                    margin-top: 30rpx;
+                }
+            }
+        }
+        //订单
+        .item+.item {
+            margin-top: 20rpx;
+        }
+        .item {
+            background-color: #fff;
+            >.flex-box {
+                padding: 22rpx 30rpx;
+                font-size: 26rpx;
+            }
+            .row {
+                text {
+                    padding-left: 10rpx;
+                }
+                .vip {
+                    color: #DEB48C;
+                    padding-left: 24rpx;
+                    width: 50rpx;
+                    height: 24rpx;
+                }
+            }
+            .state {
+                color: #3096F8;
+            }
+            .project-list {
+                background-color: #f9f9f9;
+                padding: 24rpx 0;
+                .flex-box {
+                    padding: 0 30rpx;
+                    font-size: 26rpx;
+                }
+                .flex-box+.flex-box {
+                    margin-top: 8rpx;
+                }
+            }
+        }
+        .icon {
+            width: 32rpx;
+            height: 32rpx;
+            margin-right: 24rpx;
+            display: block;
+        }
+    }
+</style>
+<template>
+    <view class="main-container">
+        <view class="view-body">
+            <scroll-view scroll-y style="height: 100vh" scroll-with-animation="{{true}}" bindscrolltolower="lower">
+                <view class="module-wrap">
+                    <view class="header">
+                        <view class="title">客户基本资料</view>
+                        <view class="flex-box size-30">
+                            <view class="flex-1 color-66">客户名称</view>
+                            <view>{{res.name}}</view>
+                        </view>
+                    </view>
+                    <view class="info-wrap">
+                        <view class="flex-box size-30">
+                            <view class="flex-1 color-66">手机号码</view>
+                            <view>{{res.mobilePhone}}</view>
+                        </view>
+                        <view class="flex-box size-30">
+                            <view class="flex-1 color-66">性别</view>
+                            <view>{{res.sex == 1 ? '男' : '女'}}</view>
+                        </view>
+                        <view class="flex-box size-30">
+                            <view class="flex-1 color-66">籍贯</view>
+                            <view>{{res.nativePlace}}</view>
+                        </view>
+                        <view class="flex-box size-30">
+                            <view class="flex-1 color-66">住址</view>
+                            <view class="address ellipsis-1">{{res.address}}</view>
+                        </view>
+                        <view class="flex-box size-30">
+                            <view class="flex-1 color-66">身份证</view>
+                            <view>{{res.idNumber}}</view>
+                        </view>
+                        <view class="flex-box size-30 column">
+                            <view class="flex-1 color-66">既往史及家族史</view>
+                            <view class="sp-mt-10 size-26">{{res.medicalHistory}}</view>
+                        </view>
+                        <view class="flex-box size-30">
+                            <view class="flex-1 color-66">客户来源</view>
+                            <view>{{res.bizzPartnerName}}</view>
+                        </view>
+                        <view class="flex-box size-30 column">
+                            <view class="flex-1 color-66">业务对接人</view>
+                            <view wx:for="{{res.memberLinkmens}}" wx:key="unique" class="flex-box joint">
+                                <view class="name">{{item.name}}</view>
+                                <view class="phone">{{item.mobilePhone}}</view>
+                                <view class="dial">
+                                    <image class="phone-icon" @tap="tel({{item.mobilePhone}})" src="../../images/icon-small-phone.png"></image>
+                                </view>
+                            </view>
+                            <view wx:if="{{!res.memberLinkmens.length}}">暂无对接人</view>
+                        </view>
+                        <view class="flex-box size-30 column">
+                            <view class="flex-1 color-66">客户备注</view>
+                            <view class="sp-mt-10 size-26 color-99">{{res.remark}}</view>
+                        </view>
+                        <view class="flex-box size-30 column">
+                            <view>
+                                <view class="row"><text class="color-66 label">客户管理员：</text>{{res.belongEmployeeName}}</view>
+                            </view>
+                            <view>
+                                <view class="row"><text class="color-66 label">客户相关人：</text>{{res.followEmployeeStr}}</view>
+                            </view>
+                        </view>
+                    </view>
+                </view>
+
+                <view class="module-wrap">
+                    <view class="header" style="border: none">
+                        <view class="title">
+                            客户关联资料
+                        </view>
+                        <view class="tab-wrap flex-box size-30 color-66 text-center">
+                            <view class="flex-1 {{tabNum == 0 && 'active'}}" @tap="tab(0)">沟通记录</view>
+                            <view class="flex-1 {{tabNum == 1 && 'active'}}" @tap="tab(1)">计划表</view>
+                            <view class="flex-1 {{tabNum == 2 && 'active'}}" @tap="tab(2)">订单表</view>
+                        </view>
+                    </view>
+                </view>
+
+                <view class="list-wrap">
+                    <block wx:if="{{tabNum == 0}}">
+                        <view class="msg-item" wx:for="{{communiList}}" wx:key="unique">
+                            <view class="flex-box">
+                                <view>
+                                    <image class="user-logo" src="{{item.headImgUrl}}"></image>
+                                </view>
+                                <view class="flex-1" style="padding-left: 30rpx">
+                                    <view class="row">{{item.employeeName}} <text class="info color-66">{{item.departmentName}}</text></view>
+                                </view>
+                                <view class="color-66 text-right">{{item.addTime}}</view>
+                            </view>
+                            <view class="msg color-33">{{item.content}}</view>
+                        </view>
+                        <view wx:if="{{communiList.length == totalSize}}" class="text-center color-99 size-28" style="padding: 24rpx">没有更多沟通记录</view>
+                    </block>
+                    <block wx:elif="{{tabNum == 1}}">
+                        <view class="list-warpper clearfix">
+                            <block wx:for="{{planList}}" wx:key="{{item.planId}}" wx:if="{{planList.length != 0}}" >
+                                <view class="list" @tap="jump({{item.status}},{{item.planId}})">
+                                    <view class="list-top">
+                                        <text style="max-width: 80%;display: inline-block" class="oneline-overflow">计划申请：{{item.createEmployeeName}} {{item.applyVisitBeginTime2}}</text>
+                                        <text style="color: #3096f8;float: right">{{item.statusValue}}</text>
+                                    </view>
+                                    <view class="list-des">
+                                        <view class="list-des-item oneline-overflow clearfix">
+                                            <text style="max-width: 90%;display: inline-block;float: left" class="oneline-overflow">来访人：{{item.name}}</text>
+                                            <image src="{{item.tagLogo}}" style="display: block;float: left;width: 50rpx;height: 24rpx;margin-left: 24rpx;margin-top: 4rpx;" ></image>
+                                        </view>
+                                        <view class="list-des-item oneline-overflow">
+                                            事项：
+                                            <block wx:if="{{item.status == 1}}">
+                                                {{item.remark}}
+                                            </block>
+                                            <block else>
+                                                {{item.visitContent}}
+                                            </block>
+                                        </view>
+                                        <view class="list-des-item oneline-overflow" style="font-size:26rpx;color: #666">
+                                            跟进人：{{item.followName}}
+                                        </view>
+                                    </view>
+                                </view>
+                            </block>
+                            <block wx:if="{{planList.length == 0}}">
+                                <view class="weui-loadmore weui-loadmore_line" style="margin-top: 80rpx">
+                                    <view class="weui-loadmore__tips weui-loadmore__tips_in-line" style="background-color: #f2f2f4!important;">暂无数据</view>
+                                </view>
+                            </block>
+                        </view>
+                    </block>
+                    <block wx:else>
+                        <view class="item" wx:for="{{orderList}}" wx:key="unique">
+                            <view class="flex-box">
+                                <view>
+                                    <image class="icon" src="../../images/toux.png"/>
+                                </view>
+                                <view class="flex-1">
+                                    <view class="row">{{item.memberName}}<image src="{{item.tagLogo}}" class="vip"></image> </view>
+                                </view>
+                                <view class="state">
+                                    <block wx:if="{{item.auditStatus == 0}}">待审核</block>
+                                    <block wx:elif="{{item.auditStatus == 1}}">重新审核</block>
+                                    <block wx:else>已通过</block>
+                                </view>
+                            </view>
+                            <view class="project-list">
+                                <view class="flex-box color-66" wx:for="{{item.salePackageItems}}">
+                                    <view class="flex-1">
+                                        <view class="ellipsis-1">{{item.salePackageName}}</view>
+                                    </view>
+                                    <view>
+                                        x{{item.buyNum}}
+                                    </view>
+                                </view>
+                            </view>
+                            <view class="flex-box color-66">
+                                <view class="flex-1">
+                                    {{item.addTime}}
+                                </view>
+                                <view>
+                                    共{{item.salePackageItems.length}}个项目：<text class="color-33 size-30">{{item.totalAmount}}元</text>
+                                </view>
+                            </view>
+                        </view>
+                        <view wx:if="{{orderList.length == orderTotalSize}}" class="text-center color-99 size-28" style="padding: 24rpx">没有更多订单信息</view>
+                    </block>
+                </view>
+            </scroll-view>
+        </view>
+        <view class="view-footer">
+            <navigator class="btn" wx:if="{{res.isMemberFollow}}" url="/pages/client/edit">修改客户资料</navigator>
+            <navigator class="btn" url="/pages/client/addExchange">增加沟通记录</navigator>
+        </view>
+    </view>
+
+
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+
+	export default class Details extends wepy.page {
+		config = {
+			navigationBarTitleText: '客户详情页',
+			backgroundColor: '#F2F2F2'
+		};
+
+		onLoad(o) {
+			this.memberId = o.id;
+			wx.setStorageSync('Communi',false);
+			this.getPageList();
+			/*this.res = wx.getStorageSync('eInfo');*/
+		}
+
+		onShow() {
+			this.getMemberDetail();
+			if (wx.getStorageSync('Communi')) {
+				this.pageNo = 1;
+				this.totalSize = 1;
+				this.communiList = [];
+				this.getPageList();
+            }
+
+        }
+
+		data = {
+			tabNum: 0,
+			memberId: '',
+			communiList: [],
+			orderList:[],
+			planList:[],
+			pageNo: 1,
+			totalSize: 1,
+			orderPageNo: 1,
+            orderTotalSize: 1,
+			res: {
+
+			}
+		};
+
+		watch = {
+			/*num (curVal, oldVal) {
+				console.log(`旧值：${oldVal}，新值：${curVal}`)
+			}*/
+		};
+
+		methods = {
+			tab(index, e) {
+				this.tabNum != index && (this.tabNum = index);
+				if (index == 1) {
+					this.getPlanList();
+                } else if (index == 2) {
+                    this.getOrderList();
+                }
+			},
+			lower() {
+				if (this.tabNum == 0) {
+					this.pageNo = this.pageNo + 1;
+					this.getPageList();
+                } else if (this.tabNum == 2) {
+					this.orderPageNo = this.orderPageNo + 1;
+					this.getOrderList();
+                } else {
+
+                }
+
+			},
+			tel(num,e) {
+				wx.makePhoneCall({
+					phoneNumber: ~~num //仅为示例，并非真实的电话号码
+				})
+            }
+		};
+		async getMemberDetail() {
+			let {data} = await api.getMemberDetail({
+				query:{
+					memberId:this.memberId
+				}
+			});
+			this.res = data;
+			wx.setStorageSync('memberDetail',data);
+			this.$apply();
+		}
+		async getPageList() {
+			if (this.communiList.length == this.totalSize) {
+				return
+			}
+			let {data:{list,totalSize}} = await api.getPageList({
+				query:{
+					memberId: this.memberId,
+					pageNo: this.pageNo,
+					pageSize: 10
+				}
+			});
+
+			for (let v of list) {
+				v.addTime = v.addTime.replace(/-/g,'.').substring(0,v.addTime.length-3);
+			}
+
+			this.totalSize = totalSize;
+			this.communiList = [...this.communiList,...list];
+			this.$apply();
+		}
+		//计划列表接口-分页
+		async getPlanList(){
+			if (this.planList.length) {
+				return
+            }
+			const {data:{list}} = await api.planList({
+				query: {
+					memberId:this.memberId,
+					isCancelDefaultBeginTime:1
+				}
+			});
+
+			this.planList = list /*this.planList.concat(list)*/;
+	/*		this.pageSize = planListData.data.totalSize;*/
+			this.$apply();
+		}
+		async getOrderList() {
+			if (this.orderList.length == this.orderTotalSize) {
+				return
+			}
+			const {data:{list,totalSize}} = await api.orderList({
+				query: {
+					memberId: this.memberId,
+					pageNo: this.orderPageNo,
+					pageSize: 10
+				}
+			});
+
+			for (let v of list) {
+				v.addTime = v.addTime.replace(/-/g,'.').substring(0,v.addTime.length-3);
+			}
+
+			this.orderTotalSize = totalSize;
+            this.orderList = [...this.orderList,...list];
+			this.$apply();
+		}
+
+	}
+</script>

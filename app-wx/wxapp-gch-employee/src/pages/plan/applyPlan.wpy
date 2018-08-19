@@ -1,0 +1,316 @@
+<style lang="less">
+  page{background: #f2f2f4}
+  ::-webkit-scrollbar{
+    width: 0;
+    height: 0;
+    color: transparent;
+  }
+  .input-textarea textarea{
+    width: 100%;
+    background: #fff;
+    padding: 10rpx 30rpx;
+    box-sizing: border-box;
+    overflow: hidden;
+    height: 280rpx!important;
+    line-height: 1.5;
+    font-size: 28rpx;
+    letter-spacing: 5rpx;
+  }
+  .list-warpper{
+    color: #666;
+    width: 100%;
+    background: #fff;
+    box-sizing: border-box;
+    margin-top: 20rpx;
+    padding: 0 30rpx;
+    .list{
+      font-size: 28rpx;
+      line-height: 1;
+      padding: 30rpx 0;
+      border-bottom: 1px solid #eee;
+    }
+  }
+  .list:last-child{border-bottom: 0}
+  .arrows{
+    width: 16rpx;
+    height: 30rpx;
+  }
+  .bottom{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 94rpx;
+    font-size: 36rpx;
+    line-height: 94rpx;
+    background: #999;
+    color: #fff;
+    text-align: center;
+  }
+  .bottom-active{
+    background: #3096f8!important;
+  }
+  button:after{border:0;}
+  .customeSource{
+    font-size: 28rpx;
+    line-height: 1;
+    padding: 30rpx 0;
+    color:#333;
+    border-bottom: 1px solid #eee;
+    .duijie-list-item{
+      margin-bottom: 60rpx;
+      text{
+        display: block;
+        float: left;
+      }
+      image{
+        display: block;
+        float: left;
+        width: 34rpx;
+        height: 34rpx;
+        padding-left: 30rpx;
+        margin-top: -2rpx;
+      }
+    }
+    .duijie-list-item:last-child{
+      padding-bottom: 0;
+    }
+  }
+
+</style>
+<template>
+  <view style="height: 1px;width: 100%;background: #eee;"></view>
+  <view class="input-textarea">
+    <textarea bindblur="bindTextAreaBlur"  placeholder="请计划客户来访事项" maxlength="100" adjust-position="false"/>
+  </view>
+
+  <view class="list-warpper">
+    <view class="list" style="color: #333!important;border-bottom: 1px solid #ddd">
+      <text>计划基本信息</text>
+    </view>
+    <!--<view class="list">
+      <picker  bindchange="bindMenberChange" value="{{menberIndex}}" range="{{menberArray}}" range-key="name">
+        <text>来访人：</text>
+        <image src="../../images/arrows.png" class="arrows" style="float: right;"></image>
+        <block wx:if="{{menberIndex ==''}}">
+          <text style="float: right;padding-right: 16rpx">选择</text>
+        </block>
+        <block wx:else>
+          <text class="color-33" style="float: right;padding-right: 16rpx">{{menberArray[menberIndex].name}}</text>
+        </block>
+      </picker>
+    </view>-->
+    <navigator url="/pages/plan/setClient" hover-class="none" class="list">
+        <text>来访人：</text>
+        <image src="../../images/arrows.png" class="arrows" style="float: right;"></image>
+        <block wx:if="{{menberArray ==''}}">
+          <text style="float: right;padding-right: 16rpx">选择</text>
+        </block>
+        <block wx:else>
+          <text class="color-33" style="float: right;padding-right: 16rpx">{{menberArray.memberName}}</text>
+        </block>
+    </navigator>
+    <!--选择来访人成功后显示-->
+    <view class="customeSource clearfix" wx:if="{{menberArray !=''}}">
+      <view>
+        <text style="color: #666">客户来源：</text>
+        <text>{{menberArray.bizzPartnerName}}</text>
+      </view>
+      <view style="padding-top: 40rpx;">
+        <view style="color: #666;float: left">业务对接：</view>
+        <view clss="duijie-list" style="float: left">
+          <block wx:for="{{menberArray.memberLinkmanItems}}" wx:key="{{item.memberLinkmanId}}">
+            <view class="duijie-list-item" >
+              <text >{{item.name}}：{{item.mobilePhone}}</text>
+              <image src="../../images/icon-small-phone.png" @tap="dial({{item.mobilePhone}})"></image>
+            </view>
+          </block>
+        </view>
+      </view>
+    </view>
+
+    <!--<view class="list">
+      <picker bindchange="bindVisitChange" value="{{visitIndex}}" range="{{visitArray}}" >
+        <text>来访类型：</text>
+        <image src="../../images/arrows.png" class="arrows" style="float: right;"></image>
+        <block wx:if="{{visitIndex ==''}}">
+          <text style="float: right;padding-right: 16rpx">选择</text>
+        </block>
+        <block else>
+          <text class="color-33" style="float: right;padding-right: 16rpx">{{visitArray[visitIndex]}}</text>
+        </block>
+      </picker>
+    </view>-->
+
+    <navigator url="/pages/plan/comeType" hover-class="none" class="list">
+      <text>来访类型：</text>
+      <image src="../../images/arrows.png" class="arrows" style="float: right;"></image>
+      <block wx:if="{{comeType != ''}}">
+        <text class="color-33" style="float: right;padding-right: 16rpx">{{comeType}}</text>
+      </block>
+      <block wx:else>
+        <text style="float: right;padding-right: 16rpx">选择</text>
+      </block>
+    </navigator>
+
+    <view class="list">
+      <picker mode="date" value="{{date}}"  bindchange="bindDateChange">
+        <text>来访申请时间：</text>
+        <image src="../../images/arrows.png" class="arrows" style="float: right;"></image>
+        <block wx:if="{{date == ''}}">
+          <text style="float: right;padding-right: 16rpx">选择</text>
+        </block>
+        <block wx:if="{{date != ''}}">
+            <text class="color-33" style="float: right;padding-right: 16rpx"> {{dateShow}}</text>
+        </block>
+      </picker>
+    </view>
+
+  </view>
+
+  <view class="bottom {{( (textareaInput !='') && (menberArray != '') && (comeType != '') &&  (date != '')) ? 'bottom-active':''}}" @tap="submit">确认申请</view>
+  </template>
+<script>
+  import wepy from 'wepy'
+  import {dateFormat} from '../../utils/util'
+  import api from '../../api/api'
+
+  export default class applyPlan extends wepy.page {
+    config = {
+      navigationBarTitleText: '申请计划',
+      enablePullDownRefresh: false,     //关闭系统刷新
+    }
+    data = {
+      textareaInput:'',//输入框
+      menberIndex:[],//来访人索引
+      menberArray:[],//来访人
+      /*visitIndex:[],//来访类型索引
+      visitArray: ['参观', '会诊', '体检'],//来访类型
+      visitType:'',//来访类型*/
+
+      comeTypeNum:[],
+      comeType:[],
+
+      date:'',//选择的时间
+      dateShow:'',//选择的时间-显示年月日格式
+
+      isWorkbench:false,
+    }
+    // textarea
+    bindTextAreaBlur(e) {
+      console.log(e.detail.value)
+      this.textareaInput = e.detail.value;
+    }
+    bindFormSubmit(e) {
+      console.log(e.detail.value.textarea);
+      this.textareaInput = e.detail.value;
+    }
+    // 选择来访人
+    bindMenberChange(e) {
+      this.menberIndex = e.detail.value;
+      this.memberId = this.menberArray[this.menberIndex].memberId; // 这个id就是选中项的memberId
+    }
+    // 选择来访类型
+    bindVisitChange(e) {
+      this.visitIndex = e.detail.value;
+      this.visitType = ~~ e.detail.value + 1;
+    }
+    // 选择来访时间
+    bindDateChange(e) {
+      this.date = e.detail.value;
+      this.dateShow = dateFormat(new Date(this.date),'YYYY年MM月DD日');//初始化当前日期
+    }
+
+
+    methods = {
+      //拨打电话
+      dial(e1){
+        wx.makePhoneCall({
+          phoneNumber: e1,//仅为示例，并非真实的电话号码
+          success:function(){
+            console.log("拨打电话成功！")
+          },
+          fail:function(){
+            console.log("拨打电话失败！")
+          }
+        })
+      },
+    }
+    //确认申请
+    submit(){
+      //判断来访人 来访类型 日期不为空
+      if((this.textareaInput !='')&&(this.menberArray != '') && (this.comeType != '') && (this.date != '')){
+        this.add();
+      }
+
+    }
+    //客户列表接口
+    async MemberList(){
+      const {data} = await api.getMemberList({
+        query: {
+        }
+      });
+      this.menberArray = data.list;
+      this.$apply();
+    }
+
+    // 确定申请接口
+    async add() {
+      const {imei_error_code} = await api.planAdd({
+        query: {
+          bizzPartnerId : this.menberArray.bizzPartnerId,//合作商ID
+          memberId : this.menberArray.memberId,//用户ID
+          visitType : this.comeTypeNum,//来访类型
+          remark : this.textareaInput,//备注
+          applyVisitBeginTimeString : this.date,//申请时间
+          linkmanList:this.menberArray.memberLinkmanItems,//创建计划的员工ID
+        }
+      });
+      if (imei_error_code == 0) {
+        wx.showToast({
+          title: '申请成功！',
+          icon: 'success',
+          duration: 1000
+        });
+        wx.setStorageSync('comeTypeNum');//申请成功清空缓存
+        wx.setStorageSync('comeType');//申请成功清空缓存
+        wx.setStorageSync('applyClient');
+        if (!this.isWorkbench) {
+          setTimeout(function() {
+            wx.navigateBack({
+              delta: 1
+            });
+          }, 1000);
+        } else {
+          setTimeout(function() {
+            console.log(123);
+            wx.navigateTo({
+              url: '/pages/plan/plan'
+            });
+          }, 1000);
+        }
+
+      }
+    }
+
+    onShow(){
+      this.comeTypeNum = wx.getStorageSync('comeTypeNum');//来访类型
+      this.comeType = wx.getStorageSync('comeType');//来访类型
+      this.menberArray = wx.getStorageSync('applyClient')[0];
+      // console.log(this.menberArray)
+    }
+
+    async onLoad(options) {
+      this.isWorkbench = options.isWorkbench || false;//是否在工作台里面进来，
+      // this.startTime = dateFormat(new Date(),'YYYY-MM-DD');//初始化当前日期
+      this.comeTypeNum=[];
+      this.comeType=[];
+      wx.setStorageSync('comeTypeNum');
+      wx.setStorageSync('comeType');
+      wx.setStorageSync('applyClient');
+      this.menberArray =[];
+      // this.MemberList();//来访人列表
+      this.$apply();
+    }
+  }
+</script>

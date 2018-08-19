@@ -1,0 +1,317 @@
+<style lang="scss">
+  page {
+    background-color: #f2f2f4;
+    border-top:1px solid #ddd;
+  }
+  .or-tab{
+    background: #fff;
+    padding:0 25rpx;
+    overflow: hidden;
+    display:-webkit-box;
+    display:-webkit-flex;
+    display: flex;
+    -webkit-box-align:center;
+    -webkit-align-items:center;
+    align-items:center;
+    font-size: 26rpx;
+    color: #666;
+    height:82rpx;
+    line-height: 82rpx;
+    position: fixed;
+    width:700rpx;
+    top:100rpx;
+    left:0;
+    z-index:2;
+    border-top: 1px solid #eeeeee;
+  }
+  .or-tab > view{
+    -webkit-box-flex:1;
+    -webkit-flex:1;
+    flex:1;
+    text-align: center;
+    /*margin:0 5rpx;*/
+    position: relative;
+  }
+  .or-tab > view.xs{
+    color: #3096f8;
+  }
+  .or-tab > view view{
+    position: absolute;
+    width:70%;
+    bottom: 0;
+    left:0;
+    border-bottom: 4rpx solid #3096f8;
+    transition: .3s;
+  }
+  /*列表*/
+  .order-list{
+    overflow: hidden;
+    margin-top: 100rpx;
+    padding-bottom:85rpx;
+  }
+  .order-bk{
+    margin-top: 20rpx;
+    background: #fff;
+    font-size:26rpx;
+    > view{
+      padding:0 30rpx;
+      height:76rpx;
+      line-height: 76rpx;
+    }
+    > view:nth-child(2){
+      background: #f9f9f9;
+    }
+    .order-bk-brojec{
+      height:auto;
+      view{
+        overflow: hidden;
+        height:60rpx;
+        line-height: 60rpx;
+        color: #666;
+        text:first-child{
+          width:70%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space:nowrap;
+        }
+      }
+    }
+  }
+  /*悬浮*/
+  .suspension{
+    position: fixed;
+    bottom: 100rpx;
+    right: 40rpx;
+    width:88rpx;
+    height:88rpx;
+  }
+  .button{
+    position: fixed;
+    bottom: 0;
+    width:100%;
+    font-size: 36rpx;
+    color: #fff;
+    text-align: center;
+    height:86rpx;
+    line-height: 86rpx;
+    background: #3096f8;
+    margin-top:134rpx;
+  }
+
+  /*搜索*/
+  .weui-search-bar{width: 100%;height: 100rpx;position: fixed;top:0; left: 0;z-index: 999;
+    border-top:1px solid #eee;border-bottom:0;background: #fff!important;padding:20rpx 30rpx;
+  }
+  .weui-cells{position: fixed;top:100rpx;left: 0;width: 100%;z-index: 999;margin-top: 0!important;font-size: 30rpx;}
+  .weui-icon-search_in-box{top:16rpx}
+  .weui-search-bar__form{background: #f2f2f4!important;border: 0!important;}
+  .weui-search-bar__label{background: #f2f2f4!important;border: 0!important;}
+  .weui-search-bar__cancel-btn{color:#3096f8;font-size: 30rpx;}
+  .weui-search-bar__input{height: 60rpx;line-height: 60rpx;}
+  .weui-cells:after{position: static}
+
+  .weui-icon-checkbox_circle,.weui-icon-checkbox_success{margin-right: 0!important;}
+</style>
+<template>
+  <view class="weui-search-bar">
+    <view class="weui-search-bar__form">
+      <view class="weui-search-bar__box">
+        <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
+        <input type="text" class="weui-search-bar__input" placeholder="请输入项目名称搜索" value="{{inputVal}}"
+               focus="{{inputShowed}}" bindinput="inputTyping"/>
+        <view class="weui-icon-clear" wx:if="{{inputVal.length > 0}}" bindtap="clearInput">
+          <icon type="clear" size="14"></icon>
+        </view>
+      </view>
+      <label class="weui-search-bar__label" hidden="{{inputShowed}}" bindtap="showInput">
+        <icon class="weui-icon-search" type="search" size="14"></icon>
+        <view class="weui-search-bar__text">请输入项目名称搜索</view>
+      </label>
+    </view>
+    <view class="weui-search-bar__cancel-btn" hidden="{{!inputShowed}}" bindtap="hideInput">取消</view>
+  </view>
+  <!--列表-->
+  <view class="order-list">
+    <block wx:for="{{Data.list}}" wx:key="index" wx:for-index="idx">
+      <view  class="order-bk" @tap="client({{idx}},{{item.salePackageItems}},{{item.orderSn}})" >
+      <!--客户状态-->
+      <view>
+        <image style="width: 32rpx;height: 32rpx;margin-top: 22rpx;margin-right: 10rpx;" class="pull-left" src="/images/toux.png"></image>
+        <view class="pull-left ellipsis-1" style="color: #333;font-size: 30rpx;width: 50%;">客户：{{item.memberName}} <text style="color: #deb48c;">VIP</text></view>
+        <view class="pull-right" style="color: #3096f8;">
+          <view style="height: 76rpx">
+            <icon style="margin-top:18rpx;" class="weui-icon-checkbox_circle" type="circle" size="18" wx:if="{{!item.checked}}"></icon>
+            <icon style="margin-top:18rpx;" class="weui-icon-checkbox_success" type="success" size="18" color="#3096f8" wx:if="{{item.checked}}"></icon>
+          </view>
+          </view>
+      </view>
+      <!--项目表-->
+      <view class="order-bk-brojec">
+        <view wx:for="{{item.salePackageItems}}" wx:for-item="it" wx:key="{{it.salePackageId}}">
+          <text class="pull-left">{{it.salePackageName}}</text>
+          <text class="pull-right">×{{it.buyNum}}</text>
+        </view>
+      </view>
+      <!--日期-->
+      <view style="color: #666">
+        <text class="pull-left">{{item.addTime}}</text>
+        <view class="pull-right" style="font-size: 28rpx;height: 100%;">共{{item.salePackageItems.length}}个商品：<text style="font-size: 36rpx;color: #333;">{{item.paidTotalAmount}}元</text></view>
+      </view>
+    </view>
+    </block>
+  </view>
+  <view class="button" @tap="save">确认</view>
+</template>
+<script>
+	import wepy from 'wepy'
+  import api from '../../api/api'
+
+
+  export default class correlationOrder extends wepy.page {
+		config = {
+			navigationBarTitleText: '相关订单页',
+			backgroundColor: '#f4f4f4',
+      "enablePullDownRefresh": true, //开启下拉刷新
+		};
+		data = {
+      status:[{status_title:'待审核',status:'needAudit'},{status_title:'重新审核',status:'needAudit'},{status_title:'已审核',status:'audited'}],
+      size:0,/*头部下标*/
+      left:0,/*头部动作左的值*/
+      inputShowed: false,
+      inputVal: "",
+      Data:[],
+      tobstu:[],
+      zt:false,
+      lenf:1,
+      orderSnArr:[],
+      memberId:'',//带过来的memberId
+      value:'',
+		};
+    async ajax(e,e1){
+      const json = await api.orderList({
+        query: {
+          // auditStatus:this.tobstu[0],
+          pageNo:e1 || this.lenf,
+          pageSize:7,
+          searchSalePackage:this.inputVal,
+          memberId:this.memberId,
+        }
+      });
+        if(e=='scroll'){
+          this.Data.list = this.Data.list.concat(json.data.list);
+        }else{
+          this.Data.list=json.data;
+          setTimeout(function () {
+            this.Data=json.data;
+            this.$apply();
+          }.bind(this),10)
+        }
+        if(this.Data.list.length == json.data.totalSize){
+          this.zt=true;
+        }else{
+          this.zt=false;
+        }
+        if(e=='topscroll'){
+          /*下拉刷新结束*/
+          setTimeout(function () {
+            wx.hideNavigationBarLoading() //完成停止加载
+            wx.stopPullDownRefresh() //停止下拉刷新
+          },500)
+        }
+
+      if(this.value.length!=0){
+        for(var i of this.Data.list.list){
+          for(var v of this.value){
+             if(v.orderSn == i.orderSn){
+               i.checked = true;
+             }
+          }
+        }
+      }
+
+      this.$apply();
+    }
+
+
+    onShow(){
+      this.value = wx.getStorageSync('correlationOrder') || [];//获取缓存数据
+      console.log(this.value,'123')
+    }
+
+    onPullDownRefresh(){
+      /*上拉刷新*/
+      wx.showNavigationBarLoading() //在标题栏中显示加载
+      this.lenf=1;
+      this.ajax('topscroll');
+    }
+
+    onReachBottom(e){//监控滚动到底部
+      if(this.zt){
+        return;
+      }
+      this.ajax('scroll',++this.lenf)
+    }
+
+
+		methods = {
+      //点击选择
+      client(e,e1,e2){
+        const This=this;
+        This.Data.list[e].checked=This.Data.list[e].checked?false:true;
+      },
+      //确认
+      save(){
+        const This=this;
+        This.Data.list.forEach(function(h,index) {
+          if(h.checked==true){
+            this.orderSnArr.push({orderSn:h.orderSn,salePackageItems:h.salePackageItems})
+          }
+        }.bind(this))
+        // console.log(this.orderSnArr);
+        wx.setStorageSync('correlationOrder', this.orderSnArr);
+        wx.navigateBack({
+          delta: 1
+        })
+      },
+      tab(e,stutas){
+        this.tobstu=[stutas,e];
+        this.size=e;
+        this.lenf=1;
+        this.left=((this.size*100+15)+'%');
+        this.ajax()
+      },
+      showInput() {
+        this.inputShowed = true;
+        this.$apply();
+      },
+      hideInput () {
+        this.inputVal = "";
+        this.inputShowed = false;
+        this.lenf=1;
+        this.ajax()
+        this.$apply();
+      },
+      clearInput() {
+        this.inputVal = "";
+        this.lenf=1;
+        this.ajax()
+        this.$apply();
+      },
+      inputTyping(e) {
+        this.inputVal = e.detail.value;
+        this.lenf=1;
+        this.ajax()
+        this.$apply();
+      }
+		};
+
+
+    onLoad(e) {
+      this.size=e.tusta?e.tusta : 0;
+      this.tobstu=[e.id || 'audited',this.size];
+      this.left=((this.size*100+15)+'%');
+      this.memberId = e.memberId;
+      this.ajax()
+    }
+	}
+</script>

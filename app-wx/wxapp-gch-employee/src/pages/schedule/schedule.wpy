@@ -1,0 +1,541 @@
+<style lang="less">
+    .module-wrap {
+        background-color: #fff;
+        margin-bottom: 25rpx;
+        .title {
+            font-size: 32rpx;
+            color: #333;
+            padding: 30rpx;
+            .today {
+                color: #fff;
+                display: inline-block;
+                border-radius: 100%;
+                background-color: #3096F8;
+                width: 40rpx;
+                height: 40rpx;
+                line-height: 40rpx;
+                text-align: center;
+            }
+        }
+        .module-content {
+            padding: 28rpx 40rpx;
+            font-size: 30rpx;
+            >.row+.row {
+                margin-top: 18rpx;
+            }
+            .row {
+                text {
+                    padding-left: 10rpx;
+                }
+                .vip {
+                    color: #DEB48C;
+                    padding-left: 24rpx;
+                    width: 50rpx;
+                    height: 24rpx;
+                }
+                .info {
+                    margin-left: 10rpx;
+                    padding-left: 18rpx;
+                    border-left: 1rpx solid #A9A9A9;
+                }
+            }
+        }
+    }
+    .module-date {
+        border-top: 1rpx solid #ddd;
+        .title {
+            border-bottom: 1rpx solid #F8F8F8;
+        }
+        .module-content {
+            padding: 16rpx 20rpx 18rpx 20rpx;
+            text-align: center;
+            color: #333;
+            .week {
+                font-size: 26rpx;
+                color: #333;
+                margin-bottom: 8rpx;
+            }
+            .date-wrap {
+                position: relative;
+                padding-bottom: 20rpx;
+                .day {
+                    font-size: 36rpx;
+                }
+                .lunar {
+                    font-size: 20rpx;
+                    margin-top: -8rpx;
+                }
+                .dot {
+                    position: absolute;
+                    bottom: 10rpx;
+                    left: 50%;
+                    width: 6rpx;
+                    height: 6rpx;
+                    border-radius: 50%;
+                    background-color: #3096F8;
+                    display: inline-block;
+                }
+            }
+            .now {
+                background-color:#3096F8;
+                color: #fff;
+                margin: 0 10rpx;
+                border-radius: 4px;
+                .dot {
+                    background-color: #fff;
+                }
+            }
+            .active {
+                color: #fff;
+                background-color: #e88d2c;
+                margin: 0 10rpx;
+                border-radius: 4px;
+                .dot {
+                    background-color: #fff;
+                }
+            }
+        }
+    }
+    .module-my {
+        .title {
+            border-bottom: 1rpx solid #e2e2e2;
+            background-color: #fff;
+        }
+        .header {
+            border-bottom: 1rpx solid #e1e1e1;
+            padding-bottom: 30rpx;
+        }
+        .schedule:first-of-type {
+            padding-top: 0;
+        }
+        .module-content {
+            padding: 28rpx 0;
+        }
+        .schedule {
+            padding: 0 40rpx;
+            padding-bottom: 28rpx;
+            background-color: #fff;
+        }
+        .schedule+.schedule {
+            padding-top: 28rpx;
+            border-top: 1rpx solid #ddd;
+        }
+        .center {
+            color: #333;
+            .task-item {
+                margin-top: 45rpx;
+                position: relative;
+                overflow-clip-box: padding-box;
+                .right {
+                    min-height: 156rpx;
+                }
+            }
+            .task-item+.task-item .border {
+                border-top: 1rpx solid #f0f0f0;
+                position: absolute;
+                width: 72vw;
+                top: -22.5rpx;
+                right: 0;
+            }
+            .flex-box {
+                align-items: flex-start;
+            }
+            .left {
+                .start-time {
+                    font-size: 38rpx;
+                }
+                .end-time {
+                    font-size: 28rpx;
+                    color: #666;
+                }
+                .state {
+                    color: #3096F8;
+                }
+
+                padding-right: 26rpx;
+            }
+            .right {
+                border-left: 6rpx solid #F2F2F4;
+                padding-left: 30rpx;
+            }
+            .flex-1 {
+                word-break:break-all;
+            }
+        }
+    }
+    .module-all {
+        padding-bottom: 100rpx;
+        margin-bottom: 0;
+        .title {
+            border-bottom: 1rpx solid #e2e2e2;
+        }
+        .module-content {
+            border-bottom: 1rpx solid #e2e2e2;
+            padding: 0;
+            .header {
+                padding: 28rpx 40rpx;
+            }
+            .header+.header {
+                border-top: 1rpx solid #eee;
+            }
+        }
+    }
+    .swiper {
+        height: 160rpx;
+    }
+    .icon {
+        width: 28rpx;
+        height: 28rpx;
+        display: block;
+    }
+    .icon-cell {
+        width: 58rpx;
+    }
+    .sp-mt-6 {
+        margin-top: 6rpx;
+    }
+    .sp-mt-20 {
+        margin-top: 20rpx;
+    }
+    .no-data {
+        color: #ddd;
+        text-align: center;
+        position: relative;
+        border-bottom: 1rpx solid #ddd;
+        margin-top: 52rpx;
+        padding-top: 22rpx;
+        margin-bottom: 74rpx;
+        background-color: #fff;
+        .msg {
+            position: absolute;
+            top: 0;
+            padding: 0 30rpx;
+            background-color: #fff;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    }
+    .color-red {
+        color: #E24949 !important;
+    }
+</style>
+<template>
+    <view class="module-wrap module-date">
+        <view class="title">
+            {{formatDate}} <text @tap="today" class="today">今</text>
+        </view>
+        <view class="module-content">
+            <swiper class="swiper" indicator-dots="{{indicatorDots}}" vertical="{{vertical}}" autoplay="{{autoplay}}" interval="{{interval}}" duration="{{0}}" current="{{swiperCurrent}}" bindchange="swiperChange" circular="{{circular}}" scroll-with-animation="{{true}}">
+                <block wx:for="{{banner}}" wx:for-item="item" wx:key="unique">
+                    <swiper-item>
+                        <view class="table">
+                            <view wx:for="{{item.calendarList}}" wx:key="{{unique}}" @tap="select({{item}},{{index}})" class="cell">
+                                <view class="week">{{item.shortWeek}}</view>
+                                <view class="date-wrap {{page == selectPage && index == selectIndex && 'active'}} {{item.isNow && 'now'}}">
+                                    <view class="day">{{item.day}}</view>
+                                    <view class="lunar">
+                                        {{item.chineseDay}}
+                                    </view>
+                                    <view wx:if="{{item.isSchedule}}" class="dot"></view>
+                                </view>
+                            </view>
+                        </view>
+                    </swiper-item>
+                </block>
+            </swiper>
+        </view>
+    </view>
+
+    <view class="module-wrap module-my">
+        <view class="title">
+            与我相关
+        </view>
+        <view class="module-content">
+            <block wx:if="{{scheduleListData.length}}">
+                <view class="schedule" wx:for="{{scheduleListData}}" wx:key="{{index}}" @tap="toPage({{item}},'/pages/task/task')">
+                    <view class="header">
+                        <view class="flex-box">
+                            <view class="icon-cell">
+                                <image class="icon" src="../../images/time.png"></image>
+                            </view>
+                            <view class="flex-1">{{item.visitBeginTime2}}</view>
+                        </view>
+                        <view class="flex-box sp-mt-6">
+                            <view class="icon-cell">
+                                <image class="icon" src="../../images/person.png"></image>
+                            </view>
+                            <view class="flex-1">
+                                <view class="row">来访人：<text>{{item.name}}</text> <image src="{{item.tagLogo}}" class="vip"></image> </view>
+                            </view>
+                        </view>
+                        <view class="flex-box sp-mt-6">
+                            <view class="icon-cell">
+                                <image class="icon" src="../../images/todo.png"></image>
+                            </view>
+                            <view class="flex-1">
+                                <view class="row ellipsis-1">任务：<text style="padding-left: 40rpx">{{item.visitContent}}</text></view>
+                            </view>
+                        </view>
+                    </view>
+                    <view class="center">
+                        <block wx:for="{{item.sonPlans}}" wx:key="{{item.planSonId}}">
+                            <view class="flex-box task-item">
+                                <view class="left">
+                                    <view class="start-time">{{item.shortBeginTime}}</view>
+                                    <view class="end-time">至{{item.shortEndTime}}</view>
+                                    <view class="state {{item.statusValue=='已逾期' && 'color-red'}}">
+                                        {{item.statusValue}}
+                                    </view>
+                                </view>
+                                <view class="flex-1 right">
+                                    <view class="flex-box">
+                                        <view class="caption size-28 color-66">子任务：</view>
+                                        <view class="flex-1 size-28">{{item.executeContent}}</view>
+                                    </view>
+                                    <view class="flex-box sp-mt-20">
+                                        <view class="caption size-28 color-66">跟进人：</view>
+                                        <view class="flex-1 size-28">{{item.employeeName}}</view>
+                                        <view class="border"></view>
+                                    </view>
+                                </view>
+                            </view>
+                        </block>
+                    </view>
+                </view>
+            </block>
+            <block wx:else>
+                <view class="no-data">
+                    <view class="msg size-28">暂无相关工作安排</view>
+                </view>
+            </block>
+        </view>
+    </view>
+    <view class="module-wrap module-all">
+        <view class="title">
+            全部业务
+        </view>
+        <view class="module-content">
+            <block wx:if="{{scheduleAllListData.length}}">
+                <block wx:for="{{scheduleAllListData}}" wx:key="{{item.planId}}">
+                    <view class="header" @tap="toPage({{item}},'/pages/schedule/all')">
+                        <view class="flex-box">
+                            <view class="icon-cell">
+                                <image class="icon" src="../../images/time.png"></image>
+                            </view>
+                            <view class="flex-1">{{item.applyVisitBeginTime}}</view>
+                            <view>
+                                <image class="arrows" src="../../images/arrows.png"/>
+                            </view>
+                        </view>
+                        <view class="flex-box sp-mt-6">
+                            <view class="icon-cell">
+                                <image class="icon" src="../../images/person.png"></image>
+                            </view>
+                            <view class="flex-1">
+                                <view class="row">来访人：<text>{{item.name}}</text> <image src="{{item.tagLogo}}" class="vip"></image> </view>
+                            </view>
+                        </view>
+                        <view class="flex-box sp-mt-6">
+                            <view class="icon-cell">
+                                <image class="icon" src="../../images/todo.png"></image>
+                            </view>
+                            <view class="flex-1">
+                                <view class="row ellipsis-1">任务：<text style="padding-left: 40rpx">{{item.status > 1 ? item.visitContent : item.remark}}</text></view>
+                            </view>
+                        </view>
+                    </view>
+                </block>
+            </block>
+            <block wx:else>
+                <view class="no-data">
+                    <view class="msg size-28">暂无相关工作安排</view>
+                </view>
+            </block>
+        </view>
+    </view>
+    <zanDialog></zanDialog>
+</template>
+
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+    import {dateFormat} from '../../utils/util'
+	import zanDialog from '../../components/zan-dialog'
+
+	export default class Schedule extends wepy.page {
+		config = {
+			navigationBarTitleText: '日程',
+			backgroundColor: '#F2F2F4',
+			enablePullDownRefresh: true
+		};
+
+		onLoad() {
+			this.scheduleCalendar();
+		    this.scheduleList({beginTimeString: ''});
+			this.scheduleAllList({applyVisitBeginTime: ''});
+			this.$parent.verifyAccredit();
+
+			/*this.scheduleList({
+				isPage: 0,
+				planId: 15
+			});*/
+		}
+
+		onShow() {
+			if (typeof this.date == 'object') {
+				this.scheduleList({beginTimeString: ''});
+				this.scheduleAllList({applyVisitBeginTime: ''});
+			} else {
+				this.scheduleList({beginTimeString: this.date});
+				this.scheduleAllList({applyVisitBeginTime: this.date});
+			}
+        }
+
+		onPullDownRefresh() {
+			if (typeof this.date == 'object') {
+				this.scheduleList({beginTimeString: ''});
+				this.scheduleAllList({applyVisitBeginTime: ''});
+            } else {
+				this.scheduleList({beginTimeString: this.date});
+				this.scheduleAllList({applyVisitBeginTime: this.date});
+            }
+
+			setTimeout(function () {
+				wx.stopPullDownRefresh();
+			},1500)
+        }
+
+		components = {
+			zanDialog,
+		};
+
+		/*watch = {
+			page (curVal, oldVal) {
+				this.selectPage = oldVal;
+			}
+		};*/
+
+		data = {
+			scrollAnimation: true,//动画
+			calendarList:[0,1,2],//单周日历列表
+			isCalendarOne: false,
+			banner: [false,false,false],
+			swiperCurrent:1,
+			lastCurrent:0,
+			page: 1,//页码
+			selectPage: '',//选择页码
+			selectIndex: '',
+			employeeId: '',
+            date: new Date(),
+			isNow: 1,
+			scheduleListData: [],//与我相关
+			scheduleAllListData: [],//全部业务
+
+		};
+
+		computed = {
+			formatDate () {
+				/*console.log(dateFormat(new Date('2018/10/01'), 'YYYY年MM月DD日'))*/
+				return dateFormat(new Date(this.date), 'YYYY年MM月DD日')
+			},
+            pageDate() {
+	            return dateFormat(new Date(this.date), 'YYYY-MM-DD')
+            }
+		}
+
+		methods = {
+			swiperChange(e) {
+				let current = e.detail.current;
+				this.dealScroll(current);
+			},
+			select(data, index,e) {
+				this.selectPage = this.page;
+				this.selectIndex = index;
+				this.isNow = data.isNow;
+				this.date = data.date;
+				this.scheduleList({beginTimeString: data.date});
+				this.scheduleAllList({applyVisitBeginTime: data.date});
+			},
+            toPage(data, url, e) {
+	            this.$navigate(url,{date:this.pageDate,memberId:data.memberId,planId:data.planId});
+            },
+			today() {
+				this.page = 1;
+				this.date = new Date();
+				this.scheduleCalendar();
+				this.setData({
+					swiperCurrent: 1
+				})
+            }
+		}
+
+		showAccreditDialog() {
+			this.$invoke('zanDialog', 'showZanDialog', {
+				title: '是否授权',
+				content: '由于您未授权头像信息，所以部分功能受限，您可以去打开授权，更好的使用小程序',
+				showCancel: false,
+				buttons:[],
+				openType: 'getUserInfo',
+			})
+				.then(() => {
+				})
+				.catch(() => {
+
+				})
+		}
+
+		//日历滚动
+		dealScroll(current) {
+			//首先判断左滑还是右滑动
+
+			if (this.swiperCurrent - current > 0) {
+				//左滑动
+				this.page = this.page - 1;
+				this.scheduleCalendar();
+				return
+
+			} else if (this.swiperCurrent - current < 0) {
+				//右滑动
+				this.page = this.page + 1;
+				this.scheduleCalendar();
+				return
+
+			}
+		}
+
+		async scheduleCalendar() {
+			let {data} = await api.scheduleCalendar({query:{
+				pageSize: 7,
+				pageNo: this.page
+			}});
+
+			this.banner = [{calendarList:data.slice(0,7)},{calendarList:data.slice(7,14)},{calendarList:data.slice(14,21)}];
+
+			/*this.calendarList = data;*/
+			this.setData({
+				swiperCurrent: 1
+			})
+
+			this.$apply();
+		}
+
+		async scheduleList(query={}) {
+			let {data} = await api.scheduleList({query});
+			/*for (let i = 0,l = data.length; i < l; i++) {
+				data[i].visitBeginTime = dateFormat(new Date(data[i].visitBeginTime.replace('-','/')), 'YYYY年 MM月 DD日');
+				/!*	endTime = new Date(data[i].visitEndTime);
+				data[i].visitBeginTime = beginTime.getMonth()+1+'月'+beginTime.getDate()+'日';
+				data[i].visitEndTime = endTime.getMonth()+1+'月'+endTime.getDate()+'日';*!/
+			}*/
+
+			this.scheduleListData = data;
+			this.$apply();
+		}
+		async scheduleAllList(query={}) {
+			let {data:{list}} = await api.scheduleAllList({query});
+			this.scheduleAllListData = list;
+			this.$apply();
+		}
+
+	}
+</script>

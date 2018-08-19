@@ -1,0 +1,244 @@
+<style lang="scss">
+  page {
+    background-color: #f8f8f8;
+    border-top:1px solid #ddd;
+  }
+  page > view{
+    background: #fff;
+  }
+  /*table top start*/
+  .custom-top{
+    position: fixed;
+    width:100%;
+    overflow: hidden;
+    top:70px;
+    left:0;
+  }
+  .custom-top view:first-child{
+    display:-webkit-box;
+    display:-webkit-flex;
+    display: flex;
+    -webkit-box-align:center;
+    -webkit-align-items:center;
+    align-items:center;
+    height:76rpx;
+    line-height:76rpx;
+    text{
+      display: inline-block;
+      text-align: center;
+      -webkit-box-flex:1;
+      -webkit-flex:1;
+      flex:1;
+      font-size: 30rpx;
+      color: #666;
+    }
+  }
+  .custom-top view:nth-child(2){
+    overflow: hidden;
+    background: #fdf3da;
+    padding:10rpx 37rpx;
+    text{
+      float: left;
+      font-size: 22rpx;
+      color: #666;
+    }
+    text:nth-child(2){
+      width:610rpx;
+    }
+  }
+  .custom-top text.xs{
+    color: #ff8589 !important;
+  }
+  /*table end => customText start*/
+  .custom-t{
+    padding:144rpx 24rpx 0;/*184*/
+    background-color: #f8f8f8;
+  }
+  .custom-t > view{
+    background: #fff;
+    border-radius: 5rpx;
+    border:1px solid #f8f5f5;
+    margin-bottom: 20rpx;
+  }
+  .cus-bk > view{
+    overflow: hidden;
+    padding:0 20rpx;
+  }
+  .cus-bk > view:first-child{
+    height:71rpx;
+    line-height: 71rpx;
+    font-size: 24rpx;
+    color: #999;
+    text:nth-child(2){
+      color: #ef2e2e;
+    }
+  }
+  .cus-bk > view:nth-child(2){
+    padding: 20rpx;
+    border-top:1px solid #eee;
+    border-bottom:1px solid #eee;
+    image{
+      width:140rpx;
+      height: 140rpx;
+      border-radius: 50%;
+      float: left;
+      margin-right: 30rpx;
+    }
+    > view{
+      float: left;
+      font-size: 26rpx;
+      color: #666;
+      view:nth-child(1){
+        font-size: 30rpx;
+        color: #333;
+      }
+      text{
+        color: #ff8589;
+      }
+    }
+  }
+  .cus-bk > view:nth-child(3){
+    font-size: 26rpx;
+    color: #333;
+    height:66rpx;
+    line-height: 66rpx;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text:first-child{
+      color: #666;
+    }
+  }
+  /*customText end*/
+</style>
+<template>
+  <view class="header">
+    <navigation :title="navTitle"></navigation>
+  </view>
+  <!--table top start-->
+  <view class="custom-top">
+    <view>
+      <text @tap="tab(3)" class="{{status[3]?'xs':''}}">消费用户</text>
+      <text @tap="tab(4)" class="{{status[4]?'xs':''}}">消耗用户</text>
+      <text @tap="tab(2)" class="{{status[2]?'xs':''}}">注册用户</text>
+      <text @tap="tab(1)" class="{{status[1]?'xs':''}}">浏览用户</text>
+    </view>
+    <view>
+      <text>提示：</text>
+      <text class="ellipsis-2">{{point[statusSize]}}</text>
+    </view>
+  </view>
+  <!--table end => customText start-->
+  <view class="custom-t" style="padding-top:{{(status[1] || status[4])?'174rpx':'144rpx'}}">
+    <view class="cus-bk" wx:for="{{attr}}" wx:key="index">
+      <!--top-->
+      <view>
+        <text class="pull-left">{{item.time}}</text>
+        <text class="pull-right">{{item.type}}</text>
+      </view>
+      <!--userText-->
+      <view>
+        <image src="{{item.head}}"></image>
+        <view>
+          <view>{{item.userName}}</view>
+          <view>{{item.mobile}}</view>
+          <view>来源: <text>{{item.activityName}}</text></view>
+        </view>
+      </view>
+      <!--推广-->
+      <view>
+        <text>推广员：</text><text wx:for="{{item.spreaders}}" wx:key="index">{{(index==0?'':'，')+item.spreaderName}}</text>
+      </view>
+    </view>
+  </view>
+  <!--customText end-->
+</template>
+<script>
+  import wepy from 'wepy'
+  import api from '../../api/api'
+  import navigation from '@/components/navigation'
+
+
+  export default class Cart extends wepy.page {
+    config = {
+      navigationBarTitleText: '累计客户',
+      backgroundColor: '#f4f4f4',
+//      "enablePullDownRefresh": true, //开启下拉刷新
+    };
+    components = {
+      navigation
+    };
+    data = {
+      navTitle:'累计客户',
+        cort:['消费用户','消耗用户','注册用户','浏览用户'],
+      point:[
+          '没有',
+        '通过扫码进入活动链接，拒绝授权手机号码，未获取手机号码，也没进行购买的',
+        '通过扫码进入活动链接，获取手机号码，未实现购买',
+        '消费用户，用户通过活动链接成功购买，但未实现首次使用',
+        '通过扫码进入活动链接，获取手机号码，完成支付，购买成功，且首次预约消耗活动订单的项目',
+      ],
+      attr:[],
+      status:[false,false,false,true],/*tab 切换状态*/
+      statusSize:3,/*tab 切换数值*/
+      leng:1,
+    };
+
+
+    onPullDownRefresh(){
+
+    }
+
+    onReachBottom(e){//监控滚动到底部
+      if(!this.leng){return ;}
+      this.ajxa({status:this.statusSize,page:++this.leng});
+    }
+    async ajxa(e){
+      /*加载列表*/
+      const json = await api.getCustom({
+        query: {
+          status:e.status,
+          pageNo:e.page,
+          pageSize:15
+        }
+      });
+      if(this.leng>1){
+        this.attr=this.attr.concat(json.data.list);
+      }else{
+        this.attr=json.data.list;
+      }
+      if(this.attr.length == json.data.totalSize){
+        this.leng=false;
+      }
+      this.$apply();
+      return json;
+    }
+
+
+    table(e){
+      var This=this;
+      This.ajxa({status:e,page:1}).then(function (e1) {
+        if(e1.imei_error_code==0){
+          This.status=[];
+          This.status[e]=true;
+          This.statusSize=e;
+          if(This.attr.length == e1.data.totalSize){
+            This.leng=false;
+          }else{
+            This.leng=1;
+          }
+        }
+        This.$apply();
+      });
+    }
+    methods = {
+      tab(e){
+        this.table(e);
+      }
+    };
+
+    onLoad(e) {
+      this.table(e.id || 3);
+    }
+  }
+</script>

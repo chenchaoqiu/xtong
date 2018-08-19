@@ -1,0 +1,214 @@
+<style lang="scss">
+    page {
+        height: 100%;
+        max-height: 100%;
+        background-color: #f8f8f8;
+    }
+    .header {
+        min-height: 70px;
+    }
+    .main {
+        height: 100%;
+    }
+    .container {
+        margin-top: 10px;
+        overflow: hidden;
+        padding: 0 24rpx;
+        padding-bottom: 18rpx;
+        background-color: #fff;
+        .title {
+            font-weight: bold;
+            margin-top: 26rpx;
+        }
+        .time {
+            margin-top: 14rpx;
+            margin-bottom: 26rpx;
+            color: #ff8589;
+            .shop-name {
+                font-size: 30rpx;
+                color: #ff8589;
+                margin-left: 15px;
+            }
+        }
+        .img-wrap {
+            text-align: center;
+            position: relative;
+        }
+        .m-wrap {
+            width: 275px;
+            display: inline-block;
+            position: relative;
+        }
+        .poster {
+            width: 690rpx;
+            height: 932rpx;
+        }
+    }
+    .canvas-box{
+        position: fixed;
+        top:999999rpx;
+        left: 0
+    }
+    .info {
+        padding: 8rpx 10rpx;
+        width: 175px;
+        position: absolute;
+        border-radius: 10px;
+        bottom: 30px;
+        left: 50%;
+        .qrcode {
+            width: 53px;
+            height: 53px;
+            border: 1rpx solid #ddd;
+            display: block;
+        }
+    }
+    .weui-cell:after {
+        border: none;
+    }
+    .weui-cell:before {
+        border: none;
+    }
+</style>
+<template>
+    <view class="main-container">
+        <view class="header">
+            <navigation :title="navTitle"></navigation>
+        </view>
+        <view class="main">
+            <view class="container">
+                <view class="ellipsis-2 size-36 title color-33">
+                    {{res.activityTitle}}
+                </view>
+                <view class="time size-24 ellipsis-1"><text class="color-66">活动时间：</text><text style="color: #666; letter-spacing: 1.5px">{{res.activityTime}}</text><text class="shop-name">{{res.companyName}}</text></view>
+                <view class="img-wrap">
+                    <image @tap="previewImg({{res.posterQrCodeUrl}})" class="poster" src="{{res.posterQrCodeUrl}}"></image>
+                    <!--<view class="m-wrap">
+                        <image class="poster" src="{{res.backgroundUrl}}"></image>
+                        <view class="weui-cell info">
+                            <view class="weui-cell__hd color-33">
+                                <image class="qrcode" src=""></image>
+                            </view>
+                            <view class="weui-cell__bd" style="text-align: left;padding-left: 10px;">
+                                <view class="color-33 ellipsis-1 size-28">小黑邀请参加</view>
+                                <view class="color-66 size-20">点击长按</view>
+                                <view class="color-66 size-20">分享好友</view>
+                            </view>
+                        </view>
+                    </view>-->
+                </view>
+                <view class="color-66 size-24" style="text-align: center">点击活动海报后，长按海报可分享给微信好友</view>
+            </view>
+        </view>
+    </view>
+    <!--画图-->
+    <!--<view class="canvas-box">
+        <canvas id="canvas" style="width: 275px;height: 465px;" canvas-id="mycanvas"/>
+    </view>-->
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import navigation from '@/components/navigation'
+  import api from '@/api/api'
+
+  export default class activityDetails extends wepy.page {
+    config = {
+      navigationBarTitleText: '活动详情',
+      enablePullDownRefresh: true,
+      navigationBarTextStyle: 'black',
+    };
+    components = {
+      navigation
+    };
+    data = {
+      navTitle: '活动详情',
+      res: {
+        backgroundUrl: "",//背景图
+        activityId: 1,  //活动Id
+        qrUrl: "",   //二维码图
+        activityTitle: "", //活动标题
+        companyName: "",//商家
+        activityTime: "", //活动开放时间
+        marketId: ""//市场Id
+      }
+    };
+    methods = {
+      previewImg(url,e) {
+
+        wx.previewImage({
+          current: url, // 当前显示图片的http链接
+          urls: [url] // 需要预览的图片http链接列表
+        })
+      }
+    };
+
+    async activeDetail(id) {
+      const {data} = await api.activeDetail({
+        query: {
+          marketSpreaderId: id
+        }
+      });
+      setTimeout(function () {
+        wx.stopPullDownRefresh()
+      },500)
+      this.res = data;
+      /*this.dowImg(data,[{url:data.backgroundUrl,arr:[0,0,275,465]},{url:data.qrUrl,arr:[112.5,400,55,55]}])*/
+      this.$apply();
+    }
+    /*async dowImg(data,is) {
+      let _this = this;
+      wx.downloadFile({
+        url: data.backgroundUrl,
+        success: function(res) {/!*res.tempFilePath*!/
+          this.ctx.drawImage(res.tempFilePath, 0,0,275,465);
+          this.ctx.draw(true);
+          wx.downloadFile({
+            url: data.qrUrl,
+            success: function(res) {/!*res.tempFilePath*!/
+              let name = wx.getStorageSync('eInfo').spreaderName;
+              if (name.length > 4) {
+                name = name.substring(0,4) + '...邀你加入';
+              } else {
+                name = name + '邀你加入';
+              }
+              _this.ctx.drawImage(res.tempFilePath, 60,381,55,55);
+              _this.ctx.draw(true);
+              _this.ctx.setFillStyle('#333');
+              _this.ctx.setFontSize(11);
+              _this.ctx.setTextAlign('left');
+              _this.ctx.fillText(name, 115, 400);
+              _this.ctx.draw(true);
+              _this.ctx.setFillStyle('#666');
+              _this.ctx.setFontSize(10);
+              _this.ctx.setTextAlign('left');
+              _this.ctx.fillText('点击长按', 120, 416);
+              _this.ctx.fillText('分享好友', 120, 431);
+              _this.ctx.draw(true);
+              wx.canvasToTempFilePath({
+                x: 0,
+                y: 0,
+                width: 275,
+                height: 465,
+                canvasId: 'mycanvas',
+                fileType: 'jpg',
+                success: function (res) {
+                  _this.res.backgroundUrl = res.tempFilePath;
+                  _this.$apply();
+                }
+              })
+            }
+          })
+        }.bind(this)
+      })
+    }*/
+    onLoad(option) {
+      this.activeDetail(option.id);
+      this.id = option.id;
+    };
+    onPullDownRefresh() {
+      wx.showNavigationBarLoading(); //在标题栏中显示加载
+      this.activeDetail(this.id);
+    }
+  }
+</script>

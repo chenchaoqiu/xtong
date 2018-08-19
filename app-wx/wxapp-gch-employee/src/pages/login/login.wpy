@@ -1,0 +1,201 @@
+<style lang="less">
+  image{
+    position: fixed;
+    bottom: 0;
+    left:0;
+  }
+  .login{
+    position: fixed;
+    z-index:2;
+    width:100vw;
+    height:100vh;
+    top:0;
+    left:0;
+  }
+  .login-title{
+    height:50rpx;
+    line-height:50rpx;
+    font-size: 44rpx;
+    color: #fff;
+    margin-left: 50rpx;
+  }
+  .login-modu{
+    font-size: 30rpx;
+    color: #fff;
+    margin:0 50rpx;
+    padding-bottom: 36rpx;
+    position: relative;
+    &:before{
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left:0;
+      height:1px;
+      width:100%;
+      background: #f2f2f4;
+    }
+    .login-x{
+      width:0.1%;
+      position: absolute;
+      bottom: 0;
+      left:0;
+      height:1px;
+      background: #3096f8;
+      transition: .5s;
+      box-shadow: 0px 0px 2px #3096f8,0px -1px 5px #3096f8,0px -4px 8px #3096f8;
+    }
+  }
+  .login-modu-laber{
+    margin-bottom: 30rpx;
+  }
+  .login-modu-zone{
+    overflow: hidden;
+    /*height: 30rpx;
+    line-height: 30rpx;*/
+    text{
+      float: left;
+      padding-right: 16rpx;
+      position: relative;
+      &:before{
+        position: absolute;
+        content: '';
+        right:0;
+        top:11rpx;
+        background: #ddd;
+        width:2rpx;
+        height:30rpx;
+      }
+    }
+    input{
+      float: left;
+      width:70%;
+      border:none;
+      outline:none;
+      margin-left: 25rpx;
+      font-size: 30rpx;
+    }
+  }
+  .button{
+    margin:0 50rpx 40rpx;
+    background: #666;
+    font-size: 40rpx;
+    color: #999;
+    height:94rpx;
+    line-height: 94rpx;
+    text-align: center;
+    border-radius: 10rpx;
+  }
+  .button.hover{
+    color: #fff;
+    background: #3096f8;
+  }
+  .hover:active{
+    opacity: .8;
+  }
+</style>
+<template>
+  <view style="background: #000;width: 100%;height: 100vh;">
+    <image style="width: 100%;" mode="widthFix" src="{{ImgURL}}"></image>
+  </view>
+  <view class="login">
+    <view class="login-title" style="margin-top: 50rpx;">Hello ! 小美</view>
+    <view class="login-title" style="margin-bottom:60rpx;">欢迎回来</view>
+    <view class="login-modu">
+      <view class="login-x" style="width: {{(phones[1].length==11 || phones[0])?'':'100%'}};"></view>
+      <view class="login-modu-laber">手机号码</view>
+      <view class="login-modu-zone">
+        <text>+86</text>
+        <input bindfocus="phone" bindinput="phoneCharge" type="number" maxlength="11" placeholder="请输入您的手机号码" />
+      </view>
+    </view>
+    <view class="login-modu" style="margin-top: 40rpx;margin-bottom: 64rpx;">
+      <view class="login-x" style="width: {{(passwords[1].length>=6 || passwords[0])?'':'100%'}};"></view>
+      <view class="login-modu-laber">密码</view>
+      <view class="login-modu-zone">
+        <input bindfocus="password" bindinput="passwordCharge" style="margin-left: 0px;" password="true" type="text" maxlength="8" placeholder="请输入您的密码" />
+      </view>
+    </view>
+    <view @tap="login" class="button {{phones[1].length==11 && passwords[1].length>=6?'hover':''}}">登录</view>
+    <navigator url="/pages/passwordFind/passwordFind" hover-class="navigator-hover" style="font-size: 30rpx;color: #fff;margin-left:50rpx;display: table;">忘记密码？</navigator>
+  </view>
+</template>
+
+<script>
+	import wepy from 'wepy'
+  import api from '../../api/api'
+
+	export default class login extends wepy.page {
+		config = {
+			navigationBarTitleText: '登录'
+		}
+		components = {
+		}
+
+		data = {
+      phones:[true,''],
+      passwords:[true,''],
+      ImgURL:'',
+		}
+
+		computed = {
+		}
+
+		methods = {
+      phone(e){
+          this.phones[0]=false;
+      },
+      phoneCharge(e){
+        this.phones[1]=e.detail.value;
+      },
+      password(e){
+        this.passwords[0]=false;
+      },
+      passwordCharge(e){
+        this.passwords[1]=e.detail.value;
+      },
+      async login(){
+          if(this.phones[1].length==11 && this.passwords[1].length>=6){
+            const json = await api.login({
+              query: {
+                mobile:this.phones[1],
+                password:this.passwords[1],
+                code:'',
+                verifyCodea:'',
+              }
+            });
+            if(json.imei_error_code==0){
+              wx.setStorageSync('session', json.data);
+              wx.showToast({
+                title: '登录成功！',
+                icon: 'success',
+                duration: 1000
+              })
+              setTimeout(function () {
+                wx.reLaunch({
+                  url: '/pages/schedule/schedule'
+                })
+              },1000)
+            }else{
+              wx.showModal({
+                title: '',
+                content: json.imei_error_msg,
+                showCancel:false,
+                confirmColor:'#3096f8'
+              })
+            }
+          }
+      }
+		}
+
+
+
+    onLoad() {
+      if(wx.getStorageSync('session').token){
+        wx.reLaunch({
+          url: '/pages/schedule/schedule'
+        })
+      }
+      this.ImgURL=wepy.$appConfig.imageUrl+'login_bj.jpg'
+		}
+	}
+</script>

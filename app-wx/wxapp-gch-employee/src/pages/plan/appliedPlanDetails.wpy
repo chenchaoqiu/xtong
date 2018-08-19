@@ -1,0 +1,251 @@
+<style lang="less">
+  page{background: #f2f2f4}
+  ::-webkit-scrollbar{
+    width: 0;
+    height: 0;
+    color: transparent;
+  }
+  .input-textarea textarea{
+    width: 100%;
+    background: #fff;
+    padding: 15rpx 30rpx;
+    box-sizing: border-box;
+    overflow: hidden;
+    height: 280rpx!important;
+    line-height: 1.5;
+    font-size: 28rpx;
+    letter-spacing: 5rpx;
+  }
+  .list-warpper{
+    color: #666;
+    width: 100%;
+    background: #fff;
+    box-sizing: border-box;
+    margin-top: 20rpx;
+    padding: 0 30rpx;
+    .list{
+      font-size: 28rpx;
+      line-height: 1;
+      padding: 30rpx 0;
+      border-bottom: 1px solid #eee;
+    }
+  }
+  .list:last-child{border-bottom: 0}
+  .arrows{
+    width: 16rpx;
+    height: 30rpx;
+  }
+  .bottom{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 85rpx;
+    font-size: 36rpx;
+    line-height: 85rpx;
+    background: #999;
+    color: #fff;
+    text-align: center;
+  }
+  .bottom-active{
+    background: #3096f8!important;
+  }
+  button:after{border:0;}
+  .customeSource{
+    font-size: 28rpx;
+    line-height: 1;
+    padding: 30rpx 0;
+    color:#333;
+    border-bottom: 1px solid #eee;
+    .duijie-list-item{
+      margin-bottom: 60rpx;
+      text{
+        display: block;
+        float: left;
+      }
+      image{
+        display: block;
+        float: left;
+        width: 34rpx;
+        height: 34rpx;
+        padding-left: 30rpx;
+        margin-top: -2rpx;
+      }
+    }
+    .duijie-list-item:last-child{
+      padding-bottom: 0;
+    }
+  }
+  .bottom-btn{
+    font-size: 31rpx;
+    color: #fff;
+    text-align: center;
+    width: 100%;
+    height:94rpx;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    background: #fff;
+    text{
+      background: #3096f8;
+      width:150rpx;
+      height:56rpx;
+      line-height:56rpx;
+      margin:20rpx 30rpx 20rpx 0;
+      border-radius: 5rpx;
+    }
+  }
+</style>
+<template>
+  <view style="height: 1px;width: 100%;background: #eee;"></view>
+  <view class="input-textarea">
+    <textarea bindblur="bindTextAreaBlur" value="{{planDetail.remark}}" disabled="true"  placeholder="请计划客户来访事项" maxlength="100" adjust-position="false"/>
+  </view>
+
+  <view class="list-warpper">
+    <view class="list" style="color: #333!important;border-bottom: 1px solid #ddd">
+      <text>计划基本信息</text>
+    </view>
+    <view class="list">
+        <text>来访人：</text>
+        <text class="color-33" style="float: right;">{{planDetail.name}}</text>
+    </view>
+    <!--选择来访人成功后显示-->
+    <view class="customeSource clearfix" >
+      <view>
+        <text style="color: #666">客户来源：</text>
+        <!--选择来访人成功后显示-->
+        <text>{{planDetail.bizzPartnerName}}</text>
+      </view>
+      <view style="padding-top: 40rpx;">
+        <view style="color: #666;float: left">业务对接：</view>
+        <view clss="duijie-list" style="float: left">
+          <!--选择来访人成功后显示-->
+          <block  wx:for="{{planDetail.planLinkmanList}}" wx:key="{{item.memberLinkmanId}}">
+            <view class="duijie-list-item" >
+              <text >{{item.name}}：{{item.mobilePhone}}</text>
+              <image src="../../images/icon-small-phone.png" @tap="dial({{item.mobilePhone}})"></image>
+            </view>
+          </block>
+        </view>
+      </view>
+    </view>
+
+    <view class="list">
+      <text>来访类型：</text>
+      <text class="color-33" style="float: right;">{{planDetail.visitTypeValue}}</text>
+    </view>
+    <view class="list" @tap="selectCal">
+        <text>来访申请时间：</text>
+        <text class="color-33" style="float: right;"> {{planDetail.applyVisitBeginTime2}}</text>
+    </view>
+  </view>
+
+  <view class="bottom-btn" wx:if="{{hcRoleType == 3 || hcEmployeeId == planDetail.createEmployeeId}}" >
+    <!--计划人员能设立计划 roleType = 4-->
+    <block wx:if="{{hcRoleType == 3}}">
+      <text @tap="alterPlan('/pages/plan/setPlan?planId={{planDetail.planId}}')" class="pull-right">设立计划</text>
+    </block>
+    <!--计划人员 4 || 自己创建的计划 -->
+    <block wx:if="{{hcRoleType == 3 || hcEmployeeId == planDetail.createEmployeeId}}">
+      <text @tap="alterPlan('/pages/plan/alterPlan?planId={{planDetail.planId}}')" class="pull-right">修改计划</text>
+    </block>
+  </view>
+  <!--<view class="bottom bottom-active" @tap="submit">开始设定计划</view>-->
+</template>
+<script>
+  import wepy from 'wepy'
+  import {dateFormat} from '../../utils/util'
+  import api from '../../api/api'
+
+  export default class appliedPlanDetails extends wepy.page {
+    config = {
+      navigationBarTitleText: '已申请计划详情',
+      enablePullDownRefresh: false,     //关闭系统刷新
+    }
+    data = {
+      textareaInput:'',//输入框
+      menberIndex:[],//来访人索引
+      menberArray:[],//来访人
+      visitIndex:[],//来访类型索引
+      visitArray: ['参观', '会诊', '体检'],//来访类型
+      visitType:'',//来访类型
+      date:'',//选择的时间
+      dateShow:'',//选择的时间-显示年月日格式
+      planDetail:'',//详情接口
+
+      hcRoleType:'',//缓存里面的roleType
+      hcEmployeeId:'',//缓存里面的employeeId
+    }
+    // textarea
+    bindTextAreaBlur(e) {
+      console.log(e.detail.value)
+      this.textareaInput = e.detail.value;
+    }
+    bindFormSubmit(e) {
+      console.log(e.detail.value.textarea);
+      this.textareaInput = e.detail.value;
+    }
+    // 选择来访人
+    bindMenberChange(e) {
+      this.menberIndex = e.detail.value;
+      this.memberId = this.menberArray[this.menberIndex].memberId; // 这个id就是选中项的memberId
+    }
+    // 选择来访类型
+    bindVisitChange(e) {
+      this.visitIndex = e.detail.value;
+      this.visitType = ~~ e.detail.value + 1;
+    }
+
+    // 选择来访时间
+    bindDateChange(e) {
+      this.date = e.detail.value;
+      this.dateShow = dateFormat(new Date(this.date),'YYYY年MM月DD日');//初始化当前日期
+    }
+
+    components = {
+    }
+
+    methods = {
+      //拨打电话
+      dial(e1){
+        wx.makePhoneCall({
+          phoneNumber: e1,//仅为示例，并非真实的电话号码
+          success:function(){
+            console.log("拨打电话成功！")
+          },
+          fail:function(){
+            console.log("拨打电话失败！")
+          }
+        })
+      },
+      //点击按钮
+      alterPlan(url){
+        wx.navigateTo({
+          url: url
+        })
+      }
+    }
+
+
+    //已申请详情
+    async getPlanDetail(){
+      const json = await api.planDetail({
+        query: {
+          planId : this.planId
+        }
+      });
+      this.planDetail = json.data;
+      this.dateShow = dateFormat(new Date(this.planDetail.applyVisitBeginTime),'YYYY年MM月DD日');//初始化当前日期
+      this.$apply();
+    }
+    onShow(){}
+
+    async onLoad(options) {
+      this.planId = options.planId;
+      this.hcRoleType = wx.getStorageSync('session').roleType;//缓存里面的roleType
+      this.hcEmployeeId = wx.getStorageSync('session').employeeId;//缓存里面的employeeId
+      this.getPlanDetail();//已申请详情
+    }
+  }
+</script>

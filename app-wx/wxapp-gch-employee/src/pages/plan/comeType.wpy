@@ -1,0 +1,119 @@
+<style lang="scss">
+  page {
+    background-color: #f2f2f4;
+    border-top:1px solid #ddd;
+  }
+
+  /*列表*/
+  .order-list{
+    overflow: hidden;
+    padding-bottom:85rpx;
+  }
+  .order-bk{
+    margin-top: 20rpx;
+    background: #fff;
+    font-size:26rpx;
+    > view{
+      padding:0 30rpx;
+      height:76rpx;
+      line-height: 76rpx;
+    }
+    > view:nth-child(2){
+      background: #f9f9f9;
+    }
+
+  }
+  /*悬浮*/
+  .suspension{
+    position: fixed;
+    bottom: 100rpx;
+    right: 40rpx;
+    width:88rpx;
+    height:88rpx;
+  }
+  .button{
+    position: fixed;
+    bottom: 0;
+    width:100%;
+    font-size: 36rpx;
+    color: #fff;
+    text-align: center;
+    height:86rpx;
+    line-height: 86rpx;
+    background: #3096f8;
+    margin-top:134rpx;
+  }
+
+</style>
+<template>
+  <!--列表-->
+  <view class="order-list">
+    <block wx:for="{{listType}}"  wx:for-index="idx">
+      <view class="order-bk" @tap="client({{idx}})">
+        <!--客户状态-->
+        <view>
+          <view class="pull-left ellipsis-1" style="color: #333;font-size: 30rpx;width: 50%;">{{item.type}}</view>
+          <view class="pull-right" style="color: #3096f8;">
+            <view style="height: 76rpx">
+              <icon style="margin-top:18rpx;" class="weui-icon-checkbox_circle" type="circle" size="18"
+                    wx:if="{{!item.checked}}"></icon>
+              <icon style="margin-top:18rpx;" class="weui-icon-checkbox_success" type="success" size="18"
+                    color="#3096f8" wx:if="{{item.checked}}"></icon>
+            </view>
+          </view>
+        </view>
+
+      </view>
+    </block>
+  </view>
+  <view class="button" @tap="save">确认</view>
+</template>
+<script>
+	import wepy from 'wepy'
+  import api from '../../api/api'
+
+
+  export default class comeType extends wepy.page {
+		config = {
+			navigationBarTitleText: '选择来访类型',
+			backgroundColor: '#f4f4f4',
+      "enablePullDownRefresh": false, //开启下拉刷新
+		};
+		data = {
+      typeNum:1,
+      typeNumArr:[],
+      type:[],
+      listType:[{type:'参观'},{type:'见诊'},{type:'医疗'}],
+		};
+
+    onShow(){
+
+    }
+
+		methods = {
+      //点击选择
+      client(e){
+        this.typeNum = ~~e + 1;
+        this.listType[e].checked=this.listType[e].checked?false:true;
+      },
+      //确认
+      save(){
+        const This=this;
+        This.listType.forEach(function(h,index) {
+          if(h.checked==true){
+            this.typeNumArr.push(~~index + 1);
+            this.type.push(h.type);
+          }
+        }.bind(this))
+        wx.setStorageSync('comeTypeNum', this.typeNumArr);
+        wx.setStorageSync('comeType',this.type);
+        wx.navigateBack({
+          delta: 1
+        })
+      },
+		};
+
+    onLoad() {
+    }
+	}
+</script>

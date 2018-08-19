@@ -1,0 +1,166 @@
+<style lang="scss">
+  page {
+    background-color: #f8f8f8;
+    border-top:1px solid #ddd;
+  }
+  view.bk{
+    background: #fff;
+    margin:0 20rpx;
+    box-shadow:0 0 22rpx #f3f1fc;
+    -moz-box-shadow:0 0 22rpx #f3f1fc;
+    -webkit-box-shadow:0 0 22rpx #f3f1fc;
+    -o-box-shadow:0 0 22rpx #f3f1fc;
+    margin-top:20rpx;
+    border-radius: 5rpx;
+    overflow: hidden;
+  }
+  view.bk:first-child{
+    margin-top: 0px;
+  }
+  .curler{
+    height:88rpx;
+    line-height: 88rpx;
+    font-size: 36rpx;
+    color: #333;
+    padding:0 20rpx;
+  }
+  .c_Top{
+    font-size: 28rpx;
+    color: #333;
+    height:70rpx;
+    line-height: 70rpx;
+    border-bottom: 1rpx solid #eee;
+    padding: 0 20rpx;
+  }
+  .c_text{
+    padding:20rpx 20rpx;
+  }
+  .c_text view:first-child{
+    font-size: 30rpx;
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 16rpx;
+  }
+  .c_text view:nth-child(2){
+    font-size: 22rpx;
+    color: #666;
+  }
+  view.bk image{
+    width:140rpx;
+    height:140rpx;
+    border-radius: 50%;
+    float: left;
+  }
+  view.bk .pull-left{
+    margin-left: 30rpx;
+    padding-top: 8rpx;
+    width:501rpx;
+  }
+</style>
+<template>
+  <view class="header">
+    <navigation :title="navTitle"></navigation>
+  </view>
+  <view>
+    <!--活动-->
+    <view wx:if="{{attr.activityId}}" class="curler">活动</view>
+    <view wx:if="{{attr.activityId}}">
+      <view class="bk">
+        <view class="c_Top">服务商家：{{attr.companyName}}</view>
+        <view class="c_text">
+          <view class="ellipsis-2">{{attr.title}}</view>
+          <view>活动时间: {{attr.openTime}}</view>
+        </view>
+      </view>
+    </view>
+    <!--用户-->
+    <view class="curler">用户</view>
+    <view>
+      <view class="bk" style="padding:30rpx 20rpx;">
+        <image src="{{attr.headUrlImage}}"></image>
+        <view class="pull-left">
+          <view class="ellipsis-1" style="font-size: 30rpx;color: #333;">{{attr.userName}}</view>
+          <view style="font-size: 26rpx;color: #666;">{{attr.userMobile}}</view>
+          <view style="font-size: 24rpx;color: #666;">购买时间：{{attr.buyTime}}</view>
+        </view>
+      </view>
+    </view>
+    <!--相关跟进人-->
+    <view class="curler">相关跟进人</view>
+    <view>
+      <view wx:for="{{attr.followers}}" wx:key="index" class="bk" style="padding:30rpx 20rpx;">
+        <image src="{{item.headImage}}"></image>
+        <view class="pull-left" style="padding-top: 25rpx;">
+          <view style="float: left;">
+            <view style="font-size: 30rpx;color: #333;margin-bottom: 10rpx;">
+              <text class="ellipsis-1" style="float: left;max-width: 260rpx;">{{item.spreaderName}}</text>
+              <text style="color: #999;margin-left: 25rpx;">组员</text>
+            </view>
+            <view style="font-size: 26rpx;color: #666;">{{item.mobile}}</view>
+          </view>
+          <image @tap="calling('{{item.mobile}}')" style="float: right;width: 52rpx;height: 52rpx;border-radius:inherit;margin-top: 18rpx;margin-right: 48rpx;" src="../../images/phone.png"></image>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import api from '../../api/api'
+  import navigation from '@/components/navigation'
+
+
+  export default class Cart extends wepy.page {
+    config = {
+      navigationBarTitleText: '订单详情',
+      backgroundColor: '#f4f4f4',
+    };
+    components = {
+      navigation
+    };
+    data = {
+      navTitle:'订单详情',
+      attr:[],
+    };
+
+
+    onPullDownRefresh(){
+
+    }
+
+    onReachBottom(e){//监控滚动到底部
+
+    }
+    async ajxa(e){
+      /*加载列表*/
+      const json = await api.orderDetails({
+        query: {
+          orderSn:e,
+        }
+      });
+      this.attr=json.data;
+      this.$apply();
+    }
+
+
+
+    methods = {
+      calling(e) {
+        wx.makePhoneCall({
+          phoneNumber: e,
+          success: function () {
+            console.log("拨打电话成功！")
+          },
+          fail: function () {
+            console.log("拨打电话失败！")
+          }
+        })
+      }
+    };
+
+
+    onLoad(e) {
+      this.ajxa(e.id);
+    }
+  }
+</script>

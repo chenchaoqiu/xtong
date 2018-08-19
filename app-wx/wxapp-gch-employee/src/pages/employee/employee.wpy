@@ -1,0 +1,612 @@
+<style lang="less">
+  page {
+    height: 100%;
+  }
+  .main-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .view-body {
+    flex: 1;
+    max-height: 100%;
+    overflow: auto;
+    -webkit-overflow-scrolling:touch;
+    .item+.item {
+      margin-top: 20rpx;
+    }
+    .item {
+      background-color: #fff;
+      >.flex-box {
+        padding: 22rpx 30rpx;
+        font-size: 26rpx;
+      }
+      .row {
+        text {
+          padding-left: 10rpx;
+        }
+        .vip {
+          color: #DEB48C;
+          padding-left: 24rpx;
+        }
+      }
+      .state {
+        color: #3096F8;
+      }
+      .project-list {
+        background-color: #f9f9f9;
+        padding: 24rpx 0;
+        .flex-box {
+          padding: 0 30rpx;
+          font-size: 26rpx;
+        }
+        .flex-box+.flex-box {
+          margin-top: 8rpx;
+        }
+      }
+    }
+    .icon {
+      width: 32rpx;
+      height: 32rpx;
+      margin-right: 24rpx;
+      display: block;
+    }
+  }
+  .header {
+    background-image:linear-gradient( 0deg, rgb(48,150,248) 0%, rgb(63,162,246) 16%, rgb(77,173,243) 100%);
+    color: #fff;
+    padding: 30rpx 0;
+    text-align: center;
+    margin-bottom: 25rpx;
+    .cell {
+      vertical-align: middle;
+    }
+    .data {
+      font-size: 60rpx;
+    }
+    .reality {
+      color: #eee;
+
+    }
+    .label {
+      display: inline-block;
+    }
+    .num {
+      color: #fff;
+    }
+    .order {
+      border-left: 2rpx solid #ddd;
+    }
+  }
+  .switch-date-wrap {
+    margin-left: 40rpx;
+    width: 240rpx;
+    height: 50rpx;
+    line-height: 50rpx;
+    font-size: 26rpx;
+    text-align: center;
+    border-radius: 4px;
+    color: #3096F8;
+    border: 1rpx solid #3096F8;
+    will-change: all;
+    overflow: hidden;
+    view {
+      display: inline-block;
+      width: 50%;
+    }
+    .day {
+      border-top-left-radius: 1px;
+      border-bottom-left-radius: 1px;
+    }
+    .month {
+      border-bottom-right-radius: 1px;
+      border-top-right-radius: 1px;
+    }
+    .active {
+      background-color: #3096F8;
+      color: #fff;
+    }
+  }
+  .select-date {
+    text-align: right;
+    padding-right: 40rpx;
+    .arrows {
+      margin-top: -4rpx;
+    }
+    .date {
+      margin: 0 40rpx;
+    }
+  }
+  .sp-mb-20 {
+    margin-bottom: 20rpx;
+  }
+  .select-wrapper{
+    position: fixed;
+    top:0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99;
+    .select-wrapper-top{
+      width: 100%;
+      height: 100%;
+      background: #000;
+      opacity: .8;
+    }
+    .select-wrapper-content{
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      background: #fff;
+      width: 100%;
+      font-size: 30rpx;
+      line-height: 1;
+      .list-title{
+        display: flex;
+        padding: 30rpx 30rpx;
+        border: 1px solid #eee;
+      }
+      .list-content{
+        max-height: 630rpx;
+        overflow-y: scroll;
+        .item{
+          display: flex;
+          .item-left image{
+            display: block;
+            width: 27rpx;
+            height: 28rpx;
+            margin: 30rpx auto 0;
+          }
+          .item-right{
+            flex: 1;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 30rpx ;
+
+          }
+        }
+      }
+    }
+  }
+  .person{
+    display: block;float: left;margin-right: 30rpx;margin-top: 30rpx;
+    padding: 10rpx 20rpx;border-radius: 5rpx;background: #ddd;
+    max-width: 200rpx;overflow: hidden;text-overflow: ellipsis;;white-space: nowrap;
+  }
+  .active{
+    background: #3096f8;color:#fff;
+  }
+</style>
+<template>
+  <view class="main-container">
+    <view class="view-head">
+      <view class="header">
+        <view class="table">
+          <view class="cell size-28">成交订单金额</view>
+          <view class="cell size-28">成交订单数</view>
+        </view>
+        <view class="table data">
+          <view class="cell">{{res.paidTotalAmount}}</view>
+          <view class="cell order">{{res. orderNum}}</view>
+        </view>
+        <view class="table">
+          <view class="cell reality size-24">
+            实收业绩：<text class="num size-30">{{res.reallyAchieve}}</text>
+          </view>
+          <view class="cell reality size-24">
+            待审核：<text class="num size-30">{{res.orderNeedAuditNum}}</text> 笔 已审核：<text class="num size-30">{{res.orderAuditedNum}}</text> 笔
+          </view>
+        </view>
+
+        <!--下方选择-->
+        <view class="size-30 clearfix" style="text-align: left;margin-top: 30rpx">
+          <view style="float: left;padding-left: 30rpx;" @tap="selTeam">
+            <block wx:if="{{user_list != ''}}">
+              全团队
+            </block>
+            <block wx:else>
+              个人
+            </block>
+            <image src="../../images/down.png" style="width: 26rpx;height: 14rpx;" ></image>
+          </view>
+          <view style="float: right;padding-right: 30rpx">
+            <picker mode="date" value="{{dateStrart}}"  bindchange="bindDateStrart" style="float: left">
+                <text  style="float: right;padding-right: 16rpx"> {{dateStrartShow}}</text>
+            </picker>
+            <text style="float: left;padding-right: 20rpx"> 至  </text>
+            <picker mode="date" value="{{dateEnd}}"  bindchange="bindDateEnd" style="float: left">
+              <text  style="float: right;padding-right: 16rpx"> {{dateEndShow}}</text>
+            </picker>
+          </view>
+        </view>
+
+      </view>
+      <!--<view class="table sp-mb-20">
+        <view class="cell">
+          <view class="switch-date-wrap">
+            <view class="{{switchDate && 'active'}} day" @tap="switchDate({{true}})">日报</view>
+            <view class="{{!switchDate && 'active'}} month" @tap="switchDate({{false}})">月报</view>
+          </view>
+        </view>
+        <view class="cell select-date size-28">
+          <image src="../../images/left.png" class="arrows" @tap="minus"></image> <text class="date">{{year}}年 {{month}}月 <text wx:if="{{switchDate}}">{{day}}日</text> </text>
+          <image src="../../images/right.png" class="arrows" @tap="add"></image>
+        </view>
+      </view>-->
+    </view>
+    <view class="view-body">
+      <view class="item" wx:for="{{res.orderItems}}" wx:key="{{item.memberId}}" wx:if="{{res.orderItems.length != 0}}">
+        <view class="flex-box">
+          <view>
+            <image class="icon" src="../../images/toux.png"/>
+          </view>
+          <view class="flex-1">
+            <view class="row">
+              <view style="float: left">{{item.memberName}}</view>
+              <image src="{{item.tagLogo}}" style="display: block;float: left;width: 50rpx;height: 24rpx;margin-left: 24rpx;margin-top: 8rpx;" ></image>
+            </view>
+          </view>
+          <view class="state">
+            <block wx:if="{{item.auditStatus == 0}}">待审核</block>
+            <block wx:elif="{{item.auditStatus == 1}}">待审核</block>
+            <block wx:else>已通过</block>
+          </view>
+        </view>
+        <view class="project-list">
+          <view class="flex-box color-66" wx:for="{{itme.orderSalePackageItems}}" wx:key="{{item.salePackageId}}">
+            <view class="flex-1">
+              <view class="ellipsis-1">{{item.salePackageName}}</view>
+            </view>
+            <view>
+              x{{item.buyNum}}
+            </view>
+          </view>
+        </view>
+        <view class="flex-box color-66">
+          <view class="flex-1">
+            {{item.addTime}}
+          </view>
+          <view>
+            共{{item.productNum}}个项目：<text class="color-33 size-30">{{item.totalAmount}}元</text>
+          </view>
+        </view>
+      </view>
+
+
+      <view class="weui-loadmore weui-loadmore_line" style="margin-top: 300rpx" wx:if="{{res.orderItems.length == 0}}">
+        <view class="weui-loadmore__tips weui-loadmore__tips_in-line" style="background-color: #f2f2f4!important;">暂无数据</view>
+      </view>
+    </view>
+  </view>
+  <!--筛选条件-->
+  <view class="select-wrapper" wx:if="{{isShowSelect}}">
+    <view class="select-wrapper-top" animation="{{animationData_yc}}" @tap="closeSelect"></view>
+    <view class="select-wrapper-content"  animation="{{animationData}}">
+      <view class="list-title">
+        <view style="text-align: left;width: 80rpx" @tap="closeSelect">取消</view>
+        <view style="text-align: center;flex: 1">筛选条件</view>
+        <view style="text-align: right;color: #3096f8;width: 80rpx" @tap="sure">确定</view>
+      </view>
+      <view class="list-content">
+        <radio-group bindchange="checkboxChangeList" >
+          <label style="margin-top: 30rpx" wx:for="{{checkboxChangeList}}" wx:for-item="itema" wx:key="{{itema.departmentId}}">
+            <radio class="weui-check" value="{{itema.departmentId}}" checked="{{itema.checked}}"/>
+            <view class="item">
+              <view class="item-left" style="width: 70rpx">
+                <image src="../../images/select.png" wx:if="{{itema.checked}}"></image>
+              </view>
+              <view class="item-right">
+                <view style="height: 90rpx;line-height: 90rpx">{{itema.name}}</view>
+                <block wx:if="{{itema.isShowZD}}" >
+                  <text style="color:#3096f8;font-size: 24rpx;" @tap.stop="ZD">指定员工</text>
+                </block>
+                <!--<block wx:if="{{itema.isShowQX}}">-->
+                <block wx:if="{{isShowQX}}">
+                  <radio-group bindchange="" @tap.stop="stopBubbling">
+                    <label style="margin-top: 30rpx" wx:for="{{itema.employeeDetails}}" wx:for-item="itemb">
+                      <radio class="weui-check" value="{{itemb.employeeId}}" checked="{{itemb.checked}}"/>
+                      <text @tap="checkOne({{itemb.employeeId}})" class="person {{user_data==itemb.employeeId ? 'active':''}}">{{itemb.employeeName}}</text>
+                    </label>
+                  </radio-group>
+                </block>
+              </view>
+            </view>
+          </label>
+        </radio-group>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import api from '../../api/api'
+  import animo from '../../utils/animove'
+  import dom from '../../utils/dom'
+  import {dateFormat} from '../../utils/util'
+
+  export default class Performance extends wepy.page {
+    config = {
+      navigationBarTitleText: '员工业绩',
+      backgroundColor: '#ebf0ef',
+      navigationBarBackgroundColor:'#4DADF3',
+      navigationBarTextStyle: 'white',
+      disableScroll: true
+
+    };
+
+    onLoad() {
+      this.dateStrartShow = dateFormat(new Date(new Date()  - 1000*3600*24*7),'YYYY-MM-DD');//7天前-格式0000-00-00
+      this.dateEndShow = dateFormat(new Date(new Date()  - 1000*3600*24*1),'YYYY-MM-DD');//1天前-格式0000-00-00
+      this.dateStrart = this.dateStrartShow +' 00:00:00';
+      this.dateEnd = this.dateEndShow +' 23:59:59'
+      let {employeeId,departmentId} = wx.getStorageSync('session');
+      // this.employeeId = employeeId;
+      this.user_list = departmentId;
+      this.getEmployeeAchieve();
+      this.getBeautyCircleList();//我的团队
+    }
+    async getBeautyCircleList() {/*wx.getStorageSync('session');*/
+      const json = await api.listGroupDpt({
+        query:{
+          search:'',
+          isReqEmployeeAchieve:1,//老板端添加字段
+        }
+      });
+      this.checkboxChangeList = json.data;
+      this.$apply();
+    }
+    // 选择开始时间
+    bindDateStrart(e) {
+      this.dateStrart = e.detail.value +' 00:00:00';
+      this.dateStrartShow = e.detail.value;
+      // this.beginTime = e.detail.value +' 00:00:00'
+      // this.dateStrartShow = dateFormat(new Date(this.dateStrart),'YYYY年MM月DD日');//初始化当前日期
+      this.getEmployeeAchieve();
+      this.$apply();
+    }
+    // 选择结束时间
+    bindDateEnd(e) {
+      this.dateEnd = e.detail.value  +' 23:59:59';
+      this.dateEndShow = e.detail.value;//初始化当前日期
+      console.log(this.dateEndShow)
+      // this.endTime = e.detail.value  +' 23:59:59'
+      this.getEmployeeAchieve();
+      this.$apply();
+    }
+
+    data = {
+      dateStrart:'',
+      dateStrartShow:'',
+      dateEnd:'',
+      dateEndShow:'',
+      teamList:'',
+
+      switchDate: true,
+      date: new Date(),
+      res: {
+
+      },
+      animationData:{},
+      animationData_yc:{},
+      isShowSelect:false,//选择员工弹框-默认为false,
+
+      isShowZD:false,
+      isShowQX:false,
+
+      // list
+      checkboxChangeList:[
+        /*{
+          name: '部门1',
+          id:'1',
+          list: [
+            {name: '达到的',id:'1'},
+            {name: '的分数',id:'2'},
+            {name: '的萨菲',id:'3'},
+            {name: '的萨菲',id:'4'},
+            {name: '的萨菲',id:'5'},
+            {name: '的萨菲',id:'6'},
+          ],
+        },
+        {
+          name: '部门2',id:'2'
+        },*/
+      ],
+      checkboxItems: [
+        /*{name: '达到的',id:'1'},
+        {name: '的分数',id:'2'},
+        {name: '的萨菲',id:'3'},
+        {name: '的萨菲',id:'4'},
+        {name: '的萨菲',id:'5'},
+        {name: '的萨菲',id:'6'},*/
+      ],
+      user_list:'',
+      user_data:'',
+      departmentId:'',
+    };
+
+    computed = {
+      day () {
+        return this.date.getDate();
+      },
+      month() {
+        return this.date.getMonth() + 1;
+      },
+      year() {
+        return this.date.getFullYear();
+      },
+      beginTime() {
+        if (this.switchDate) {
+          return this.year + '-' + this.month + '-' + this.day+' 00:00:00';
+        }
+        return this.year + '-' + this.month + '-' + '01' +' 00:00:00';
+      },
+      endTime() {
+        if (this.switchDate) {
+          return this.year + '-' + this.month + '-' + this.day+' 23:59:59';
+        } else {
+          return this.year + '-' + this.month + '-' + new Date(new Date(this.year+'/'+(this.month+1)+'/'+'01')- 1000*3600*24).getDate() +' 23:59:59';
+        }
+      }
+
+    }
+
+    watch = {
+      /*num (curVal, oldVal) {
+                console.log(`旧值：${oldVal}，新值：${curVal}`)
+            }*/
+    };
+
+    methods = {
+      selTeam(){
+        this.isShowSelect = true;
+      },
+      sure(){
+        this.isShowSelect = false;
+        this.getEmployeeAchieve();//请求接口
+      },
+      //防止冒泡
+      stopBubbling(){},
+
+      //指定员工
+      ZD(){
+        if(!this.isShowQX){
+          console.log(123)
+          this.isShowZD = false;//隐藏指定员工
+          this.isShowQX = true;//显示取消指定
+          this.$apply();
+        }else if(code == 2){
+          console.log(456)
+          this.isShowZD = true;//隐藏指定员工
+          this.isShowQX = false;//显示取消指定
+          this.$apply();
+        }
+
+      },
+
+      //指定部门
+      checkboxChangeList: function (e) {
+        this.user_data='';
+        this.employeeId = '';
+        this.user_list=e.detail.value;
+        console.log('checkbox发生change事件，携带value值为：', e.detail.value);
+        var checkboxChangeList = this.checkboxChangeList, values = e.detail.value;
+        for (var i = 0, lenI = checkboxChangeList.length; i < lenI; ++i) {
+          checkboxChangeList[i].checked = false;
+          checkboxChangeList[i].isShowZD = false;
+          for (var j = 0, lenJ = values.length; j < lenJ; ++j) {
+            if(checkboxChangeList[i].departmentId == values[j]){
+              checkboxChangeList[i].checked = true;
+              checkboxChangeList[i].isShowZD = true;
+              break;
+            }
+          }
+        }
+        this.setData({
+          checkboxChangeList: checkboxChangeList
+        });
+      },
+
+      //指定员工
+      checkOne: function (e) {
+        console.log('携带value值为：', e);
+        this.checkboxChangeList.forEach(function(c) {
+          this.user_list='';
+          c.checked=false;
+        }.bind(this))
+        this.user_data=e;
+        this.employeeId = e;
+
+      },
+
+      //指定员工
+     /* checkboxChange: function (e1,e) {/!*user_list,user_data*!/
+        if(this.user_list[e1]){
+          console.log('已选择')
+          this.user_list[e1].forEach(function(c,ind) {
+            console.log(ind)
+            if(this.user_list[e1][ind]){
+              console.log(5677)
+              this.user_list[e1][ind]=false;
+              return;
+            }else{
+              this.user_list[e1][ind]=true;
+            }
+          }.bind(this))
+        }else{
+          this.user_list[e1]=[];
+          this.user_list[e1][e]=true;
+          console.log('未选择')
+        }
+
+      },*/
+      save(){
+
+      },
+
+      //开启弹框
+      //关闭弹框
+      closeSelect(){
+        this.isShowSelect = false;
+        /*dom.height('.select-wrapper-content',function (e) {
+          animo.yc({
+            This:this,
+            height:e
+          })
+        })
+        setTimeout(function () {
+          this.isShowSelect = false;
+          this.$apply();
+        }.bind(this),300)*/
+      },
+
+
+      switchDate(b, e) {
+        if (b != this.switchDate) {
+          this.switchDate = b;
+          this.getEmployeeAchieve();
+        }
+      },
+      minus() {
+        if (this.switchDate) {
+          this.date = new Date(this.date.getTime() -  1000*3600*24);
+        } else {
+          if ((this.month-1)==0) {
+            this.date = new Date(this.year-1 +'/'+ 12 +'/'+this.day);
+          } else {
+            this.date = new Date(this.year+'/'+(this.month-1)+'/'+this.day);
+          }
+        }
+        this.getEmployeeAchieve();
+      },
+      add() {
+        if (this.switchDate) {
+          this.date = new Date(this.date.getTime() +  1000*3600*24);
+
+        } else {
+          if ((this.month+1)==13) {
+            this.date = new Date(new Date(this.year+1+'/'+ 1 +'/'+this.day));
+          } else {
+            this.date = new Date(this.year+'/'+(this.month+1)+'/'+this.day);
+          }
+        }
+        this.getEmployeeAchieve();
+      }
+
+    };
+
+
+
+    async getEmployeeAchieve() {
+      const {data} = await api.getEmployeeAchieve({
+        query: {
+          employeeIds: this.employeeId || '',
+          addTimeBegin: this.dateStrart,
+          addTimeEnd: this.dateEnd,
+          departmentIds:this.user_list ,
+        }
+      });
+
+      this.res = data;
+      this.$apply();
+    }
+  }
+</script>

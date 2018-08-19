@@ -1,0 +1,250 @@
+<style lang="scss">
+  page {
+    background-color: #f8f8f8;
+    border-top:1px solid #ddd;
+  }
+  page > view{
+    background: #fff;
+  }
+  /*customText start*/
+  .custom-t{
+    padding:100rpx 24rpx 0;/*184*/
+    background-color: #f8f8f8;
+  }
+  .custom-t > view.cus-bk{
+    background: #fff;
+    border-radius: 5rpx;
+    border:1px solid #f8f5f5;
+    margin-bottom: 20rpx;
+  }
+  .cus-bk > view{
+    overflow: hidden;
+    padding:0 20rpx;
+  }
+  .cus-bk > view:first-child{
+    height:71rpx;
+    line-height: 71rpx;
+    font-size: 24rpx;
+    color: #999;
+    text:nth-child(2){
+      color: #ef2e2e;
+    }
+  }
+  .cus-bk > view:nth-child(2){
+    padding: 20rpx;
+    border-top:1px solid #eee;
+    border-bottom:1px solid #eee;
+    image{
+      width:140rpx;
+      height: 140rpx;
+      border-radius: 50%;
+      float: left;
+      margin-right: 30rpx;
+    }
+    > view{
+      float: left;
+      font-size: 26rpx;
+      color: #666;
+      view:nth-child(1){
+        font-size: 30rpx;
+        color: #333;
+      }
+      text{
+        color: #ff8589;
+      }
+    }
+  }
+  .cus-bk > view:nth-child(3){
+    font-size: 26rpx;
+    color: #333;
+    height:66rpx;
+    line-height: 66rpx;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text{
+      color: #666;
+    }
+  }
+  .engine{
+    padding:15rpx 30rpx;
+    overflow: hidden;
+    background: #fff;
+    position: fixed;
+    top: 0;
+    width:93%;
+    -webkit-box-shadow: 0px 1px 10px #999;
+    -moz-box-shadow:  0px 1px 10px #999;
+    box-shadow: 0px 1px 10px #999;
+
+  }
+  .group{
+    background: #f4f4f4;
+    border-radius: 5px;
+    text-align: center;
+    padding: 5px 0;
+    width:85%;
+    float: left;
+  }
+  .group text{
+    color: #999;
+    font-size: 30rpx;
+    margin-left: 5px;
+  }
+  /*customText end*/
+</style>
+<template>
+  <view class="header">
+    <navigation :title="navTitle"></navigation>
+  </view>
+  <view class="engine" style="top: 70px; ">
+    <view class="group">
+      <input value="{{searVal}}" type="number" maxlength="6" style="font-size: 26rpx;color: #666;text-align: left;padding:0 20rpx;" bindinput="bindKeyInput" placeholder="请输入手机后6位数"/>
+    </view>
+    <text @tap="sear" style="font-size: 32rpx;color: #666;float: right;height:80rpx;line-height: 74rpx;">搜索</text>
+  </view>
+  <view class="custom-t" style="padding-top: {{engineStatui?'138rpx':'108rpx'}};">
+    <view wx:if="{{!engineStatui}}" style="height: 98rpx;line-height: 98rpx;font-size: 36rpx;color: #666;">已确认</view>
+    <view wx:for="{{attr}}" wx:key="index" class="cus-bk">
+      <!--top-->
+      <view>
+        <text class="pull-left">{{item.addTime}}</text>
+        <text wx:if="{{!engineStatui}}" class="pull-right">{{item.relationTypeName}}</text>
+        <text @tap="confirm({{item.activityUserId}})" wx:if="{{engineStatui}}" style="background: #25cbd3;font-size: 28rpx;color: #fff;width: 100rpx;height: 50rpx;line-height: 50rpx;text-align: center;border-radius: 10rpx;margin-top: 11rpx;" class="pull-right">确认</text>
+      </view>
+      <!--userText-->
+      <view>
+        <image src="{{item.memberImg}}"></image>
+        <view>
+          <view>{{item.memberName}}</view>
+          <view>{{item.mobile}}</view>
+          <view>来源: <text>{{item.activityName}}</text></view>
+        </view>
+      </view>
+      <!--推广-->
+      <view>
+        <text>推广员：</text><text wx:for="{{item.confirmSpreaderNames}}" wx:key="index">{{(index==0?'':'，')+item}}</text>
+      </view>
+    </view>
+  </view>
+  <view wx:if="{{attr.length==0}}" style="background-color: #f8f8f8;text-align: center">
+    <image mode="widthFix" style="width: 50%;margin: 164rpx auto 0;display: block;" src="/images/yht.png"></image>
+    <text style="font-size: 30rpx;color: #999;">暂无用户信息</text>
+  </view>
+  <!--customText end-->
+</template>
+<script>
+  import wepy from 'wepy'
+  import api from '../../api/api'
+  import navigation from '@/components/navigation'
+
+
+  export default class Cart extends wepy.page {
+    config = {
+      navigationBarTitleText: '用户确认',
+      backgroundColor: '#f4f4f4',
+    };
+    components = {
+      navigation
+    };
+    data = {
+      navTitle:'用户确认',
+      cort:['认领确认'],
+      statusSize:0,/*认领下标*/
+      engineStatui:false,/*是否为搜索后的状态*/
+      searVal:'',
+      attr:[],
+      leng:1,
+    };
+
+
+    onPullDownRefresh(){
+
+    }
+
+    onReachBottom(e){//监控滚动到底部
+      if(!this.leng){return ;}
+      this.ajxa(++this.leng);
+    }
+    async ajxa(e){
+      /*加载列表*/
+      const json = await api.userConfirmList({
+        query: {
+          keyword:this.searVal,
+          pageNo:e,
+          pageSize:15,
+        }
+      });
+
+      if(e>1){
+        this.attr=this.attr.concat(json.data.list);
+      }else{
+        this.attr=json.data.list;
+      }
+      if(this.attr.length == json.data.totalSize){
+          this.leng=false;
+      }
+      if(this.attr.length==0){
+        this.engineStatui=true;
+      }
+      this.$apply();
+    }
+
+    async ajxaOk(e){
+      /*确认*/
+      const json = await api.confirmActivityUser({
+        query: {
+          activityUserId:e,
+        }
+      });
+      if(json.imei_error_code==0){
+        if(this.attr.length==1){
+          this.searVal='';
+          this.engineStatui=false;
+        }
+        wx.showModal({
+          title: '',
+          content: '恭喜你成功收获一枚用户！',
+          showCancel:false
+        })
+        this.leng=1;
+        this.ajxa(1);
+      }else{
+        wx.showModal({
+          title: '',
+          content: '确认失败，请重新确认哦！',
+          showCancel:false
+        })
+      }
+      this.$apply();
+    }
+
+
+
+    methods = {
+      confirm(e){/*确认*/
+        this.ajxaOk(e);
+          console.log(e)
+      },
+      bindKeyInput(e){/*输入框*/
+        if(e.detail.value.length>=1){
+          this.engineStatui=true;
+        }else{
+          this.engineStatui=false;
+        }
+        this.searVal=e.detail.value;
+        this.leng=1;
+        this.ajxa(1);
+      },
+      sear(){/*搜索*/
+        this.leng=1;
+        this.ajxa(1);
+      }
+    };
+
+
+    onLoad(e) {
+      this.ajxa(1);
+    }
+  }
+</script>

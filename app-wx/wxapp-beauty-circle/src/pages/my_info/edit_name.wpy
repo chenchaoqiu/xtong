@@ -1,0 +1,84 @@
+<style lang="less">
+  .header {
+    min-height: 70px;
+  }
+  button:after{border: none}
+  page{background: #f8f8f8; }
+  .edit{width: 100%;height: 100rpx;border: 1rpx solid #eee;background: #fff;margin-top: 20rpx;}
+  .name{font-size: 32rpx;height:100rpx;line-height: 100rpx;color:#333;padding-left: 24rpx;}
+  .ensure{width: 692rpx;height: 90rpx;line-height:90rpx;margin: 30rpx auto 0;background: #ff8589;color:#fff;font-size: 30rpx; }
+  .ensure-no{width: 692rpx;height: 90rpx;line-height:90rpx;margin: 30rpx auto 0;background: #e6e6e6;color:#666!important;font-size: 30rpx; }
+
+</style>
+<template>
+  <view class="header">
+    <navigation :title="navTitle" :isShow="isShowBack"></navigation>
+  </view>
+  <view class="edit">
+    <input type="text" id="name"  class="name" placeholder-style="color:#999;font-size:30rpx;" value="{{spreaderName}}" bindinput="input_name" maxlength="8" placeholder="请输入姓名"/>
+  </view>
+  <button type="button" class="{{disabled == true ? 'ensure-no' : 'ensure'}}"  disabled="{{disabled}}" @tap="ensure">保存</button>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import api from '../../api/api'
+  import navigation from '@/components/navigation'
+
+  export default class editName extends wepy.page {
+    config = {
+//      navigationBarTitleText: '修改姓名',
+    }
+    components = {
+      navigation
+    };
+
+    data = {
+      navTitle: '修改姓名',//
+      spreaderId:"",
+      spreaderName:"",
+      disabled:true,
+    }
+
+    computed = {}
+    methods = {
+      input_name(e){
+        this.name = e.detail.value;
+        if(this.name == ""){
+          this.disabled=true;
+        }else{
+          this.disabled=false;
+        }
+      },
+      //确认修改
+      async ensure(){
+        const json = await api.editName({
+          query: {
+            spreaderId: this.spreaderId,
+            spreaderName : this.name,
+          }
+        });
+        if(json.imei_error_code == 0){
+            let eInfo = wx.getStorageSync('eInfo'); //获取缓存数据
+            eInfo.spreaderName = this.name;  //修改缓存数据spreaderName字段的熟悉
+            wx.setStorageSync('eInfo',eInfo);//重新刷新缓存
+            wx.navigateBack({
+              url: '/pages/my_info/info'
+            });
+        }
+
+        this.$apply();
+      }
+    }
+
+    events = {}
+
+    async onLoad(options) {
+      var session= wx.getStorageSync('session');
+      this.spreaderId = session.spreaderId;
+      this.spreaderName = options.spreaderName;
+      this.$apply();
+    }
+
+  }
+</script>

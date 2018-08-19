@@ -1,0 +1,375 @@
+<style lang="scss">
+  page{
+    background: #f2f2f2;
+    border-top: 1rpx solid #eee;
+  }
+  .setorder-user{
+    padding: 8rpx 30rpx 25rpx;
+    background: #fff;
+    font-size: 30rpx;
+    > view:first-child{
+      height:72rpx;
+      line-height:72rpx;
+      color: #333;
+    }
+    > view:nth-child(n+2){
+      height:58rpx;
+      line-height: 58rpx;
+      overflow: hidden;
+      color: #333;
+      image{
+        width:16rpx;
+        height:30rpx;
+        margin-top: 14rpx;
+        margin-left: 16rpx;
+      }
+      text.vip{
+        color: #deb48c;
+        margin-left: 10rpx;
+      }
+      text.none{
+        color: #666;
+      }
+    }
+  }
+  .commodity{
+    margin: 20rpx 0;
+    background: #fff;
+    > view{
+      padding:0 30rpx;
+    }
+    .commodity-title{
+      height:88rpx;
+      line-height:88rpx;
+      background: #fff;
+      overflow: hidden;
+      color: #666;
+      font-size: 30rpx;
+      border-bottom: 1rpx solid #eee;
+      image{
+        width:16rpx;
+        height:30rpx;
+        margin-top: 31rpx;
+        margin-left: 16rpx;
+      }
+    }
+    .commodity-det{
+      border-top: 1rpx solid #eee;
+      margin:0 30rpx;
+      padding: 30rpx 0;
+      background: #fff;
+      .commodity-det-cur{
+        overflow: hidden;
+        image{
+          width:240rpx;
+          height:160rpx;
+          background: #000;
+        }
+        > view{
+          width:418rpx;
+          height:160rpx;
+          margin-left: 30rpx;
+          font-size: 26rpx;
+          view{
+            width:100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+          view:nth-child(2){
+            margin-top: 6rpx;
+            margin-bottom: 27rpx;
+          }
+        }
+      }
+      .commodity-det-table{
+        > view:first-child{
+          font-size: 28rpx;
+          color: #333;
+          margin-top: 30rpx;
+        }
+        view:nth-child(2){
+          view{
+            margin-top: 6rpx;
+            font-size: 24rpx;
+            color: #666;
+            overflow: hidden;
+          }
+        }
+      }
+    }
+    .commodity-det:nth-child(2){
+      border-top: none;
+    }
+    .zffs{
+      margin:0 30rpx;
+      padding:0 0 21rpx;
+      border-bottom: 1rpx solid #eee;
+      font-size: 26rpx;
+      color: #333;
+    }
+    .zffs view{
+      &:first-child{
+        margin-top: 19rpx;
+      }
+      overflow: hidden;
+      height:52.5rpx;
+      line-height: 52.5rpx;
+      input{
+        width:290rpx;
+      }
+    }
+    .correlation{
+      padding:30rpx 30rpx 0;
+      border-bottom:1rpx solid #eee;
+      view{
+        padding-bottom: 20rpx;
+        overflow: hidden;
+        height:52.5rpx;
+        line-height: 52.5rpx;
+      }
+      text{
+        font-size: 26rpx;
+        color: #666;
+        margin-right: 40rpx;
+      }
+      text:first-child{
+        width:183rpx;
+      }
+      input{
+        width:240rpx;
+        font-size: 26rpx;
+        color: #378ed1;
+      }
+    }
+  }
+  .textarea{
+    min-height: 40rpx;
+    font-size: 26rpx;
+    color: #333;
+    display: block;
+    width: auto;
+    padding: 0 30rpx;
+    line-height: 40rpx;
+    margin-bottom: 20rpx;
+    overflow: hidden;
+    word-wrap: break-word;
+  }
+  textarea.hied{
+    display: none;
+    opacity:0;
+    visibility:hidden;
+  }
+  .button{
+    font-size: 31rpx;
+    color: #fff;
+    text-align: center;
+    height:94rpx;
+    background: #fff;
+    margin-top:38rpx;
+    text{
+      background: #3096f8;
+      width:150rpx;
+      height:56rpx;
+      line-height:56rpx;
+      margin:20rpx 30rpx 20rpx 0;
+      border-radius: 5rpx;
+    }
+  }
+  .check{
+    margin-top: 10rpx;
+    height: auto !important;
+    &:nth-child(2){
+      margin-top: 0px;
+    }
+  }
+  .vip {
+    width: 50rpx !important;
+    height: 24rpx !important;
+  }
+</style>
+<template>
+  <view class="setorder-user">
+    <view>客户信息</view>
+    <view>
+      <view style="width: 64%" class="pull-left"><text style="max-width: 70%" class="pull-left ellipsis-1">{{Data.memberName}}</text><image src="{{Data.tagLogo}}" class="vip"></image></view>
+      <view style="width: 36%" class="pull-right">
+        <text style="width: 87%;height: 44rpx;text-align: right" class="pull-left ellipsis-1">{{Data.bizzPartnerName}}</text>
+      </view>
+    </view>
+  </view>
+  <!--商品信息-->
+  <view class="commodity">
+    <view class="commodity-title">
+      <text class="pull-left">商品信息</text>
+    </view>
+    <!--商品-->
+    <view wx:for="{{Data.salePackageDetails}}" wx:key="index" class="commodity-det">
+      <view class="commodity-det-cur">
+        <image class="pull-left" src="{{item.imageUrl}}"></image>
+        <view class="pull-left">
+          <view style="font-size: 30rpx;color: #333;">{{item.salePackageName}}</view>
+          <view style="color: #666;">{{item.salePackageSubtitle}}</view>
+          <view style="color: #d42929;">{{item.totalAmount}}</view>
+        </view>
+      </view>
+      <view class="commodity-det-table">
+        <view>包含项目：</view>
+        <view>
+          <view wx:for="{{item.projectDetails}}" wx:key="index">
+            <text class="pull-left">{{item.projectName}}</text>
+            <text class="pull-right">×{{item.projectNum}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <!--订单信息-->
+  <view class="commodity">
+    <view class="commodity-title">
+      <text style="color: #333;" class="pull-left">订单信息</text>
+    </view>
+    <!--成交价-->
+    <view class="commodity-title" style="font-size: 26rpx;padding: 0;margin: 0 30rpx;border-bottom:1rpx solid #eee;">
+      <text class="pull-left">订单成交价</text>
+      <view class="pull-right">
+        <span>{{Data.totalAmount}}</span>
+        <!--<input disabled class="pull-left" style="color: #333;width: 152rpx;margin-top: 18rpx;text-align: right" type="number" value="{{Data.totalAmount}}" />-->
+      </view>
+    </view>
+    <!--实付款-->
+    <view class="commodity-title" style="font-size: 26rpx;padding: 0;margin: 0 30rpx;">
+      <text class="pull-left">订单实付款</text>
+      <view class="pull-right">
+        <span>{{Data.paidTotalAmount}}</span>
+        <!--<input disabled class="pull-left" style="color: #333;width: 152rpx;margin-top: 18rpx;text-align: right" type="number" value="{{Data.paidTotalAmount}}" />-->
+      </view>
+    </view>
+    <!--支付方式-->
+    <view class="commodity-title" style="font-size: 26rpx;">
+      <text class="pull-left">支付方式</text>
+    </view>
+    <view wx:if="{{Data.payDetails.length>0}}" class="zffs">
+      <view wx:for="{{Data.payDetails}}" wx:key="index">
+        <text class="pull-left">{{imatx[item.payType].name}}：</text>
+        <span class="pull-left">{{item.amount}}</span>
+        <!--<input disabled class="pull-left" type="number" value="{{item.amount}}" />-->
+      </view>
+    </view>
+    <!--备注-->
+    <view class="commodity-title" style="font-size: 26rpx;border: none;height: 80rpx;line-height: 80rpx;">
+      <text class="pull-left">备注</text>
+    </view>
+    <view class="textarea">{{Data.remark?Data.remark:'您还没有填备注哦！'}}</view>
+    <!--订单相关人-->
+    <view class="commodity-title" style="font-size: 26rpx;color: #333;border-top:1rpx solid #eee;">
+      <text class="pull-left">订单相关人</text>
+      <view class="pull-right">
+      </view>
+    </view>
+    <view class="correlation">
+      <view wx:for="{{Data.portionSettingDetails}}" wx:key="index">
+        <text class="pull-left  ellipsis-1">{{item.employeeName}}</text>
+        <text class="pull-left">{{item.mobilePhone}}</text>
+        <input disabled class="pull-left" type="text" value="{{item.portion}}%" maxlength="8" />
+      </view>
+    </view>
+  </view>
+  <!--审核信息-->
+  <view class="setorder-user">
+    <view style="color: #666;">审核信息</view>
+    <view wx:for="{{Data.auditDetails}}" wx:key="index" class="check">
+      <view style="height: 45rpx;line-height: 45rpx;">
+        <text class="pull-left">{{index==0?'首次':'第'+(index+1)+'次'}}收款{{item.amount}}元<text style="margin-left: 27rpx;">{{item.auditStatus==0?'未审核':'已审核'}}</text></text>
+      </view>
+      <view wx:if="{{item.auditTime}}" style="height: 45rpx;line-height: 45rpx;">
+        <text class="pull-left">{{item.auditTime}}</text>
+      </view>
+    </view>
+  </view>
+  <view class="button" >
+    <text wx:if="{{roleType==6}}"  @tap="alterOrder('/pages/setOrder/checkOrderYes/checkOrderYes',true)" class="pull-right">审核订单</text>
+    <text wx:if="{{Data.isEditable==1 && (roleType==3 || roleType==4)}}" @tap="alterOrder('/pages/setOrder/alterOrder/alterOrder?orderSn={{Data.orderSn}}')" class="pull-right">修改订单</text>
+  </view>
+</template>
+<script>
+	import wepy from 'wepy'
+  import api from '../../../api/api'
+
+
+  export default class checkOrderNo extends wepy.page {
+		config = {
+			navigationBarTitleText: '未审核订单详情',
+			backgroundColor: '#f4f4f4',
+      "enablePullDownRefresh": false, //开启下拉刷新
+		};
+    components = {
+    }
+		data = {
+      imatx:[
+        {},
+        {name: '微信支付', payType: '1', src: '../../images/wx.png'},
+        {name: '现金支付', payType: '2',  src: '../../images/xj.png'},
+        {name: '支付宝支付', payType: '3', src: '../../images/zfb.png'},
+        {name: 'POS支付', payType: '4', src: '../../images/pos.png'}
+      ],/*支付方式选择的值*/
+      Data:[],
+      roleType:''
+		};
+
+    async ajax(e){
+      const json = await api.orderDetail({
+        query: {
+          orderSn:e
+        }
+      });
+      this.Data=json.data;
+      this.roleType=wx.getStorageSync('session').roleType
+      this.$apply();
+    }
+
+
+
+    onPullDownRefresh(){
+      /*上拉刷新*/
+    }
+
+    onReachBottom(e){//监控滚动到底部
+
+    }
+
+
+		methods = {
+      async alterOrder(e,e2){
+          if(e2=='true'){
+            const json = await api.orderAudit({
+              query: {
+                orderSn:this.Data.orderSn
+              }
+            });
+            if(json.imei_error_code==0){
+              wx.redirectTo({
+                url: '/pages/setOrder/checkOrderYes/checkOrderYes?orderSn='+this.Data.orderSn
+              })
+            }
+              return;
+          }
+          /*修改订单*/
+        wx.navigateTo({
+          url: e
+        })
+      }
+		};
+    onShow(){
+        console.log(55)
+      if(this.Data.orderSn){
+        this.ajax(this.Data.orderSn)
+      }
+    }
+
+
+    onLoad(e) {
+      this.ajax(e.orderSn)
+    }
+	}
+</script>

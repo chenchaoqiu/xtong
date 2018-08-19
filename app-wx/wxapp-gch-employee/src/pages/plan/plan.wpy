@@ -1,0 +1,335 @@
+<style lang="less">
+  page{background: #f2f2f4}
+  ::-webkit-scrollbar{
+    width: 0;
+    height: 0;
+    color: transparent;
+  }
+  .oneline-overflow{overflow: hidden;text-overflow: ellipsis;white-space:nowrap}
+  .select-days{
+    position: fixed;
+    top:0;
+    left: 0;
+    width: 100%;
+    z-index: 99;
+    height: 86rpx;
+    box-sizing: border-box;
+    padding: 16rpx 30rpx;
+    display: flex;
+    border: 1px solid #eee;
+    background: #fff;
+    .select-days-item{
+      flex: 1;
+      box-sizing: border-box;
+      border-top:1px solid #eee;
+      border-bottom:1px solid #eee;
+      border-left:1px solid #eee;
+      text-align: center;
+      font-size: 28rpx;
+      height: 54rpx;
+      line-height: 54rpx;
+    }
+    .select-days-item:last-child{
+      border-right:1px solid #eee;
+    }
+    .active{
+      color: #fff;
+      background: #3096f8;
+      border-top:1px solid #3096f8;
+      border-bottom:1px solid #3096f8;
+      border-left:1px solid #3096f8;
+    }
+  }
+
+  .select-type{
+    position: fixed;
+    top:0;
+    left: 0;
+    z-index: 99;
+    width: 100%;
+    height: 72rpx;
+    box-sizing: border-box;
+    border-top:1px solid #eee;
+    padding: 0 20rpx;
+    display: flex;
+    background: #fff;
+    .select-type-item{
+      flex: 1;
+      box-sizing: border-box;
+      text-align: center;
+      font-size: 28rpx;
+      height: 72rpx;
+      line-height: 72rpx;
+    }
+  }
+  .select-type-item.active{
+    position: relative;
+    color: #3096f8;
+  }
+  .select-type-item.active:after{
+    content: "";
+    display: block;
+    height: 4rpx;
+    width: 120rpx;
+    background: #3096f8;
+    position: absolute;
+    bottom: 0rpx;
+    left: 10rpx;
+    border-radius: 16rpx;
+  }
+
+  .list-warpper{
+    width: 100%;
+    margin-top: 72rpx;
+    display: block;
+    .list{
+      margin-top: 20rpx;
+      padding: 24rpx 30rpx;
+      background: #fff;
+      .list-top{
+        font-size: 26rpx;
+        line-height: 1;
+        color:#666;
+        padding-bottom: 24rpx;
+        border-bottom: 1px solid #eee;
+      }
+      .list-des{
+        .list-des-item{
+          font-size: 30rpx;
+          line-height: 1;
+          margin-top: 30rpx;
+        }
+      }
+    }
+  }
+
+  .icon-applyPlan{
+    position: fixed;
+    bottom:100rpx;
+    right: 30rpx;
+    z-index: 998;
+    display: block;
+    width: 100rpx;
+    height: 100rpx;
+  }
+//picker
+  .tui-picker-content{
+    padding: 30rpx;
+    text-align: center;
+  }
+  .tui-picker-name{
+    height: 80rpx;
+    line-height: 80rpx;
+  }
+  .tui-picker-detail{
+    height: 80rpx;
+    line-height: 80rpx;
+    background-color: #fff;
+    font-size: 35rpx;
+    padding: 0 10px;
+    overflow: hidden;
+  }
+
+</style>
+<template>
+  <!--<view class="select-days">
+    <view class="select-days-item {{daysTab===0  ? 'active' : ''}}" @tap="selectDays(0)">今天</view>
+    <view class="select-days-item {{daysTab==7 ? 'active' : ''}}" @tap="selectDays(7)">近7天</view>
+    <view class="select-days-item {{daysTab==30 ? 'active' : ''}}" @tap="selectDays(30)">近30天</view>
+    <view class="select-days-item " >
+      <picker mode="date" value="{{date}}"  bindchange="bindDateChange">
+        <text style="display: block;float: left;margin-left: 13rpx;">时间查询</text>
+        <image src="../../images/icon-calendar.png" style="display: block;float: right;margin-right: 13rpx;width: 29rpx;height: 32rpx;padding-top: 12rpx"></image>
+      </picker>
+    </view>
+  </view>-->
+
+  <view class="select-type">
+    <view class="select-type-item {{typeTab=='' ? 'active' : ''}}" @tap="selectType('')">全部({{count.countAll}})</view>
+    <view class="select-type-item {{typeTab==1 ? 'active' : ''}}" @tap="selectType(1)">已申请({{count.count1}})</view>
+    <view class="select-type-item {{typeTab==2 ? 'active' : ''}}" @tap="selectType(2)">已设立({{count.count2}})</view>
+    <view class="select-type-item {{typeTab==3 ? 'active' : ''}}" @tap="selectType(3)">已完成({{count.count3}})</view>
+    <view class="select-type-item {{typeTab==4 ? 'active' : ''}}" @tap="selectType(4)">已关闭({{count.count4}})</view>
+  </view>
+  <view class="list-warpper clearfix">
+    <block wx:for="{{planList}}" wx:key="{{item.planId}}" wx:if="{{planList.length != 0}}" >
+      <view class="list" @tap="jump({{item.status}},{{item.planId}})">
+        <view class="list-top">
+          <text style="max-width: 80%;display: inline-block" class="oneline-overflow">计划申请：{{item.createEmployeeName}} {{item.applyVisitBeginTime2}}</text>
+          <text style="color: #3096f8;float: right">{{item.statusValue}}</text>
+        </view>
+        <view class="list-des">
+          <view class="list-des-item oneline-overflow">
+            <text style="max-width: 90%;display: inline-block;float: left" class="oneline-overflow">来访人：{{item.name}}</text>
+            <!--<text style="padding-left: 10rpx;color:#dec45e;float: left">VIP</text>-->
+            <image src="{{item.tagLogo}}" style="display: block;float: left;width: 50rpx;height: 24rpx;margin-left: 24rpx;margin-top: 4rpx;" ></image>
+          </view>
+          <view class="list-des-item oneline-overflow">
+            事项：
+            <block wx:if="{{item.status == 1}}">
+              {{item.remark}}
+            </block>
+            <block else>
+              {{item.visitContent}}
+            </block>
+          </view>
+          <view class="list-des-item oneline-overflow" style="font-size:26rpx;color: #666">
+            跟进人：{{item.followName}}
+          </view>
+        </view>
+      </view>
+    </block>
+    <block wx:if="{{planList.length == 0}}">
+      <view class="weui-loadmore weui-loadmore_line" style="margin-top: 400rpx">
+        <view class="weui-loadmore__tips weui-loadmore__tips_in-line" style="background-color: #f2f2f4!important;">暂无数据</view>
+      </view>
+    </block>
+  </view>
+
+  <navigator url="/pages/plan/applyPlan" hover-class="none" wx:if="{{roleType == 3 || roleType == 4}}">
+    <image src="../../images/icon-applyPlan.png" class="icon-applyPlan"></image>
+  </navigator>
+</template>
+<script>
+  import wepy from 'wepy'
+  import {dateFormat} from '../../utils/util'
+  import api from '../../api/api'
+
+  export default class plan extends wepy.page {
+    config = {
+      navigationBarTitleText: '计划',
+      enablePullDownRefresh: true,     //关闭系统刷新
+    }
+    data = {
+      roleType:'',//角色类型
+      daysTab:0,//select-days-默认今天0
+      date:'',//选择的时间
+      typeTab:'',//select-type-默认全部为空
+      formatDay:'',//返回的日期 格式2018-07-10
+      planList:[],//列表数组
+      page:1,//初始分页
+      pageSize:'',
+      isReset: true,
+      count:'',//数量
+    }
+    components = {
+    }
+
+    // 选择来访时间
+    bindDateChange(e) {
+      this.date = e.detail.value;
+      console.log(this.date);
+      this.daysTab = '';//选择天数成功返回后 - 近期天数传空参数
+      this.getCountByStatus();//获取数量列表
+      this.getPlanList(false);//请求接口
+    }
+
+    methods = {
+      // 选择今天-近7天-近30天
+      selectDays(code){
+        if(this.daysTab != code){
+          this.daysTab = ~~code;
+          this.date = '';
+          this.getCountByStatus();//获取数量列表
+          this.getPlanList(false);
+        }
+        this.$apply();
+      },
+      selectType(code2){
+        if(this.typeTab != code2){
+          this.getCountByStatus();//获取数量列表
+          this.typeTab = code2;
+          this.getPlanList(false);
+        }
+        this.$apply();
+      },
+
+
+      //跳转
+      jump(e,e1){
+        //e 0未知 1已申请 2已设立 3已完成 4已关闭
+        //e1 planId
+        console.log(e)
+        if(e == 1){
+          //已申请计划页面
+          wx.navigateTo({
+            url: '/pages/plan/appliedPlanDetails?planId=' + e1
+          })
+        }else if(e == 2 || e == 3 || e == 4){
+          wx.navigateTo({
+            url: '/pages/plan/planDetails?planId=' + e1
+          })
+        }
+      }
+
+    }
+    // 上拉刷新
+    onPullDownRefresh()
+    {
+      wx.showNavigationBarLoading(); //在标题栏中显示加载
+      //模拟加载
+      this.getPlanList(false);
+      setTimeout(function()
+      {
+        wx.hideNavigationBarLoading(); //完成停止加载
+        wx.stopPullDownRefresh() //停止下拉刷新
+      }.bind(this),1000);
+    }
+
+    //    上拉加载更多
+    onReachBottom() {
+      if (this.planList.length < this.pageSize) {
+        this.page = this.page + 1;
+        this.getPlanList(true);
+      } else {
+        wx.showToast({
+          title: '没有更多了',
+          icon: 'loading',
+          duration: 2000
+        })
+        return;
+      }
+    }
+    //获取数量
+    async getCountByStatus() {
+      const json = await api.countByStatus({
+        query: {
+          recentDay : this.daysTab,//选择最近天数
+          applyVisitBeginTime:this.date || '',//选择时间点
+        }
+      });
+      this.count = json.data;
+      this.$apply();
+    }
+
+    //计划列表接口-分页
+    async getPlanList(e){
+      const planListData = await api.planPageList({
+        query: {
+          recentDay : this.daysTab,//选择最近天数
+          applyVisitBeginTime:this.date || '',//选择时间点
+          status:this.typeTab,//全部为'',其他是1开始
+          pageNo: this.page,//   第几页
+          pageSize: 8,   //显示几条
+        }
+      });
+      if(e){
+        this.planList = this.planList.concat(planListData.data.list);
+      }else{
+        this.page=1;
+        this.planList = planListData.data.list;      //门店的信息列表
+        this.pageSize = planListData.data.totalSize;
+      }
+      this.$apply();
+    }
+    onShow(){
+      this.getCountByStatus();//获取数量列表
+      this.getPlanList(false);//计划列表接口-分页
+    }
+    async onLoad() {
+      this.time = dateFormat(new Date(),'YYYY-MM-DD');//初始化当前日期-日历
+      this.roleType = wx.getStorageSync('session').roleType;//缓存里面的roleType
+      this.$apply();
+    }
+  }
+</script>

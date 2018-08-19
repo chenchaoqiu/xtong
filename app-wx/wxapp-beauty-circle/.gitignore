@@ -1,0 +1,7 @@
+.git
+*.iml
+.idea
+/dist
+/node_modules
+.wepycache
+npm-debug.log

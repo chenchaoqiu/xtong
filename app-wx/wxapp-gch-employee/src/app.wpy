@@ -1,0 +1,192 @@
+<style lang="scss">
+    @import "styles/weui";
+    @import "styles/public";
+    @import "styles/helper";
+    page {
+        background-color: #F2F2F4;
+    }
+</style>
+
+<script>
+	import wepy from 'wepy'
+	import 'wepy-async-function'
+	import api from './api/api'
+
+	export default class extends wepy.app {
+		config = {
+			pages: [
+				'pages/schedule/schedule',//日程
+				'pages/login/login',//登陆
+				'pages/client/edit',//修改客户详情
+				'pages/client/add',//添加客户详情
+				'pages/client/details',//客户详情
+				'pages/client/addExchange',//添加记录
+				'pages/partner/selectPartner',//选择商家
+				'pages/client/list',//客户管理
+				'pages/task/executor',//执行人
+				'pages/myInfo/performance',//我的业绩
+				'pages/employee/employee',//员工业绩
+				'pages/employee/bossEmployee',//员工业绩
+				'pages/workbench/workbench',//工作台
+				'pages/workbench/bossWorkbench',//boss工作台
+
+				'pages/myInfo/index',//我的
+				'pages/schedule/all',//全部业务
+
+				'pages/myteam/myteam',//我的团队
+				'pages/myteam/menberDetails',//我的团队-个人详情页
+				'pages/plan/plan',//计划列表
+				'pages/plan/appliedPlanDetails',//已申请计划详情
+				'pages/plan/alterPlan',//修改计划详情
+				'pages/plan/applyPlan',//申请计划
+				'pages/plan/planDetails',//计划详情
+				'pages/plan/adjustPlanDetails',//计划详情-调整计划
+				'pages/plan/planMyteam',//任务相关人
+				'pages/plan/correlationOrder',//相关订单人
+				'pages/plan/sonPlan',//子计划
+				'pages/plan/setPlan',//设立计划
+				'pages/project/project',//项目资料
+				'pages/project/projectDetails',//商品详情
+				'pages/expert/expertDetails',//专家详情页
+				'pages/expert/expert',//专家资料
+				'pages/partner/partner',//合作商列表
+				'pages/plan/comeType',//选择来访类型
+				'pages/plan/setClient',//选择来访人
+
+				'pages/setOrder/setOrder',//创建订单
+				'pages/setOrder/alterOrder/alterOrder',//修改订单
+				'pages/setOrder/checkOrderYes/checkOrderYes',//已审核订单详情
+				'pages/setOrder/checkOrderNo/checkOrderNo',//未审核订单详情
+				'pages/setOrder/projectList',//创建订单项目列表
+				'pages/setOrder/clientList',//创建订单客户列表
+				'pages/setOrder/orderMyteam',//创建订单订单相关人
+				'pages/receipt/receipt',//收款
+
+				'pages/task/task',//任务
+
+				'pages/myInfo/editPhone',//更换手机页面
+				'pages/myInfo/info',//我的资料
+				'pages/myInfo/editName',//更改名字
+				'pages/passwordFind/passwordFind',//找回密码
+				'pages/orderManage/orderManage',//订单管理
+				'pages/brandData/brandData',//品牌资料
+				'pages/myInfo/verifyPhone',//验证手机号码
+				'pages/passwordFind/newSetPassword',//找回密码
+				'pages/myInfo/phoneInfo',//手机信息页
+				'pages/myInfo/editPassword',//更改密码
+				'pages/myInfo/selectBirthday',//选择生日
+			],
+			subPackages: [{
+				root: "pages/echartsDetails", //echarts文件夹(包括员工端合作商详情，老板端经营概况)
+				pages: [
+					'partnerDetails',//合作商详情
+					'manageSurvey',//经营概况
+				]
+			}],
+			window: {
+				backgroundTextStyle: 'light',
+				navigationBarBackgroundColor: '#fff',
+				navigationBarTitleText: 'WeChat',
+				navigationBarTextStyle: 'black',
+				backgroundColor: '#ebf0ef'
+			},
+			tabBar: {
+				color: '#999',
+				selectedColor: '#3096f8',
+				backgroundColor: '#fff',
+				/*borderStyle: 'white',*/
+				list: [{
+					pagePath: 'pages/schedule/schedule',
+					text: '日程',
+					iconPath: 'images/day.png',
+					selectedIconPath: 'images/day_a.png'
+				},{
+					pagePath: 'pages/workbench/workbench',//工作台,
+					text: '工作台',
+					iconPath: 'images/word.png',
+					selectedIconPath: 'images/word_a.png'
+				},{
+					pagePath: 'pages/myInfo/index',
+					text: '我的',
+					iconPath: 'images/my.png',
+					selectedIconPath: 'images/my_a.png'
+				}]
+
+			}
+		}
+
+		globalData = {
+			key: '',
+			formIdList: [],
+		}
+
+		constructor () {
+			super();
+			this.use('requestfix');
+			this.use('promisify');
+		}
+
+		onLaunch(o) {
+			/*this.getSession();*/
+			const updateManager = wx.getUpdateManager()
+
+			updateManager.onUpdateReady(function () {
+				wx.showModal({
+					title: '温馨提醒',
+					content: '系统检测 您还没更新到最新版本的应用赶紧【确定】更新到最新版本',
+					showCancel: false,
+					success: function (res) {
+						if (res.confirm) {
+							// 新的版本已经下载好，调用 applyUpdate 应用新版本并重启
+							updateManager.applyUpdate()
+						}
+					}
+				})
+
+			})
+
+			updateManager.onUpdateFailed(function () {
+				// 新的版本下载失败
+			})
+		}
+
+		async checkSession() {
+			wx.checkSession({
+				success: function() {
+
+				}.bind(this),
+				fail: function() {
+					//登录态过期
+					this.getSession(); //重新登录
+				}.bind(this)
+			})
+		}
+
+		//验证授权
+		async verifyAccredit(e) {
+			const {authSetting:{'scope.userInfo':scope}} = await wepy.getSetting();
+
+			if (!scope) {
+				getCurrentPages()[e || 0].showAccreditDialog()
+			}
+		}
+
+		//获取session
+		async getSession() {
+			const {rawData='',signature='',encryptedData='',iv=''} = wx.getStorageSync('USER_DATA');
+			let {code} = await wepy.login(),query = {
+				rawData,
+				signature,
+				encryptedData,
+				iv,
+				code,
+				key: this.globalData.key
+			};
+			let {data} = await api.againLogin({query});
+			let eInfo = wx.getStorageSync('eInfo') || {};
+			eInfo.mobilePhone = data.mobilePhone;
+			wx.setStorageSync('eInfo',eInfo);
+			wx.setStorageSync('session', data);
+		};
+	}
+</script>

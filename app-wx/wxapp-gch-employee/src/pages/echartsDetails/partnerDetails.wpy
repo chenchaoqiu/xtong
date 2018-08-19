@@ -1,0 +1,177 @@
+<style lang="less">
+  page{background: #fff;}
+  .oneline-overflow{overflow: hidden;text-overflow: ellipsis;white-space: nowrap}
+  .top-title{
+    width: 100%;
+    font-size: 28rpx;
+    box-sizing: border-box;
+    padding: 18rpx 30rpx;
+    color:#666;
+    background: #f2f2f4;
+  }
+  .font-26{
+    font-size: 26rpx;
+  }
+  .list{
+    font-size: 30rpx;
+    line-height: 1;
+    padding: 30rpx 0;
+    margin: 0 30rpx;
+    border-bottom: 1px solid #eee;
+    color:#666;
+  }
+  .list2{
+    font-size: 30rpx;
+    line-height: 1;
+    padding: 30rpx 30rpx;
+    border-bottom: 1px solid #eee;
+    color:#666;
+  }
+  .chart-wrapper{
+    font-size: 26rpx;
+    line-height: 1;
+    padding:30rpx 30rpx;
+    height: 600rpx;
+  }
+  .container {
+    margin-top: 20rpx;
+  }
+  .circle{
+    display: block;margin-top:10rpx ;margin-right: 20rpx;float: left;width: 10rpx;height: 10rpx;border-radius: 50%;
+  }
+</style>
+<template>
+  <view class="top-title">基本资料</view>
+
+  <view class="list">
+    <text>合作商名称</text>
+    <text class="color-33 oneline-overflow" style="max-width: 70%;float: right">{{partnerDetail.name}}</text>
+  </view>
+  <view class="list" style="padding: 30rpx 0 20rpx!important;">
+    <text>合作商地址</text>
+    <view class="color-33 font-26" style="margin-top:30rpx;line-height: 1.5 ">
+      {{partnerDetail.address}}
+    </view>
+  </view>
+  <view class="list2">
+    <text>业务对接</text>
+    <block wx:for="{{partnerDetail.linkmanList}}" wx:key="{{item.bizzPartnerId}}">
+      <view style="margin-top: 30rpx;padding-left: 20rpx;color:#333">
+        <text>{{item.name}}</text>
+        <text style="padding-left: 20rpx;">{{item.positionName}}</text>
+        <text style="padding-left: 20rpx;">{{item.mobilePhone}}</text>
+      </view>
+    </block>
+  </view>
+  <view class="list" style="border-bottom: 0">
+    <text>备注</text>
+    <view class="color-33 font-26" style="margin-top:30rpx;line-height: 1.5; ">
+      {{partnerDetail.remark}}
+    </view>
+  </view>
+  <view class="top-title">数据概括</view>
+
+  <navigator url="/pages/client/list?bizzPartnerId={{partnerDetail.bizzPartnerId}}" class="list2 clearfix" hover-class="none">
+    <view style="float: left">
+      <image src="../../images/person.png" style="display: block;float: left;width: 28rpx;height: 28rpx"></image>
+      <text class="color-33" style="padding-left: 16rpx">客户分析</text>
+    </view>
+    <view style="float: right">
+      <text style="display: block;float: left;font-size: 28rpx;color:#666;padding-right: 20rpx;">查看详情</text>
+      <image src="../../images/arrows.png" style="display: block;float: left;width: 16rpx;height: 30rpx"></image>
+    </view>
+  </navigator>
+
+  <view class="chart-wrapper ">
+    <view >累计推荐客户数：{{partnerDetail.totalMemberNum}} 个</view>
+    <view style="margin-top: 30rpx;">累计推订单成交金额：{{partnerDetail.totalOrderMoney}} 元</view>
+    <view class="container" >
+      <echarts  :ec="ec" />
+    </view>
+
+    <view style="display: flex;width: 70%;margin: 0 auto;font-size: 26rpx">
+      <view style="float: left;flex: 1">
+        <text class="circle" style="background:#37A2DA "></text>
+        <text >成交客 {{partnerDetail.dealCustomer}}%</text>
+      </view>
+      <view style="float: left;flex: 1">
+        <text class="circle" style="background: #FF9F7F"></text>
+        <text >体验客 {{partnerDetail.experienceCustomer}}%</text>
+      </view>
+    </view>
+
+  </view>
+
+
+</template>
+<script>
+	import wepy from 'wepy'
+  import Echarts from './echart';
+	import api from '../../api/api'
+
+	export default class partnerDetails extends wepy.page {
+		config = {
+			navigationBarTitleText: '合作商详情',
+		};
+
+
+    components = {
+      echarts: Echarts,
+    }
+    data = {
+      bizzPartnerId:'',//合作商id
+      partnerDetail:'',//接口数据返回
+      ec: {
+        option : {
+          backgroundColor: "#ffffff",
+          color: [ "#FF9F7F","#37A2DA"],
+          series: [{
+            label: {
+              normal: {
+                fontSize: 14
+              }
+            },
+            type: 'pie',
+            center: ['50%', '50%'],
+            radius: [0, '60%'],
+            data: [{
+              value: '',
+              name: '体验客'
+            }, {
+              value: '',
+              name: '成交客'
+            },
+            ],
+            itemStyle: {
+              emphasis: {
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowColor: 'rgba(0, 2, 2, 0.3)'
+              }
+            }
+          }]
+        }
+      }
+    }
+
+		methods = {
+
+		}
+		//合作商详情
+    async getBizzpartnerDetail() {
+      const json = await api.bizzpartnerDetail({
+        query:{
+          bizzPartnerId:this.bizzPartnerId,
+        }
+      });
+      this.partnerDetail = json.data;
+      this.ec.option.series[0].data[1].value= this.partnerDetail.dealCustomer ;//成交客
+      this.ec.option.series[0].data[0].value = this.partnerDetail.experienceCustomer ;//体验客
+      this.$apply();
+    }
+    onLoad(options) {
+      this.bizzPartnerId = options.bizzPartnerId;
+      this.getBizzpartnerDetail();
+    }
+	}
+</script>

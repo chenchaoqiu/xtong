@@ -1,0 +1,303 @@
+<style lang="less">
+    .wrap {
+        background-color: #fff;
+        margin-top: 1rpx;
+        padding: 40rpx 30rpx 124rpx 30rpx;
+        height: 100vh;
+    }
+    .logo-code-warp {
+        height: 42rpx;
+    }
+    .user-code {
+        width: 42rpx;
+        height: 42rpx;
+        margin-right: 20rpx;
+    }
+    .user-phone {
+        -webkit-box-flex:1;
+        -webkit-flex:1;
+        flex:1;
+        padding-top: 3rpx;
+        padding-left: 40rpx;
+        color: #666;
+    }
+    .no-border {
+        border: none;
+    }
+    .lable {
+        /* width: 156rpx;*/
+        border-right: 1rpx solid #ddd;
+        padding-right: 20rpx;
+    }
+    .btn-wrap {
+        text-align: center;
+        margin-top: 60rpx;
+    }
+    .btn-wrap .btn {
+        width: 690rpx;
+        height: 86rpx;
+        line-height: 86rpx;
+        background-color: #999 !important;
+        font-size: 30rpx;
+        color: #fff !important;
+        border: none !important;
+    }
+
+    .btn-wrap .btn-active {
+        width: 690rpx;
+        height: 86rpx;
+        line-height: 86rpx;
+        background-color: #3296F8 !important;
+        font-size: 30rpx;
+        color: #fff !important;
+        border: none !important;
+    }
+    .title {
+        font-size: 36rpx;
+    }
+    .input-placeholder {
+        color: #ddd;
+        font-size: 30rpx;
+    }
+    .sp-mb-22 {
+        margin-bottom: 22rpx;
+    }
+    .cell {
+        view {
+            width: 80rpx;
+            border-bottom: 1rpx solid #ddd;
+            text-align: center;
+        }
+    }
+    .input-wrap {
+        position: relative;
+        input {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            opacity: 0;
+            left: -100vw;
+        }
+    }
+    .hint {
+        margin-top: 30rpx;
+    }
+    .cursor-blink {
+        animation: 1s steps(1, start) 0s normal none infinite running blink;
+        -webkit-animation: blink 1s infinite steps(1, start);
+    }
+    .sp-ml-20 {
+        margin-left: 20rpx;
+    }
+    .cursor.blink {
+        animation: blink 1s infinite steps(1, start);
+        -webkit-animation: blink 1s infinite steps(1, start);
+    }
+    /*这里设置动画blink*/
+    @-webkit-keyframes blink {
+        0%, 100% {
+            background-color: #FFFFFF;
+            color: #FFF;
+        }
+        50% {
+            background-color: #FFFFFF; /* not #aaa because it's seem there is Google Chrome bug */
+            color: #3296F8;
+        }
+    }
+    .active {
+        color: #3296F8;
+    }
+</style>
+<template>
+    <view class="wrap">
+        <view class="title color-66">请输入验证码</view>
+
+        <view class="color-66 size-24">验证码发送至手机：<text class="color-blue">+86{{mobilePhone}}</text></view>
+
+        <view class="input-wrap">
+            <view class="table" @tap="focus">
+                <view class="cell">
+                    <view class="weui-input size-30 flex-1"><text wx:if="{{length == 0}}" class="cursor-blink">|</text> {{code[0]}}</view>
+                    <!-- <input class="weui-input size-30 flex-1" type="number" maxlength="1"  focus="{{!code[0]}}"  @input="setVal(0)" />-->
+                </view>
+                <view class="cell">
+                    <view class="weui-input size-30 flex-1"><text wx:if="{{length == 1}}" class="cursor-blink">|</text>{{code[1]}}</view>
+                    <!-- <input class="weui-input size-30 flex-1" type="number" maxlength="1"  focus="{{code[0] && !code[1]}}"  @input="setVal(1)" />-->
+                </view>
+                <view class="cell">
+                    <view class="weui-input size-30 flex-1"><text wx:if="{{ length == 2}}" class="cursor-blink">|</text>{{code[2]}}</view>
+                    <!--<input class="weui-input size-30 flex-1" type="number" maxlength="1"  focus="{{code[1] && !code[2]}}"  @input="setVal(2)" />-->
+                </view>
+                <view class="cell">
+                    <view class="weui-input size-30 flex-1"><text wx:if="{{length == 3}}" class="cursor-blink">|</text>{{code[3]}}</view>
+                    <!--<input class="weui-input size-30 flex-1" type="number" maxlength="1"  focus="{{code[2] && !code[3]}}"  @input="setVal(3)" />-->
+                </view>
+            </view>
+            <input class="weui-input" focus="{{isFocus}}" type="number" maxlength="4" @blur="blur" @input="setVal" />
+        </view>
+
+        <view class="hint color-99 size-24"><text wx:if="{{!isClick}}">{{codeBtn}}后</text><text class="sp-ml-20 {{isClick && 'active'}}" @tap="getCode">重新发送验证码</text></view>
+
+        <view class="btn-wrap">
+            <button class="weui-btn {{length == 4 ? 'btn-active' : 'btn'}}" @tap="submit" type="default" plain="true">确认更换</button>
+        </view>
+
+    </view>
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+
+	export default class VerifyPhone extends wepy.page {
+		config = {
+			navigationBarTitleText: '我的手机号码',
+			backgroundColor: '#ebf0ef',
+			disableScroll: true
+		};
+
+		onLoad(o) {
+			this.mobilePhone = o.mobile;
+		}
+
+		onShow() {
+			if (wx.getStorageSync("vCode1")) {
+				clearInterval(wx.getStorageSync("vCode1"));
+			}
+
+			if (wx.getStorageSync("vCode")) {
+				clearInterval(wx.getStorageSync("vCode"));
+			}
+
+			if (!wx.getStorageSync('vAuthCodeTime')) {
+				wx.setStorageSync('vAuthCodeTime', 59);
+			}
+
+			if (wx.getStorageSync('vAuthCodeTime')) {
+				var nowTime = new Date().getTime();
+				var diffTime = Math.ceil((nowTime - (wx.getStorageSync('vSetAuthCodeTime') || '0')) / 1000);
+
+				if (wx.getStorageSync('vAuthCodeTime') >= 60) {
+					wx.setStorageSync('vAuthCodeTime', 59);
+				} else {
+					this.isClick = false;
+					wx.setStorageSync('vAuthCodeTime', 59 - diffTime);
+					let _this = this;
+					let clearAuthCode = setInterval(function() {
+						if (wx.getStorageSync('vAuthCodeTime') <= 0) {
+							clearInterval(wx.getStorageSync("vCode"));
+							_this.codeBtn = "0";
+							_this.isClick = true;
+							wx.setStorageSync('vAuthCodeTime', 59);
+							_this.$apply();
+							return false;
+						}
+
+						let num = wx.getStorageSync('vAuthCodeTime');
+						wx.setStorageSync('vAuthCodeTime', --num);
+						_this.codeBtn = num + 's';
+						_this.$apply();
+					}, 1000);
+					wx.setStorageSync('vCode', clearAuthCode);
+				};
+			}
+		}
+
+		data = {
+			code: [],
+			mobilePhone: '',
+			isClick: false,
+			codeBtn: '59',
+			isFocus: true
+		};
+
+		watch = {
+			/*num (curVal, oldVal) {
+				console.log(`旧值：${oldVal}，新值：${curVal}`)
+			}*/
+		};
+
+		methods = {
+			focus() {
+			    this.isFocus = true;
+			    this.$apply();
+            },
+            blur() {
+	            this.isFocus = false;
+            },
+			setVal(e) {
+				this.code = e.detail.value.split('');
+			},
+			submit() {
+				this.updatePhone();
+			},
+			getCode() {
+				if (this.isClick) {
+					this.isClick = false;
+					this.sendChangePhoneMobileCode();
+				}
+			},
+		};
+		async sendChangePhoneMobileCode() {
+			clearInterval(wx.getStorageSync("vCode"));
+			const {imei_error_code} = await api.sendChangePhoneMobileCode({
+				query:{
+					mobile: this.mobilePhone,
+				}
+			});
+
+			this.codeBtn = wx.getStorageSync('vAuthCodeTime') + 's';
+			this.isClick = false;
+			this.$apply();
+			let _this = this;
+
+			wx.setStorageSync('vSetAuthCodeTime', new Date().getTime());
+
+			let clearAuthCode = setInterval(function() {
+				if (wx.getStorageSync('vAuthCodeTime') <= 0) {
+					clearInterval(wx.getStorageSync("vCode1"));
+					_this.codeBtn("0");
+					_this.isClick = true;
+					wx.setStorageSync('vAuthCodeTime',59);
+					_this.$apply();
+					return false;
+				}
+				let num = wx.getStorageSync('vAuthCodeTime');
+				wx.setStorageSync('vAuthCodeTime', --num);
+				_this.codeBtn = num + 's';
+				_this.$apply();
+			}, 1000);
+			wx.setStorageSync('vCode1', clearAuthCode);
+		}
+		async updatePhone() {
+			const {imei_error_code} = await api.updatePhone({
+				query:{
+					mobile: this.mobilePhone,
+					mobileCode: this.code.join('')
+				}
+			});
+
+			if (imei_error_code == 0) {
+				wx.showToast({
+					title: '更改成功！',
+					icon: 'success',
+					duration: 1000
+				});
+
+                let eInfo = wx.getStorageSync('eInfo');
+				eInfo.mobilePhone = this.mobilePhone;
+				wx.setStorageSync('eInfo', eInfo);
+
+				setTimeout(function () {
+					wx.switchTab({
+						url: '/pages/myInfo/index'
+					})
+				},1000)
+			}
+		}
+		computed = {
+			length () {
+				return this.code.length;
+			}
+		}
+	}
+</script>

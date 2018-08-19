@@ -1,0 +1,205 @@
+<style lang="less">
+    page{background: #f4f4f4}
+    .qk-corl{
+        position: absolute;
+        right: 20rpx;
+        top:0;
+        font-size: 30rpx;
+        color: #fff;
+        width:48rpx;
+        height:66rpx;
+        line-height: 53rpx;
+        text-align: center;
+        display: block;
+        background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAABCCAYAAAAR6FVNAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyZpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTExIDc5LjE1ODMyNSwgMjAxNS8wOS8xMC0wMToxMDoyMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTUgKFdpbmRvd3MpIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjY2MEVBOEI5MDMwMDExRTg4QkIyQURFOEZBNDY3OUQ2IiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOjY2MEVBOEJBMDMwMDExRTg4QkIyQURFOEZBNDY3OUQ2Ij4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6NjYwRUE4QjcwMzAwMTFFODhCQjJBREU4RkE0Njc5RDYiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6NjYwRUE4QjgwMzAwMTFFODhCQjJBREU4RkE0Njc5RDYiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz6u3rCfAAABYklEQVR42uzavUrDUACG4dpbsclSHKtegHoBirq6OYogbm5uIoijW1cVvQDtDaidBAfp0kFBaaFDoRBK63fgEzqIv41N4C28S5qccx5ITzJ0Kr65HxZy/CkWcv4BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMgDoqB3XyRMgUUcqUocu8rEky4Dw981TVVbbqjXyXcvHyj5nmDXAlaqoddX45LyGz6n4mokD7tSiWlL1H1xX9zUL6nYSgEe1pmbV9R/mr6k5teoxUwc8q03fy2djupfDGOceM4z9lAagrXZVSZ2ofgq7V99jR56rPQ5AV+174Qeq9w/Ppp7nKnnu7m8AYb8+9iB7aT6IvngQhrmnvZbkO4CBqqpYbamXDLwtvHotsdc2+AgQfkiXakZtqGYGX3uaXltY48X7BlL0VjavltVDDt7fwhpXvObamwADAAIFR1pe92i4AAAAAElFTkSuQmCC') no-repeat;
+        background-size: 100%;
+    }
+    .button{
+        position: absolute;
+        right: 20rpx;
+        bottom:14rpx;
+        background: #ff5767;
+        width:160rpx;
+        height: 60rpx;
+        line-height: 60rpx;
+        text-align: center;
+        border-radius: 10rpx;
+        font-size: 30rpx;
+        color: #fff;
+    }
+</style>
+<template>
+    <view style="height: 1px;width: 100%;background: #f4f4f4; "></view>
+    <view wx:for="{{dat_uers}}" style="background: #fff;overflow: hidden;padding: 20rpx 30rpx;">
+        <image style="float: left;width: 84rpx;height: 84rpx;border-radius: 50%;margin: 10rpx 0;" src="{{item.headImgUrl}}"></image>
+        <view style="margin-left: 20rpx;float: left;width: 84%;line-height: 50rpx;">
+            <text style="width: 100%;font-size: 30rpx;color:#333;display: block;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{item.memberName}}</text>
+            <view style="overflow: hidden;">
+                <text style="float: left;font-size: 24rpx;color:#666;">{{item.mobilePhone}}</text>
+                <view style="float: right;">
+                    <image @tap="calling({{item.mobilePhone}})" style="width: 26rpx;height: 34rpx;border-left:1px solid #e5e5e5;padding-left:20rpx;" src="../../../images/phon.png"></image>
+                </view>
+            </view>
+        </view>
+    </view>
+    <!--基本信息-->
+    <text style="display: block;font-size: 30rpx;color:#333;margin: 20rpx 0 10rpx;padding-left: 30rpx;">基本信息</text>
+    <view wx:for="{{dat_uers}}" style="margin: 0 30rpx;background: #fff;border-radius: 10rpx;">
+        <view style="padding: 20rpx;">
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;">开户时间：</text>
+                <text style="color: #333;">{{item.registerTime}}</text>
+            </view>
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;">消费次数：</text>
+                <text style="color: #333;">{{item.consumptionNum}}次({{item.recentConsumptionTime}})</text>
+            </view>
+            <!--<view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;margin: 10rpx 0;">顾客来源：</text>
+                <text style="color: #333;">{{dat_uers[0].name}}</text>
+            </view>-->
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;">账户余额：</text>
+                <text style="color: #ff5767;">{{item.remainTotalBalance || 0}}元</text>
+            </view>
+        </view>
+    </view>
+    <!--卡项信息-->
+    <text wx:if="{{dat_uers[0].cardItemMessageList.length}}" style="display: block;font-size: 30rpx;color:#333;margin: 20rpx 0 10rpx;padding-left: 30rpx;">卡项信息</text>
+    <view wx:for="{{dat_uers[0].cardItemMessageList}}" style="margin: {{index!=0?'30rpx':'0'}} 30rpx 0;background: #fff;border-radius: 10rpx;">
+        <view style="padding: 20rpx 20rpx 0;">
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;">购买时间：</text>
+                <text style="color: #333;">{{item.payTime}}</text>
+            </view>
+            <view style="overflow: hidden;margin-top: 15rpx;margin-bottom: 20rpx;">
+                <image style="float: left;width: 200rpx;height: 138rpx;border-radius: 10rpx;border:1px solid #e5e5e5;" src="{{item.cardImageUrl}}"></image>
+                <view style="float: left;margin-left: 15rpx;">
+                    <view style="font-size: 30rpx;color: #333;width: 433rpx;height: 96rpx;overflow: hidden;display:-webkit-box; -webkit-box-orient:vertical;-webkit-line-clamp:2; ">{{item.courseCardName}}</view>
+                    <text style="font-size: 32rpx;color:#ff5767;">{{item.orderAmount}}元</text>
+                </view>
+            </view>
+            <view wx:for="{{item.projectDetailList}}" style="padding-bottom: 20rpx;border-top:1rpx solid #eee;padding-top:18rpx;">
+                <text style="font-size: 26rpx;color:#666;">{{item.projectName}}</text>
+                <view style="overflow: hidden;font-size: 24rpx;color:#999;margin-top: 24rpx;">
+                    <view style="width: 188rpx;border-right: 1rpx solid #e5e5e5;float: left;">使用{{item.userNum}}次</view>
+                    <view style="width: 255rpx;float: left;text-align: center;{{item.remainNeedPay==0?'':'color: #ff5767'}}">{{item.remainNeedPay==0?(item.effectDay==0?'无限制':'有效期'+item.effectDay+'天'):'有欠款'}}</view>
+                    <view style="width: 203rpx;border-left: 1rpx solid #e5e5e5;float: left;text-align: right;">{{item.consumeTime==0?'无消费记录':item.consumeTime+'天前消费过'}}</view>
+                </view>
+            </view>
+        </view>
+    </view>
+    <!--欠款信息-->
+    <text wx:if="{{dat_list.length}}" style="display: block;font-size: 30rpx;color:#333;margin: 20rpx 0 10rpx;padding-left: 30rpx;">欠款信息</text>
+    <view>
+        <view wx:for="{{dat_list}}" style="margin: 0 30rpx 20px;background: #fff;border-radius: 10rpx;">
+            <view style="padding: 20rpx;position: relative;">
+                <view style="font-size: 30rpx;margin: 10rpx 0;">
+                    <text style="color: #999;">订单编号：</text>
+                    <text style="color: #333;">{{item.orderSn}}</text>
+                </view>
+                <view style="font-size: 30rpx;margin: 10rpx 0;">
+                    <text style="color: #999;">购买时间：</text>
+                    <text style="color: #333;">{{item.payTime}}</text>
+                </view>
+                <view style="font-size: 30rpx;margin: 10rpx 0;">
+                    <text style="color: #999;margin: 10rpx 0;">欠款金额：</text>
+                    <text style="color: #ff5767;">{{item.unpaidTotalPrice}}元</text>
+                </view>
+                <text class="qk-corl">{{index+1}}</text>
+                <navigator class="button" url="/pages/customer/customeintion/cusdetails/cusdetails?id={{item.orderSn}}" hover-class="navigator-hover">还款</navigator>
+            </view>
+        </view>
+    </view>
+    <image wx:if="{{showif}}" @tap="goTop" style="width: 60rpx; height: 60rpx;position: fixed;bottom: 148rpx;right: 30rpx;" src="../../../images/top.png"></image>
+</template>
+
+<script>
+	import wepy from 'wepy'
+    import api from '../../../api/api'
+
+	export default class Customer extends wepy.page {
+		config = {
+			navigationBarTitleText: '顾客信息',
+          enablePullDownRefresh: false
+		}
+		components = {
+
+		}
+
+		data = {
+            showif:false,
+            dat_list:[],
+            dat_uers:[]
+		}
+
+        /*onReachBottom(e){//监控滚动到底部
+         if (this.zt){
+         return;
+         }
+         this.ajxa(++this.pageno)
+         }*/
+
+          async ajxa(e){
+              /*加载列表*/
+            const json = await api.custormeintion({
+              query: {
+                shopId: wx.getStorageSync('session').shopId,
+                  memberCompanyId:e
+//                pageNo:e,
+//                pageSize:15,
+              }
+            });
+
+            this.dat_uers.push(json.data);
+            this.dat_list = json.data.arrearsMessageList;
+
+            this.$apply();
+          }
+
+        onPageScroll(e){ // 获取滚动条当前位置
+            if(e.scrollTop>130){
+                this.showif=true;
+            }else{
+                this.showif=false;
+            }
+        }
+        goTop(e) {  // 一键回到顶部
+            if (wx.pageScrollTo) {
+                wx.pageScrollTo({
+                    scrollTop: 0
+                })
+            } else {
+                wx.showModal({
+                    title: '提示',
+                    content: '当前微信版本过低，无法使用该功能，请升级到最新微信版本后重试。'
+                })
+            }
+        }
+
+		computed = {
+
+		}
+		methods = {
+            calling(e) {
+                wx.makePhoneCall({
+                    phoneNumber: e,
+                    success: function () {
+                        console.log("拨打电话成功！")
+                    },
+                    fail: function () {
+                        console.log("拨打电话失败！")
+                    }
+                })
+            }
+		}
+
+		events = {
+
+		}
+
+		onLoad(e) {
+          this.ajxa(e.id);
+		}
+	}
+</script>

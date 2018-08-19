@@ -1,0 +1,335 @@
+<style lang="scss">
+  page {background-color: #ffffff;font-family: PingFang-SC-Regular; }
+  .color-mian{color:#26cad3}
+  .color-fuzhu{color:#e4393c}
+  .color-333{color:#333333}
+  .color-666{color:#666666}
+  .color-999{color:#999999}
+  .font-30{font-size: 30rpx;}
+  .font-28{font-size: 28rpx;}
+  .font-26{font-size: 26rpx;}
+  .font-24{font-size: 24rpx;}
+  .swiper-tab{
+    height: 90rpx;line-height: 90rpx;width: 100%; box-sizing: border-box;overflow: hidden;background: #ffffff;
+    border-bottom: 1rpx solid #dddddd; font-size: 30rpx; white-space: nowrap;position: fixed;top: 1rpx; left: 0;
+    z-index: 99;color:#666666
+  }
+  .swiper-box{margin-top: 90rpx;margin-bottom: 90rpx;}
+  .swiper-tab-list{display: inline-block;width: 50%;text-align: center}
+  .swiper-tab-list.active{position: relative;color: #26cad3;}
+  .swiper-tab-list.active:after{ content: "";display: block;height: 8rpx;width: 200rpx;background: #26cad3;position: absolute; bottom: 0;left: 84rpx;border-radius: 16rpx;}
+  .list{width: 100%;margin-top: 20rpx;background: #ffffff;border-bottom: 1rpx solid #eee}
+  .list-con{padding: 24rpx 0rpx;margin:0 24rpx;display: flex;display: -webkit-flex;}
+  .list-con2{border-bottom: 1rpx solid #eeeeee}
+  .list-con2:last-child{border-bottom:none!important;}
+  .con-img{width: 210rpx;height: 140rpx;}
+  .con-r{flex: 1;-webkit-flex:1;margin-left: 30rpx;display: flex;display: -webkit-flex;flex-direction: column;-webkit-flex-direction: column;justify-content: space-around;-webkit-justify-content:space-around}
+  .title{margin-top: 5rpx;line-height: 40rpx;display: -webkit-box;  -webkit-box-orient: vertical;  -webkit-line-clamp: 2;
+    overflow: hidden;}
+  .des{display: -webkit-box;  -webkit-box-orient: vertical;  -webkit-line-clamp: 1;
+    overflow: hidden;}
+  .price{margin-top: 10rpx;}
+  .list-guige{background: #fff9f9;height: auto;border-bottom: 1rpx solid #eeeeee;}
+  .list-guige-item{ margin: 0 24rpx;overflow: hidden;height: 28rpx;line-height: 28rpx;padding-top: 24rpx;font-size: 28rpx;color:#666666}
+  .list-guige-item:last-child{padding-bottom:24rpx}
+  .book{height: 80rpx;line-height: 80rpx;margin: 0 24rpx;}
+  .book-btn{float: right;display: block;margin-top: 12rpx;width: 150rpx;height: 56rpx;line-height: 56rpx;font-size:26rpx;text-align: center;color:#e4393c;border: 1rpx solid #e4393c;border-radius: 10rpx;}
+  .list-shop{height: 74rpx;line-height: 74rpx;border-top:1rpx solid #ddd;border-bottom: 1rpx solid #ddd;padding: 0 24rpx;}
+  .consume{width: 100%;overflow: hidden;background: #fff;border-top:1rpx solid #ddd;padding-bottom: 50rpx;}
+  .consume-top{width:236rpx;margin: 30rpx auto 40rpx auto;height: 30rpx;line-height: 30rpx;}
+  .icon-consume{display: block;float:left;width: 30rpx;height: 13rpx;margin-top: 9rpx;}
+  .icon-consume-l{margin-right: 14rpx;}
+  .icon-consume-r{margin-left: 14rpx;}
+  .consume-list{margin: 0 24rpx;}
+  .consume-list-item{
+    position: relative;
+    padding-left: 50rpx;
+    height:130rpx;
+  }
+  .consume-list-item::before{
+    content:"";
+    display: block;
+    position: absolute;
+    top:24rpx;
+    left: -2rpx;
+    width:12rpx;
+    height: 12rpx;
+    border-radius: 100%;
+    background-color: #26cad3;
+    box-shadow: 0rpx 0rpx 6rpx 6rpx #d1f4f6;
+    z-index: 2;
+  }
+  .consume-list-item::after{
+    content:"";
+    display: block;
+    position: absolute;
+    top:30rpx;
+    left: 4rpx;
+    width:1rpx;
+    height: 120rpx;
+    background-color: #26cad3;
+    z-index: 1
+  }
+  .consume-list > .consume-list-item:last-child::after{
+      content:"";
+      display: block;
+      position: absolute;
+      top:0;
+      left: 0;
+      width:0;
+      height: 0;
+      background-color: #26cad3;
+      z-index: 1
+    }
+  .book-btn2{display: block;width: 140rpx;height: 50rpx;background:#e4393c;line-height: 50rpx;color:#fff;font-size: 24rpx;margin: 33rpx auto 0 auto;border-radius: 10rpx;text-align: center}
+  .hui-20{width: 100%;height: 20rpx;background-color:#ebf0ef; }
+  .ellipsis {
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+  }
+  .role {
+    position: fixed;
+    width: 215rpx;
+    height: 191rpx;
+    right: 30rpx;
+    bottom: 250rpx;
+  }
+
+  .pro-item{}
+  .pro-item-sel{padding: 0 30rpx;height: 88rpx;line-height:88rpx;color:#333;background: #fff9f9;}
+  .pro-item-sel .more{width: 36rpx;height: 36rpx;margin-top: 26rpx;float: right}
+  .pro-item-con{;border-top: 1rpx solid #eee;background: #fff;}
+  .pro-item-con-list{padding: 30rpx 30rpx;color: #666;font-size: 26rpx;line-height: 26rpx;border-bottom: 1rpx solid #eee}
+  .pro-item-con-des{font-size: 22rpx;height: 74rpx;line-height: 74rpx;padding: 0 30rpx;
+    display: flex;display: -webkit-flex;justify-content: space-between;-webkit-justify-content: space-between}
+  .con-des-sy{flex: 1;-webkit-flex: 1;text-align: center}
+</style>
+<template>
+  <view style="height: 1rpx;width: 100%;background: #dddddd;position: fixed;top:0;left: 0;overflow: hidden" ></view>
+  <view class="hui-20"></view>
+  <!--swiper-tab-->
+    <!--list-->
+    <!--全部-->
+    <view  style="overflow-y: scroll">
+      <view class="list">
+        <navigator url="/pages/productDetails/productDetails?salePackageId={{specDetail.courseCardId}}" hover-class="none" class="list-con">
+          <view class="con-img">
+            <image src="{{specDetail.coverImageUrl}}" style="width: 210rpx;height: 140rpx;"></image>
+          </view>
+          <view class="con-r">
+            <text class="title font-30 color-333" >{{specDetail.courseCardName}}</text>
+            <text class="des font-24 color-999">{{specDetail.specName}}</text>
+          </view>
+        </navigator>
+        <!--点击增加的商品-->
+        <view class="pro-item">
+          <view class="pro-item-sel" @tap.stop="more('{{!specDetail.more}}')">
+            <text style="font-size: 28rpx;">套餐包含项目：</text>
+            <image class="more"  src="{{specDetail.more ? '../../images/up-big.png' : '../../images/dow-big.png'}}"></image>
+          </view>
+          <view class="pro-item-con" wx:if="{{specDetail.more}}">
+            <block wx:for="{{specDetail.projectList}}"  wx:for-item="itema" wx:key="itema">
+              <view class="pro-item-con-list">
+                <text style="display: inline-block;max-width: 65%;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;" >{{itema.projectName}}</text>
+                <view style="text-align: right;float: right;font-size: 24rpx;"  >已使用：
+                  <text style="color: #26cad3">{{itema.usedConsumeNum}}</text> 次 </view>
+                <!--<view style="text-align: right;float: right;font-size: 24rpx"  wx:if="{{itema.isNumLimit == 0}}">无限制</view>-->
+                <view class=" pro-item-con-des" wx:if="{{specDetail.isOpenSetting == 0}}" style="padding: 30rpx 0 0 0 ;height: auto;line-height: 22rpx;">
+                  <block wx:if="{{itema.isNumLimit == 1}}">
+                    <view>总次数：{{itema.projectNum}} 次</view>
+                    <view class="con-des-sy">剩余次数：{{itema.remainConsumeNum}} 次</view>
+                  </block>
+                  <block wx:if="{{itema.isNumLimit == 0}}">
+                    <view>总次数：无限制</view>
+                    <view class="con-des-sy">剩余次数：无限制</view>
+                  </block>
+                  <block wx:if="{{itema.isTimeLimit == 1}}">
+                    <view wx:if="{{itema.isExpired == 1}}">{{itema.effectDate}}(快过期)</view>
+                    <view wx:else>有限期至：{{itema.effectDate}}</view>
+                  </block>
+                  <block wx:if="{{itema.isTimeLimit == 0}}">
+                    <view >不限期</view>
+                  </block>
+                </view>
+              </view>
+
+            </block>
+
+            <view class="pro-item-con-list pro-item-con-des" wx:if="{{specDetail.isOpenSetting == 1}}">
+              <block wx:if="{{specDetail.isNumLimit == 1}}">
+                <view>总次数：{{specDetail.totalServiceNum}} 次</view>
+                <view class="con-des-sy">剩余次数：{{specDetail.remainServiceNum}} 次</view>
+              </block>
+              <block wx:if="{{specDetail.isNumLimit == 0}}">
+                <view>总次数：无限制</view>
+                <view class="con-des-sy">剩余次数：无限制</view>
+              </block>
+              <block wx:if="{{specDetail.isTimeLimit == 1}}">
+                <view wx:if="{{specDetail.isExpired == 1}}">{{specDetail.effectDate}}(快过期)</view>
+                <view wx:else>有限期至：{{specDetail.effectDate}}</view>
+              </block>
+              <block wx:if="{{specDetail.isTimeLimit == 0}}">
+                <view >不限期</view>
+              </block>
+            </view>
+
+          </view>
+        </view>
+
+        <!--<view class="list-guige" >-->
+          <!--<view class="list-guige-item color-999" wx:for="{{specDetail.projectList}}" wx:for-item="itema">-->
+            <!--<text style="display: block;float: left;max-width: 70%;color: #666;font-size: 28rpx;" class="ellipsis">{{itema.projectName}}</text>-->
+            <!--<text style="display: block;float: right;color: #999999;font-size: 26rpx;" wx:if="{{itema.isNumLimit != 0}}">余 {{itema.remainConsumeNum}} 次/{{itema.projectNum}}次</text>-->
+            <!--<text style="display: block;float: right;color: #999999;font-size: 26rpx;" wx:else>无限制</text>-->
+          <!--</view>-->
+        <!--</view>-->
+
+      </view>
+      <!--消费记录-->
+      <view class="hui-20" wx:if="{{dat.length !==''}}"></view>
+      <view class="consume">
+        <view class="consume-top font-30 color-666">
+          <image src="../../images/icon-consume-l.png" class="icon-consume icon-consume-l" ></image>
+          <text style="display: block;float: left;text-align: center">消费记录</text>
+          <image src="../../images/icon-consume-r.png" class="icon-consume icon-consume-r" ></image>
+        </view>
+        <!--有记录-->
+        <view class="consume-list" wx:if="{{dat.length !==''}}">
+          <view class="consume-list-item" wx:for="{{dat}}">
+            <view class="consume-list-des">
+              <text class="color-999 font-26">门店:</text>
+              <text class="color-333 font-28" style="padding-left: 16rpx;">{{item.shopName}}</text>
+              <text class="color-666 font-26" style="padding-left: 30rpx;">{{item.addTime}}</text>
+              <text class="color-666 font-26" style="padding-left: 10rpx;">{{item.time}}</text>
+            </view>
+            <view class="consume-list-des">
+              <text class="color-999 font-28" style="display:block;float: left">消费:</text>
+              <block wx:if="{{item.isOpenSetting == 0}}">
+                <text class="color-333 font-28" style="display: block;float: left;max-width: 84%;padding-left: 16rpx;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;">{{item.projectName}}X{{item.consumeNum}},余{{item.remainNum}}次</text>
+              </block>
+              <block wx:if="{{item.isOpenSetting == 1}}" >
+                <text class="color-333 font-28 " style="display: block;float: left;max-width: 84%;padding-left: 16rpx;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;">{{item.projectName}}X{{item.consumeNum}}</text>
+              </block>
+            </view>
+          </view>
+        </view>
+        <!--无记录-->
+        <view class="no-consume-list" wx:if="{{dat.length ==''}}">
+          <text style="display: block;text-align: center;font-size: 30rpx;height: 30rpx;line-height: 30rpx;margin-top:40rpx; color:#999999">你还没有预约过~</text>
+          <!--<navigator url="/pages/appointment/add_appointment" class="book-btn2" hover-class="none" >去预约</navigator>-->
+        </view>
+      </view>
+    </view>
+  <image class="role" src="{{roleSrc}}"  @tap="selectTime"></image>
+</template>
+<script>
+  import wepy from 'wepy'
+  import api from '../../api/api'
+
+  export default class servicesDetail extends wepy.page {
+    config = {
+      navigationBarTitleText: '服务详情'
+    }
+
+
+
+    data = {
+      winWidth:"",
+      winHeight:"",
+      currentTab :0,
+      istime:true,    //是否有截止时间
+      specDetail:[], //上面详情数组
+      dat:[],//订单项目消费耗卡记录
+      roleSrc: '../../images/role.png',
+      imageUrl: wepy.$appConfig.imageUrl,
+    }
+    onShareAppMessage(res){
+      if (res.from === 'button') {
+        // 来自页面内转发按钮
+//        console.log(res.target)
+      }else{
+        return {
+          title: '亲爱的 推荐你一个女生必备的小程序 要关注哦！',
+          path: '/pages/index/index?shareMemberCompanyId='+wx.getStorageSync('session').memberCompanyId,
+          imageUrl: this.imageUrl + 'share_img.png'
+        }
+      }
+    }
+
+    watch = { }
+
+    methods = {
+      selectTime() {
+        wx.navigateTo({
+          url: '/pages/appointment/add_appointment'
+        })
+      },
+      //点击展示
+      more(b) {
+        this.specDetail.more = b;
+        this.$apply();
+      },
+    }
+    animation() {
+      let clearAnimation = 0;
+      clearAnimation = setTimeout(function () {
+        clearTimeout(wx.getStorageSync('clea'));
+        this.roleSrc == '../../images/role_no.png' ? this.roleSrc = '../../images/role.png' : this.roleSrc = '../../images/role_no.png';
+        this.$apply();
+        this.animation();
+      }.bind(this),100);
+      wx.setStorageSync('clea',clearAnimation);
+    }
+    //获取订单规格包详情
+    async getSpecDetail(){
+      const getSpecDetail = await api.getSpecDetail({
+        query: {
+          orderSn: this.orderSn,
+          courseCardId: this.courseCardId,
+          specId: this.specId,
+        }
+      });
+      this.specDetail = getSpecDetail.data;//详情data
+//      console.log(this.specDetail);
+      this.$apply();
+    }
+//    订单项目消费耗卡记录
+    async projectConsumeDetail(){
+      const projectConsumeDetail = await api.projectConsumeDetail({
+        query: {
+          orderSn : this.orderSn,
+          courseCardId:this.courseCardId,
+          specId:this.specId,
+        }
+      });
+//      console.log(projectConsumeDetail);
+      this.dat = projectConsumeDetail.data.list;//详情data
+      for(var i in this.dat){
+        var oldtime = this.dat[i].addTime; //获取完成时间
+        this.dat[i].addTime = oldtime.substr(0, 10);
+        this.dat[i].time = oldtime.substr(10, 9);
+        console.log(this.dat[i].addTime);
+        console.log(this.dat[i].time);
+      }
+      console.log(this.dat);
+      this.$apply();
+    }
+    async onLoad(options) {
+      this.orderSn = options.orderSn;  //页面跳转传过来的订单号
+      this.courseCardId = options.courseCardId;  //疗程卡ID
+      this.specId = options.specId;  //规格ID
+      // 获取系统信息
+      this.getSpecDetail();//获取订单规格包详情
+      this.projectConsumeDetail();//    订单项目消费耗卡记录
+      this.animation();
+      wx.getSystemInfo( {
+        success: function( res ) {
+          this.winWidth=res.windowWidth;
+          this.winHeight= res.windowHeight;
+        }.bind(this)
+      });
+
+    }
+  }
+</script>

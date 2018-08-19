@@ -1,0 +1,108 @@
+<style lang="scss">
+    .dialog-logo {
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 110;
+        background-color: rgba(0,0,0,.8);
+        overflow: hidden;
+        .modal-wrap {
+            padding: 0 100rpx;
+            margin-top: 374rpx;
+            .centen {
+                position: relative;
+                text-align: center;
+                background-color: #fff;
+                border-radius: 3px;
+                .title-1 {
+                    color: #333;
+                    font-size: 36rpx;
+                }
+                .title-1 {
+                    padding-top: 36rpx;
+                }
+                .title-2, .title-3{
+                    padding-top: 8rpx;
+                    font-size: 28rpx;
+                    color: #666;
+                }
+                .btn-wrap {
+                    margin-top: 30rpx;
+                    border-top: 1rpx solid #eee;
+                    .logo-btn {
+                        background-color: #fff;
+                        border: none !important;
+                        color: #26cad3;
+                    }
+                    .logo-btn::before {
+                        border: 0 !important;
+                        border-radius: 0 !important;
+                    }
+                    .logo-btn::after {
+                        border: 0 !important;
+                        border-radius: 0 !important;
+                    }
+                }
+            }
+        }
+    }
+</style>
+<template>
+    <view wx:if="{{isShow}}" class="dialog-logo">
+        <view class="modal-wrap">
+            <view class="centen">
+                <view class="title-1">wintess 小程序</view>
+                <view class="title-2">优惠推荐，极速预约</view>
+                <view class="title-2">更多服务登录后即可体验</view>
+                <view class="btn-wrap">
+                    <button class="logo-btn" open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">登录</button>
+                </view>
+            </view>
+        </view>
+    </view>
+</template>
+<script>
+	import wepy from 'wepy'
+    import api from '../api/api'
+
+	export default class Dialog extends wepy.component {
+		data = {
+			isShow: false,
+		}
+
+		props = {
+
+		}
+
+		onLoad() {
+			this.isShow = !wx.getStorageSync('session').mobilePhone;
+		}
+
+		methods = {
+			 getPhoneNumber(e) {
+                 if (e.detail.errMsg == "getPhoneNumber:ok") {
+                    this.bindMobiles(e);
+                 }
+			 }
+		}
+		async bindMobiles(e) {
+			const key = wx.getStorageSync('KEY');
+			let {imei_error_code} = await api.bindMobile({
+				query: {
+					encryptedData: e.detail.encryptedData,
+					iv: e.detail.iv,
+                    key
+				}
+			});
+
+			if (imei_error_code == 0) {
+				this.isShow = false;
+				this.$apply();
+				this.$parent.$parent.getSession();
+				this.$emit("finishBindPhone");
+            }
+        }
+	}
+</script>

@@ -1,0 +1,699 @@
+<style lang="less">
+    page {
+        background-color: #ffffff;
+    }
+    ::-webkit-scrollbar{
+        display: none;
+        width:0px;
+    }
+    .header {
+        margin-top: 40rpx;
+    }
+    .main {
+        padding-bottom: 130rpx;
+        .project-empty {
+            color: #ddd;
+            font-size: 30rpx;
+            text-align: center;
+            margin-top:128rpx;
+
+        }
+    }
+    .main-title {
+        margin-top: 69rpx;
+        margin-bottom: 40rpx;
+        padding: 0 50rpx;
+    }
+    .header-title {
+        padding: 0 50rpx;
+        margin-bottom: 50rpx;
+    }
+    .sp-ml-25 {
+        margin-left: 25rpx;
+    }
+    .sp-ml-30 {
+        margin-left: 30rpx;
+    }
+    .slide-item {
+        .item {
+            padding: 60rpx 35rpx;
+            background-color: #ECE8E1;
+        }
+        .unit {
+            display: inline-block;
+            margin: 0 8rpx;
+        }
+        .item-title {
+            font-size: 24rpx;
+            color: #e43937;
+            margin-bottom: 46rpx;
+        }
+        .time {
+            font-size: 40rpx;
+            margin-bottom: 40rpx;
+        }
+        .shop-name {
+            font-size: 40rpx;
+        }
+    }
+    .project-list-wrap {
+        margin: 0 24rpx;
+        border-top: 1rpx solid #ddd;
+        .tiems-pj {
+            margin: 30rpx 26rpx;
+            margin-bottom: 0;
+            padding-bottom: 12rpx;
+            /* .flex-box {
+                 padding-bottom: 30rpx;
+             }*/
+            .flex-left {
+                width: 210rpx;
+                margin-right: 40rpx;
+            }
+            .pj-name {
+                font-size: 30rpx;
+                color: #333;
+                line-height:1.3;
+                min-height: 76rpx;
+            }
+            .spec-name {
+                font-size: 26rpx;
+                color: #666;
+            }
+            .more-wrap {
+                width: 50rpx;
+                height: 100%;
+            }
+            .more {
+                width: 24rpx;
+                height: 24rpx;
+                vertical-align: middle;
+                margin-top: 4rpx;
+                margin-right: 10rpx;
+            }
+            .particular {
+                font-size: 24rpx;
+                color: #666;
+                margin-top: 10rpx;
+            }
+            border-bottom: 20rpx solid #F2F2F4;
+
+        }
+        .tiems-pj:last-of-type {
+            border-bottom: 0;
+        }
+        .info-ls {
+            position: relative;
+            font-size: 24rpx;
+            color: #999;
+            margin-top: 18rpx;
+            .omit {
+                font-size: 50rpx;
+                position: absolute;
+                bottom: 0;
+                margin-bottom: -8rpx;
+            }
+            .btn-wrap {
+                margin-top: 15rpx;
+                padding-top: 12rpx;
+                border-top: 1rpx solid #eee;
+                .btn {
+                    color: #333;
+                    font-size: 26rpx;
+                    width: 130rpx;
+                    height: 56rpx;
+                    line-height: 56rpx;
+                    text-align: center;
+                    border: 1rpx solid #999;
+                    border-radius: 4px;
+                    +.btn {
+                        margin-right: 30rpx;
+                    }
+                }
+            }
+        }
+        .pj-info-box {
+            display:-webkit-box;
+            display:-webkit-flex;
+            display: flex;
+            -webkit-box-align:center;
+            -webkit-align-items:center;
+            align-items:center;
+            font-size: 30rpx;
+            .specification {
+                -webkit-box-flex:1;
+                -webkit-flex:1;
+                flex:1;
+                padding-right: 10rpx;
+            }
+            .pj-num,
+            .pay {
+                font-size: 24rpx;
+                color: #333;
+            }
+            .pay {
+                text-align: right;
+                text {
+                    color: #E43C3F;
+                }
+            }
+        }
+    }
+    .border {
+        border-top: 1px solid #eee;
+        margin-top: 10rpx;
+    }
+    .envelope-bg {
+        margin: 0 50rpx;
+        height: 10rpx;
+        background: url(data:image/gif;base64,R0lGODlh/wAKANUAAP+5uf68vJfq//Xz8/X09O709e/09vfq6v+6urXt+83w+eXz9+Py9pzr/tPw+K/s+/rR0d3y+Pjm5vXu7qfr/KLr/erz9fzDw77u+vvIyPzIyLft+9fy+Pji4q/t/Pjf3/bx8abs/fbm5vvNzf3Dw53q/vL19fL09fT19fvLy/nb2/2/v8Lv+vbp6Znq//Xw8PrU1P+4uJbq//X19QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH/C1hNUCBEYXRhWE1QPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMwNjcgNzkuMTU3NzQ3LCAyMDE1LzAzLzMwLTIzOjQwOjQyICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1wTU06T3JpZ2luYWxEb2N1bWVudElEPSJ4bXAuZGlkOjA1MTVhNWJiLTk1YzAtOTU0Yy1hNGMxLWE4ODRjNmZiM2U1OSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpGNUU4QTJFNUM4OEMxMUU1OTFCRkJFNzM2QzA5NzA2QiIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpGNUU4QTJFNEM4OEMxMUU1OTFCRkJFNzM2QzA5NzA2QiIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxNSAoV2luZG93cykiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDphMDUzMjVlMS1lNmU4LWM5NGEtODdiMC1hMWY2YjZhNTJjZTkiIHN0UmVmOmRvY3VtZW50SUQ9ImFkb2JlOmRvY2lkOnBob3Rvc2hvcDo1OGU2ODY1Yy1jMGI4LTExZTUtOTJkZC1lM2UxNjg0YWY1ZTEiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz4B//79/Pv6+fj39vX08/Lx8O/u7ezr6uno5+bl5OPi4eDf3t3c29rZ2NfW1dTT0tHQz87NzMvKycjHxsXEw8LBwL++vby7urm4t7a1tLOysbCvrq2sq6qpqKempaSjoqGgn56dnJuamZiXlpWUk5KRkI+OjYyLiomIh4aFhIOCgYB/fn18e3p5eHd2dXRzcnFwb25tbGtqaWhnZmVkY2JhYF9eXVxbWllYV1ZVVFNSUVBPTk1MS0pJSEdGRURDQkFAPz49PDs6OTg3NjU0MzIxMC8uLSwrKikoJyYlJCMiISAfHh0cGxoZGBcWFRQTEhEQDw4NDAsKCQgHBgUEAwIBAAAh+QQAAAAAACwAAAAA/wAKAAAGwMCZcEgsGo/IpBKZijmf0Kh0Sq1aqaKldsvdJmTgsHhMLpvPaHN3zeZKrvC4PK5p2+/GSHrP7/M9eIFtBBdzhodyABOCjF0oFH6Rkn0CFo2XSiqIm5xSMJigSAqTpKVkLKGpQiABna6bAQOqqgYlprekDSezoRCvv4YfvKkYuMaRDsOYBwDAzlckyqALAsfWaSHSlxnP3VQt2pcP1+RmDOGCHd7rUCPojBzl8mIb73gDK+zsCC/2eCYV5s1zUYBIEAA7) repeat-x;
+        background-size: 128px;
+    }
+    .logo-wrap {
+        margin-top: 190rpx;
+        text-align: center;
+        .logo-no {
+            width: 229rpx;
+            height: 191rpx;
+        }
+        .btn-shop {
+            color: #fff;
+            background-color: #26cad3;
+            font-size: 32rpx;
+            display: inline-block;
+            width: 200rpx;
+            height: 60rpx;
+            line-height: 60rpx;
+            border-radius: 30rpx;
+        }
+        .text {
+            font-size: 30rpx;
+            color: #999;
+            margin-top: 28rpx;
+        }
+    }
+    .footer {
+        position: fixed;
+        width: 100%;
+        height: 104rpx;
+        bottom: 0;
+        border-top: 1rpx solid #ddd;
+        background-color: #ffffff;
+        .nav-foot-wrap {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+            text-align: center;
+            .cell {
+                display: table-cell;
+                width: 20%;
+                text-align: center;
+                height: 104rpx;
+                vertical-align: middle;
+                line-height: 1;
+                .img-wrap {
+                    position: relative;
+                    height: 100%;
+                    .emphasis {
+                        position: absolute;
+                        left: 50%;
+                        margin-left: -70rpx;
+                        top: -50rpx;
+                    }
+                }
+                .nav-title {
+                    font-size: 20rpx;
+                    color: #666;
+                    margin-top: 14rpx;
+                }
+                .active {
+                    color: #26CAD3;
+                }
+                image {
+                    width: 40rpx;
+                    height: 40rpx;
+                }
+            }
+        }
+    }
+    .role {
+        position: fixed;
+        width: 215rpx;
+        height: 191rpx;
+        right: 30rpx;
+        bottom: 250rpx;
+    }
+    .dialog-present {
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 110;
+        background-color: rgba(0,0,0,.8);
+        overflow: hidden;
+        .modal-wrap {
+            padding: 0 60rpx;
+            margin-top: 374rpx;
+            .centen {
+                position: relative;
+                text-align: center;
+                background-color: #fff;
+                border-radius: 3px;
+                .title-1 {
+                    color: #333;
+                    font-size: 36rpx;
+                }
+                .title-1 {
+                    padding-top: 36rpx;
+                }
+                .title-2, .title-3{
+                    padding-top: 8rpx;
+                    font-size: 28rpx;
+                    color: #666;
+                }
+                .input-wrap {
+                    .table-wrap {
+                        display: table;
+                        table-layout: fixed;
+                        width: 100%;
+                        margin-top: 46rpx;
+                        .cell {
+                            display: table-cell;
+                            vertical-align: middle;
+                        }
+                    }
+
+                    .minus,
+                    .add {
+                        width: 60rpx;
+                        font-size: 0;
+                    }
+                    .num {
+                        font-size: 36rpx;
+                        height: 46rpx;
+                        line-height: 1;
+                        padding: 0 12rpx;
+                    }
+                }
+                .btn-wrap {
+                    margin-top: 50rpx;
+                    border-top: 1rpx solid #eee;
+                    .confirm,
+                    .cancel {
+                        width: 50%;
+                        color: #fff;
+                        font-size: 36rpx;
+                        box-sizing: border-box;
+                        height: 100rpx;
+                        line-height: 100rpx;
+                    }
+                    .confirm {
+                        background-color: #27CAD3;
+                        border: 0 !important;
+                        border-radius: 0 !important;
+                        &::before {
+                            border: 0 !important;
+                            border-radius: 0 !important;
+                        }
+                        &::after {
+                            border: 0 !important;
+                            border-radius: 0 !important;
+                        }
+                        border-bottom-right-radius: 3px !important;
+                    }
+                    .cancel {
+                        background-color: #DDD;
+                        border-bottom-left-radius: 3px;
+                    }
+                }
+            }
+        }
+    }
+</style>
+<template>
+    <view class="container">
+        <block wx:if="{{isEmpty > 0}}">
+            <view class="header" wx:if="{{isShowAppointment > 0}}">
+                <view class="header-title color-66 size-48">已预约</view>
+                <swiper indicator-dots="{{indicatorDots}}" style="height: 386rpx"
+                        autoplay="{{autoplay}}" duration="{{duration}}" previous-margin="20rpx" next-margin="50rpx">
+                    <block wx:for="{{res}}" wx:key="index">
+                        <swiper-item class="slide-item">
+                            <!--<view class="envelope-bg"></view>-->
+                            <navigator class="item sp-ml-30" url="/pages/appointment/appointment_details?serviceWorkNo={{item.serviceWorkNo}}&isGo=true" hover-class="navigator-hover">
+                                <view class="item-title">{{item.status}}</view>
+                                <view class="time color-33"><text class="sp-mr-35">{{item.month}}月{{item.day}}号</text>
+                                    <text class="sp-mr-30">{{item.dateTip}}</text>
+                                    <!--{{item.hours}}:<text class="sp-ml-25">{{item.minutes}}到店</text>-->
+                                    {{item.startTime}}到店<!--<text class="unit">至</text>{{item.endTime}}-->
+                                </view>
+                                <view class="shop-name ellipsis-1 color-66">{{item.shopAddress}}</view>
+                            </navigator>
+                            <!-- <view class="envelope-bg"></view>-->
+                        </swiper-item>
+                    </block>
+                </swiper>
+            </view>
+            <view class="main">
+                <view class="main-title color-66 size-48">可使用项目</view>
+                <block wx:if="{{isShowProject > 0}}">
+                    <view class="project-list-wrap">
+                        <navigator url="/pages/myServices/servicesDetail?orderSn={{item.orderSn}}&courseCardId={{item.courseCardId}}&specId={{item.specId}}" hover-class="none" class="tiems-pj" wx:for="{{projectList}}" wx:key="{{item.orderSn}}">
+                            <view class="flex-box">
+                                <view class="flex-left">
+                                    <image style="width: 210rpx; height: 140rpx;" src="{{item.logo}}"></image>
+                                </view>
+                                <view class="flex-right">
+                                    <view class="pj-name ellipsis-2">{{item.name}}</view>
+                                    <view class="spec-name">{{item.specName}}</view>
+                                    <!--<view class="border"></view>-->
+                                    <!--<view class="particular clearfix" @tap.stop="more('{{index}}','{{!item.more}}')">
+                                        详细信息
+                                        <view class="pull-right more-wrap">
+                                            <image class="more"  src="{{item.more ? '../../images/up.png' : '../../images/dow.png'}}"></image>
+                                        </view>
+                                    </view>-->
+                                </view>
+                            </view>
+                            <view class="info-ls">
+                                <view class="pj-info-box">
+                                    <view class="specification">
+                                        <view wx:if="{{item.isNumLimit > 0}}" class="pj-num">购买 {{item.totalServiceNum}} 次 剩余 {{item.remainServiceNum}}</view>
+                                        <view wx:else class="pj-num">无限次</view>
+                                    </view>
+                                    <view class="pay">实付：<text>￥{{item.actuallyPay}}</text></view>
+                                </view>
+                                <view class="flex-box">
+                                    <view wx:if="{{item.isTimeLimit}}" class="color-66 flex-1">有效期至：{{item.effectDate}}</view>
+                                    <view wx:else class="color-66 flex-1">有效期至永久有效</view>
+                                    <view wx:if="{{item.sendSuccessNum}}" class="color-66">转赠中：{{item.sendSuccessNum}} 次</view>
+                                </view>
+
+                                <view class="btn-wrap clearfix">
+                                    <block wx:if="{{item.sendStatus == 2}}">
+                                        <view class="btn pull-right" @tap.stop="cancelPresent({{item.orderSendId}})">取消转赠</view>
+                                    </block>
+                                    <block wx:else>
+                                        <view class="btn pull-right" @tap.stop="selectTime">预约</view>
+                                        <view class="btn pull-right" wx:if="{{item.sendStatus}}" @tap.stop="present({{index}},{{item}})">转赠</view>
+                                    </block>
+                                </view>
+                            </view>
+                        </navigator>
+                    </view>
+                </block>
+                <block wx:else>
+                    <view class="project-empty">
+                        哎呀，空空如也  赶紧去逛逛吧！
+                    </view>
+                </block>
+            </view>
+        </block>
+        <block wx:else>
+            <view class="logo-wrap">
+                <image class="logo-no"  src="../../images/no.png"></image>
+                <view class="text">
+                    哎呀，空空如也  赶紧去逛逛吧！
+                </view>
+                <navigator url="/pages/selectAuto/selectAuto" open-type="redirect"  class="btn-shop weui-btn">
+                    去购物
+                </navigator>
+            </view>
+        </block>
+        <view class="footer">
+            <view class="nav-foot-wrap">
+                <navigator url="/pages/index/index?reset=true" open-type="redirect" view class="cell">
+                    <image src="../../images/home.png"></image>
+                    <view class="nav-title">首页</view>
+                </navigator>
+                <!--<view class="cell" @tap="selectTime">
+                    <view class="img-wrap">
+                        <image class="emphasis" style="width: 140rpx; height: 140rpx" src="../../images/appoint.png"></image>
+                    </view>
+                </view>-->
+                <view class="cell">
+                    <image src="../../images/time_a.png"></image>
+                    <view class="nav-title active">预约</view>
+                </view>
+                <navigator url="/pages/selectAuto/selectAuto" open-type="redirect" class="cell">
+                    <image src="../../images/optimization.png"></image>
+                    <view class="nav-title">美购</view>
+                </navigator>
+                <navigator class="cell" url="/pages/my_info/index" open-type="redirect">
+                    <image src="../../images/my.png"></image>
+                    <view class="nav-title">我的</view>
+                </navigator>
+            </view>
+        </view>
+    </view>
+    <!--<image class="role" src="{{roleSrc}}"  @tap="selectTime"></image>-->
+    <view wx:if="{{isShowPresent}}" class="dialog-present">
+        <view class="modal-wrap">
+            <view class="centen">
+                <view class="title-1 ellipsis-2">{{checkedProject.courseCardName}}</view>
+                <view class="title-2">（最多可赠送{{checkedProject.remainServiceNum}}次）</view>
+                <view class="input-wrap">
+                    <view class="table-wrap">
+                        <view class="cell" style="width: 33%"></view>
+                        <image @tap="minus" mode="widthFix" src="../../images/minus.png" class="minus cell"></image>
+                        <text class="num cell">{{number}}</text>
+                        <image @tap="add" mode="widthFix" src="../../images/add.png" class="add cell"></image>
+                        <view class="cell" style="width: 33%"></view>
+                    </view>
+                </view>
+                <view class="btn-wrap clearfix">
+                    <view @tap="cancel" class="cancel pull-left">取消</view>
+                    <button open-type="share"  class="confirm pull-right">确定</button>
+                </view>
+            </view>
+        </view>
+    </view>
+    <zanDialog></zanDialog>
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+	import {dateFormat} from  '../../utils/util'
+	/*import zanDialog from '../../components/zan-dialog'*/
+	/* import selectTime from '../../components/select_time'*/
+
+	export default class MyAppointment extends wepy.page {
+		config = {
+			navigationBarTitleText: '我的预约',
+			backgroundColor: '#ebf0ef'
+		};
+		/*components = {
+			zanDialog
+		};*/
+		async onLoad() {
+			this.getAppointmentList();
+			this.getUsableProjectList();
+			this.animation();
+		}
+
+		onShow() {
+			/*this.$parent.verifyAccredit();*/
+			let isLoadMyA = wx.getStorageSync("isLoadMyA") || false;
+
+			if (isLoadMyA) {
+				this.getAppointmentList();
+				this.getUsableProjectList();
+				wx.setStorageSync("isLoadMyA",false);
+			}
+		}
+
+		onShareAppMessage (res) {
+            let _this = this;
+			let {memberCompanyId=''} = wx.getStorageSync('session');
+			if (res.from === 'button') {
+				// 来自页面内转发按钮
+				return {
+					title: '您的好友给你赠送了1个项目',
+					path: '/pages/productDetails/getGift?orderSendId='+this.checkedProject.orderSendId+'&shareMemberCompanyId='+memberCompanyId,
+					imageUrl: this.checkedProject.logo,
+					success: function(res){
+						// 转发成功之后的回调
+						if (res.errMsg == 'shareAppMessage:ok') {
+							_this.sendConfirm();
+						}
+					},
+					fail: function(){
+						// 转发失败之后的回调
+						if (res.errMsg == 'shareAppMessage:fail cancel') {
+							// 用户取消转发
+						} else if (res.errMsg == 'shareAppMessage:fail') {
+							// 转发失败，其中 detail message 为详细失败信息
+						}
+					}
+				}
+			}
+
+			return {
+				title: '亲爱的 推荐你一个女生必备的小程序 要关注哦！',
+				path: '/pages/appointment/my_appointment?shareMemberCompanyId='+wx.getStorageSync('session').memberCompanyId,
+				imageUrl: this.imageUrl + 'share_img.png'
+			}
+		}
+
+		data = {
+			res: [],
+			projectList: [],
+			indicatorDots: false,
+			autoplay: false,
+			interval: 5000,
+			duration: 500,
+			isShow: false,
+			isload: false,
+			isEmpty: 1,
+			roleSrc: '../../images/role.png',
+			number: 1,
+			isShowPresent: false,
+			checkedProject: {},
+			imageUrl: wepy.$appConfig.imageUrl
+
+		}
+		watch = {
+			/*num (curVal, oldVal) {
+				console.log(`旧值：${oldVal}，新值：${curVal}`)
+			}*/
+		};
+
+		computed = {
+			isEmpty () {
+				return this.res.length || this.projectList.length;
+			},
+			isShowProject () {
+				return this.projectList.length;
+			},
+			isShowAppointment () {
+				return this.res.length;
+			}
+		}
+
+		methods = {
+			selectTime() {
+				/*if (!this.isShow) {
+					this.isShow = true;
+                }*/
+				wx.navigateTo({
+					url: '/pages/appointment/add_appointment'
+				})
+			},
+			more(index,b) {
+				this.projectList[index].more = b;
+				this.$apply();
+			},
+			minus() {
+				this.number > 1 && this.number --
+			},
+			add() {
+				this.checkedProject.remainServiceNum > this.number && this.number ++
+			},
+			confirm() {
+				this.isShowPresent = false;
+			},
+			cancel() {
+				this.isShowPresent = false;
+			},
+			present(index,obj,e) {
+				this.number = 1;
+				this.isShowPresent = true;
+				this.checkedProject = obj;
+				this.sendCreate();
+			},
+			cancelPresent(id) {
+				this.sendCancel(id);
+			}
+		};
+		/*	showAccreditDialog() {
+                this.$invoke('zanDialog', 'showZanDialog', {
+                    title: '是否授权',
+                    content: '系统检测你还未授权, 打开授权【用户信息】开启更多功能',
+                    showCancel: true,
+                    buttons:[],
+                    openType: 'getUserInfo'
+                })
+                    .then(() => {
+
+                    })
+                    .catch(() => {
+
+                    })
+            }*/
+		animation() {
+			let clearAnimation = 0;
+			clearAnimation = setTimeout(function () {
+				clearTimeout(wx.getStorageSync('clearAnimation'));
+				this.roleSrc == '../../images/role_no.png' ? this.roleSrc = '../../images/role.png' : this.roleSrc = '../../images/role_no.png';
+				this.$apply();
+				this.animation();
+			}.bind(this),100);
+			wx.setStorageSync('clearAnimation',clearAnimation);
+		}
+		async getAppointmentList() {
+			const {data} = await api.getAppointmentList();
+			for (let i = 0; i < data.list.length; i++) {
+				let d = data.list[i];
+				let dates = new Date(d.bookTime * 1000);
+				d.month = dates.getMonth() + 1;
+				d.day = dates.getDate();
+				/*d.hours = dates.getHours() >= 10 ? dates.getHours() : '0' + dates.getHours();
+				d.minutes = dates.getMinutes() >= 10 ? dates.getMinutes() : '0' + dates.getMinutes();*/
+				d.startTime = d.bookBeginTime.substring(11,16);
+				d.endTime = d.bookEndTime.substring(11,16);
+			}
+
+			this.res = data.list;
+			this.$apply();
+		}
+		async getUsableProjectList() {
+			const {data} = await api.getUsableProjectList();
+			/*for (let i = 0; i < data.list.length; i++) {
+				data.list.more = false;
+			}*/
+
+			this.projectList = data.list;
+			/*wx.setStorageSync('projectList', data.list);*/
+			this.$apply();
+		}
+		async sendCancel(id) {
+			const {imei_error_code} = await api.sendCancel({
+				query:{
+					orderSendId: id
+				}
+			});
+			if (imei_error_code == 0) {
+				this.getUsableProjectList();
+			}
+		}
+		async sendCreate() {
+			const {imei_error_code,data:{orderSendId}} = await api.sendCreate({
+				query:{
+					sendType: 1,
+					orderCourseCardId: this.checkedProject.orderCourseCardId,//this.checkedProject.orderCourseCardId,
+					sendServiceNum: this.number
+				}
+			});
+
+			if (imei_error_code == 0) {
+                /*this.getUsableProjectList();
+                this.isShowPresent = false;*/
+				this.checkedProject.orderSendId = orderSendId;
+            }
+		}
+		async sendConfirm() {
+			const {imei_error_code} = await api.sendConfirm({
+				query:{
+					orderSendId: this.checkedProject.orderSendId,
+					sendServiceNum: this.number
+				}
+			});
+
+			if (imei_error_code == 0) {
+				this.getUsableProjectList();
+				this.isShowPresent = false;
+			}
+		}
+	}
+</script>

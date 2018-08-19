@@ -1,0 +1,170 @@
+<style lang="less">
+    page{background: #f4f4f4;padding-bottom:115rpx;}
+    .cusdeta{
+        margin-top: 20rpx;
+        background: #fff;
+    }
+    .cusdeta:first-child{
+        margin-top: 0px;
+    }
+</style>
+<template>
+    <text style="display: block;font-size: 30rpx;color:#333;margin: 20rpx 0 10rpx;padding-left: 30rpx;">{{shop}}</text>
+    <view style="margin: 0 30rpx;border-radius: 10rpx;">
+        <view wx:for="{{dat_uers[0].items}}" class="cusdeta" style="padding: 20rpx 0;">
+            <view style="font-size: 26rpx;margin: 10rpx 0;padding: 0 20rpx;">
+                <text style="color: #999;">购买时间：</text>
+                <text style="color: #333;">{{dat_uers[0].addTime}}</text>
+                <text style="float:right;color:#ff5767;">{{item.isAllPay==1?'项目有欠款':''}}</text>
+            </view>
+            <view style="overflow: hidden;margin-top: 15rpx;border-bottom: 1px solid #e5e5e5;padding: 0 20rpx;">
+                <image style="float: left;width: 200rpx;height: 138rpx;border-radius: 10rpx;border:1px solid #e5e5e5;" src="{{item.imageUrl}}"></image>
+                <view style="float: left;margin-left: 15rpx;">
+                    <view style="font-size: 30rpx;color: #333;width: 433rpx;height: 96rpx;overflow: hidden;display:-webkit-box; -webkit-box-orient:vertical;-webkit-line-clamp:2; ">{{item.name}}</view>
+                    <text style="font-size: 32rpx;color:#ff5767;">{{item.subtotalPrice}}元</text>
+                </view>
+            </view>
+            <!--项目说明-->
+            <view wx:for="{{item.projectItems}}">
+                <text style="font-size: 26rpx;color:#666;padding: 0 20rpx;">{{item.name}}</text>
+                <view style="overflow: hidden;font-size: 24rpx;color:#999;margin-top: 20rpx;padding: 0 20rpx;">
+                    <view style="width: 188rpx;border-right: 1rpx solid #e5e5e5;float: left;">{{item.isNumLimit==0?'使用无限次':'使用'+item.usedConsumeNum+'/'+item.projectNum+'次'}}</view>
+                    <view style="width: 255rpx;float: left;text-align: center;">{{item.effectDay==0?'无限制':'有效期'+item.effectDay+'天'}}</view>
+                    <view style="width: 203rpx;border-left: 1rpx solid #e5e5e5;float: left;text-align: right;">{{item.lastConsumeDay==0?'无消费记录':item.lastConsumeDay+'天前消费过'}}</view>
+                </view>
+                <view style="display:none;font-size: 26rpx;overflow: hidden;height: 89rpx;line-height: 89rpx;border-top: 1px solid #e5e5e5;border-bottom: 1px solid #e5e5e5;margin-top: 20rpx;padding: 0 20rpx;">
+                    <text style="color:#333;">已付定金：{{item.paidPrice}}元</text>
+                    <text style="color:#ff5767;float: right">待结尾款：{{item.unpaidPrice}}元</text>
+                </view>
+            </view>
+        </view>
+    </view>
+    <!--订单-->
+    <view wx:if="{{!order_t}}" style="margin: 20rpx 30rpx;background: #fff;border-radius: 10rpx;">
+        <view style="padding: 20rpx;">
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;">订单编号：</text>
+                <text style="color: #333;">{{dat_uers[0].orderSn}}</text>
+            </view>
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;">购买时间：</text>
+                <text style="color: #333;">{{dat_uers[0].addTime}}</text>
+            </view>
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;margin: 10rpx 0;">订单总价：</text>
+                <text style="color: #333;">{{dat_uers[0].orderAmount}}</text>
+            </view>
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;">优惠金额：</text>
+                <text style="color: #333;">{{dat_uers[0].discountPrice}}</text>
+            </view>
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;margin: 10rpx 0;">已付订金：</text>
+                <text style="color: #333;">{{dat_uers[0].paidTotalPrice}}</text>
+            </view>
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;">待结尾款：</text>
+                <text style="color: #ff5767;">{{dat_uers[0].unpaidTotalPrice}}元</text>
+            </view>
+        </view>
+    </view>
+    <!--生成结算码-->
+    <view style="overflow:hidden;height: 98rpx;line-height: 98rpx;position: fixed;bottom: 0;left: 0;width: 100%;">
+        <text style="float: left;width: 490rpx;background: #fff;font-size: 30rpx;color: #ff5767;text-indent: 60rpx;">合计还款：{{dat_uers[0].unpaidTotalPrice}}元</text>
+        <!--<navigator url="/pages/settle_accounts_code/settle_accounts_code?id={{dat_uers[0].orderSn}}" hover-class="navigator-hover">-->
+            <text @tap="generateSettlement({{dat_uers[0].orderSn}})" style="float: right;width: 260rpx;background: #26cad3;font-size: 32rpx;color: #fff;text-align: center">生成结算码</text>
+        <!--</navigator>-->
+    </view>
+    <zanDialog></zanDialog>
+</template>
+
+<script>
+	import wepy from 'wepy'
+    import api from  '../../../../api/api'
+    import zanDialog from '@/components/zan-dialog'
+
+	export default class Customer extends wepy.page {
+		config = {
+			navigationBarTitleText: '还款订单',
+            enablePullDownRefresh: false,
+		}
+		components = {
+            zanDialog
+		}
+
+		data = {
+            order_t:false,
+            dat_uers:[],
+            shop:wx.getStorageSync('session').shopName,
+            showDialog: true,
+            isNoAccredit: false,
+		}
+
+      async ajxa(e){
+          /*加载列表*/
+        const json = await api.cusdetails({
+          query: {
+            orderSn: e
+          }
+        });
+        this.dat_uers.push(json.data);
+        this.$apply();
+      }
+
+		computed = {
+
+		}
+		methods = {
+          async generateSettlement(e){
+              /*结算码生成接口*/
+            const json = await api.generateSettlement({
+              query: {
+                orderSn:e,
+              }
+            });
+            console.log(json.data.moneySn)
+            if(json.data.moneySn){
+              wx.navigateTo({
+                url:'/pages/settle_accounts_code/settle_accounts_code?page=2&id='+json.data.moneySn
+              })
+            }else{
+              console.log(json.imei_error_msg)
+            }
+            this.$apply();
+          }
+		}
+
+		events = {
+
+		}
+
+        showAccreditDialog() {
+            this.$invoke('zanDialog', 'showZanDialog', {
+                title: '温馨提醒',
+                content: '我们请求获得您的授权允许，只收集您在微信自愿提供的昵称、头像等信息，为您提供更多功能操作。',
+                showCancel: true,
+                buttons:[
+                    {
+                        type: 'confirm',
+                        text: '好的',
+                        color: '#26cad3',
+                        openType:'getUserInfo',
+                    }
+                ],
+//                openType: 'getUserInfo'
+            })
+                .then(() => {
+
+                })
+                .catch(() => {
+
+                })
+        }
+
+		onLoad(e) {
+            this.$parent.verifyAccredit(1);
+            this.order_t=e.order_t;
+          this.ajxa(e.id)
+		}
+	}
+</script>

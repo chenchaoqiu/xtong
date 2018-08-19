@@ -1,0 +1,223 @@
+<style lang="scss">
+    @import "styles/weui";
+    @import "styles/public";
+    @import "styles/helper";
+    page {
+        background-color: #ebf0ef;
+    }
+</style>
+
+<script>
+	import wepy from 'wepy'
+	import 'wepy-async-function'
+	import api from './api/api'
+
+	export default class extends wepy.app {
+		config = {
+			pages: [
+				'pages/index/index',//首页
+				'pages/witness-shop/shop',//分店列表
+				'pages/witness-shop/shop-det',//门店详情
+				'pages/my_info/index',//我的
+				'pages/my_info/code',//我的二维码
+				'pages/my_info/info',//个人资料
+				'pages/my_info/select_birthday',//选择生日
+				'pages/my_info/edit_name',//更改用户名
+				'pages/my_info/verify_phone',//验证手机
+				'pages/my_info/edit_phone',//更改手机号码
+				'pages/appointment/my_appointment',//我的预约
+				'pages/appointment/add_appointment',//新增预约
+				'pages/appointment/appointment_details',//预约详情
+				'pages/selectAuto/selectAuto',  //自助优选
+				'pages/appointment/completedAppointment', //待使用详情”页面的”已完成详情“页面布局
+				'pages/productDetails/productDetails', //商品详情
+				'pages/myServices/myServices',//我的服务
+				'pages/myServices/servicesDetail',//服务详情
+				'pages/order/details/details',//订单详情
+				'pages/order/order',//我的订单
+				'pages/cart/cart',//购物车
+				'pages/shop/shop',//切换门店
+				'pages/cart/order/order',//填写订单
+				'pages/about_us/about_us',//关于我们
+				'pages/index/hpage',//banner图打开的h5
+				'pages/payOk/payOk',//活动支付成功页
+				'pages/payOk/erwm',//关注公众好
+				/*'pages/activity/activity',*/
+				'pages/servicesOK/servicesOK',//已完成服务
+//				'pages/activity/redpacket/red-packet',//红包
+				'pages/productDetails/getGift',//领取好友赠品
+				'pages/goSend/goSend',//我的赠品
+
+			],
+			subPackages: [{
+				root: "pages/activity",
+				pages: [
+					'friends_help',//好友助力
+					'share',//助力分享
+					'redpacket/red-packet',//红包
+					'activity',/*活动*/
+				]
+			},{
+				root:"pages/share",
+				pages: [
+					'myBeautyCircle/myBeautyCircle', //我的美丽圈
+					'invitationCode/invitationCode',//我的邀请码
+					'shareMoney/shareMoney',//分享金
+				]
+			}],
+			window: {
+				backgroundTextStyle: 'light',
+				navigationBarBackgroundColor: '#fff',
+				navigationBarTitleText: 'WeChat',
+				navigationBarTextStyle: 'black',
+				backgroundColor: '#ebf0ef'
+			}
+		}
+
+		globalData = {
+			key: '',
+			formIdList: [],
+		}
+
+		constructor () {
+			super();
+			this.use('requestfix');
+			this.use('promisify');
+		}
+
+		onLaunch(o) {
+			this.getSession();
+			const updateManager = wx.getUpdateManager()
+
+			updateManager.onUpdateReady(function () {
+				wx.showModal({
+					title: '温馨提醒',
+					content: '系统检测 您还没更新到最新版本的应用赶紧【确定】更新到最新版本',
+					showCancel: false,
+					success: function (res) {
+						if (res.confirm) {
+							// 新的版本已经下载好，调用 applyUpdate 应用新版本并重启
+							updateManager.applyUpdate()
+						}
+					}
+				})
+
+			})
+
+			updateManager.onUpdateFailed(function () {
+				// 新的版本下载失败
+			})
+		}
+
+		onShow(o) {
+			this.globalData.shareMemberCompanyId = o.query.shareMemberCompanyId;
+			wx.setStorageSync('cacheShareMemberCompanyId',o.query.shareMemberCompanyId);
+			this.bindShareRelation(o.query.shareMemberCompanyId);
+		}
+
+		async checkSession() {
+			wx.checkSession({
+				success: function() {
+					this.addMq();
+				}.bind(this),
+				fail: function() {
+					//登录态过期
+					this.getSession(); //重新登录
+				}.bind(this)
+			})
+		}
+		async submitFormIds(id) {
+			id && this.globalData.formIdList.push(id);
+			if (this.globalData.formIdList.length > 0) {
+				const {imei_error_code} = await api.collect({
+					query:{
+						formIdArray: this.globalData.formIdList.join(',')
+					}
+				});
+
+				imei_error_code == 0 && (this.globalData.formIdList = []);
+			}
+		}
+		async addMq() {
+			if (!this.globalData.key) {
+				return
+			}
+
+			var {data} = await api.addMq({
+				query: {
+					key: this.globalData.key
+				}
+			});
+		}
+
+		//验证授权
+		async verifyAccredit(e) {
+			const {authSetting:{'scope.userInfo':scope}} = await wepy.getSetting();
+
+			if (!scope) {
+				getCurrentPages()[e || 0].showAccreditDialog()
+			}
+		}
+
+		//获取session
+		async getSession() {
+			const {rawData='',signature='',encryptedData='',iv=''} = wx.getStorageSync('USER_DATA');
+			let {code} = await wepy.login(),query = {
+				rawData,
+				signature,
+				encryptedData,
+				iv,
+				code,
+				key: this.globalData.key
+			};
+			let {data} = await api.againLogin({query});
+			let eInfo = wx.getStorageSync('eInfo') || {};
+			eInfo.mobilePhone = data.mobilePhone;
+			wx.setStorageSync('eInfo',eInfo);
+			wx.setStorageSync('session', data);
+			this.bindShareRelation(this.globalData.shareMemberCompanyId);
+			getCurrentPages()[0].route == 'pages/index/index' && getCurrentPages()[0].reset();
+			getCurrentPages()[0].route == 'pages/activity/activity' && getCurrentPages()[0].moDetails();
+			getCurrentPages()[0].route == 'pages/productDetails/getGift' && getCurrentPages()[0].getProductDetail();//触发领取好友赠品详情
+		};
+
+		//绑定分享关系
+        async bindShareRelation(id) {
+	        if (id) {
+		        let cache = wx.getStorageSync('shareMemberCompanyId') || '';
+		        let shareMemberCompanyId = cache || id;
+		        if (shareMemberCompanyId !== id) {
+
+			        let {imei_error_code} = await api.addMemberCompanyShare({
+				        query: {
+					        shareMemberCompanyId: id
+				        }
+			        });
+
+                    if (imei_error_code == 0) {
+	                    wx.setStorageSync('shareMemberCompanyId',id);
+                    } else {
+                    	setTimeout(function () {
+		                    bindShareRelation(id)
+	                    },1000)
+                    }
+
+		        } else if(!cache) {
+			        let {imei_error_code} = await api.addMemberCompanyShare({
+				        query:{
+					        shareMemberCompanyId: shareMemberCompanyId
+				        }
+			        });
+
+			        if (imei_error_code == 0) {
+				        wx.setStorageSync('shareMemberCompanyId',shareMemberCompanyId);
+			        } else {
+				        setTimeout(function () {
+					        bindShareRelation(id)
+				        },1000)
+                    }
+		        }
+	        }
+        }
+	}
+</script>

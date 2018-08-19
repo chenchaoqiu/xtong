@@ -1,0 +1,167 @@
+<style lang="less">
+  .time-kj{
+    font-size: 28rpx;
+    text-align: center;
+    overflow: hidden;
+    transition: 2s;
+    -webkit-transition: 2s; /* Safari */
+    position: fixed;
+    z-index: 2;
+    bottom: 0;
+    left:0px;
+    width:100%;
+    background: #fff;
+  }
+  .time-mc{
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left:0px;
+    width:100%;
+    height: 100%;
+    background: #000;
+    opacity: .5;
+  }
+</style>
+<template>
+  <view wx:if="{{isShow}}" animation="{{animationData_yc}}" @tap="no" class="time-mc"></view>
+  <view wx:if="{{isShow}}" animation="{{animationData}}" class="time-kj">
+    <view style="overflow: hidden;padding:10px; ">
+      <text style="float: left" @tap="no">取消</text>
+      <text style="float: right" @tap="ok">确定</text>
+    </view>
+    <view style="text-align: right">
+      <text style="font-size: 28rpx;width: 50%;text-align: center;display: inline-block;">选择日期</text>
+      <text style="font-size: 28rpx;width: 25%;text-align: center;display: inline-block;">开始时间</text>
+      <text style="font-size: 28rpx;width: 25%;text-align: center;display: inline-block;">结束时间</text>
+    </view>
+    <picker-view  indicator-style="height: 50px;" style="width: 100%; height: 200px;overflow: hidden" value="{{value}}" bindchange="bindChange">
+      <!--<picker-view-column>-->
+      <!--<view wx:for="{{years}}" style="line-height: 50px">{{item}}年</view>-->
+      <!--</picker-view-column>-->
+      <picker-view-column>
+        <view wx:for="{{months}}" style="line-height: 50px">{{item}}月</view>
+      </picker-view-column>
+      <picker-view-column>
+        <view wx:for="{{days}}" style="line-height: 50px">{{item}}日</view>
+      </picker-view-column>
+      <picker-view-column>
+        <view wx:for="{{grouplist}}" style="line-height: 50px">{{item}}</view>
+      </picker-view-column>
+      <picker-view-column>
+        <view wx:for="{{gindex}}" style="line-height: 50px">{{item}}</view>
+      </picker-view-column>
+    </picker-view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+
+  const date = new Date()
+  const years = []
+  const months = []
+  let days = []
+  let d = new Date( new Date(date.getFullYear()+'/'+date.getMonth()+2+'/'+1)- 1000*3600*24).getDate();
+
+
+  for (let i = 1990; i <= date.getFullYear(); i++) {
+    years.push(i)
+  }
+  console.log(date.getMonth()+1)
+  for (let i = date.getMonth()+1 ; i <= 12; i++) {
+    months.push(i)
+  }
+
+  for (let i = date.getDate() ; i <=d; i++) {
+    days.push(i)
+  }
+
+  export default class Days extends wepy.component {
+      data={
+        years: years,
+        year: date.getFullYear(),
+        months: months,
+        month: [0,0,0,0],
+        days: days,
+        day: 0,
+        year: date.getFullYear(),
+        value: [0],
+        isShow: true,
+        animationData:{},
+        animationData_yc:{}
+      }
+    props = {
+      grouplist: {},
+      gindex: {}
+    }
+
+    yc(){
+      var animation = wx.createAnimation({
+        duration: 500,
+        timingFunction: 'ease',
+      })
+
+      this.animation = animation
+
+      animation.translateY(264).step()
+
+      var animation_yc = wx.createAnimation({
+        duration: 500,
+        timingFunction: 'ease',
+      })
+
+      this.animation = animation_yc
+
+      animation_yc.opacity(0).step()
+
+      this.animationData_yc=animation_yc.export()
+      this.animationData=animation.export()
+      setTimeout(function () {
+        this.isShow = false;
+      }.bind(this),300)
+    }
+
+    onLoad() {
+      console.log(d)
+    }
+
+    methods = {
+      //  点击日期组件确定事件
+      no:function (e) {
+        this.yc()
+      },
+      ok:function () {
+        this.$parent.eidk(this.months[this.day],this.days[this.month[1]],this.month)
+        this.yc()
+      },
+      bindChange: function(e) {
+        days.splice(0,days.length);
+        const val = e.detail.value;
+        let year = this.data.months[val[0]] + 1 == 13 ? date.getFullYear() +1 : date.getFullYear();
+        let month = this.data.months[val[0]]+1 == 13 ? '01' : this.data.months[val[0]]+1;
+        d = new Date(new Date(year+'/'+date.getMonth()+(month+'/'+1)).getTime() - 1000*3600*24).getDate();
+
+        if(date.getMonth()+1==this.data.months[val[0]]){
+          for (let i = date.getDate() ; i <=d; i++) {
+            days.push(i)
+          }
+        }else{
+          for (let i = 1 ; i <=d; i++) {
+            days.push(i)
+          }
+        }
+        console.log(val[0])
+        this.setData({
+          year: this.data.years[val[0]],
+          days: days[val[2]],
+        })
+        this.day = val[0]
+        this.month=val
+      },
+      tap () {
+        this.grouplist.name = `Parent Random(${Math.random()})`
+        console.log(`Clicked Group ${this.$index}, ID is ${this.grouplist.id}`)
+      }
+    }
+  }
+</script>

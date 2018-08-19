@@ -1,0 +1,85 @@
+<style lang="less">
+    page{background: #f4f4f4}
+</style>
+<template>
+    <!--还款订单-->
+    <view style="margin: 20rpx 30rpx 0;background: #fff;border-radius: 10rpx;">
+        <view style="padding: 20rpx 0 0;">
+            <view style="font-size: 26rpx;margin: 10rpx 0;padding: 0 20rpx;">
+                <text style="color: #999;">购买时间：</text>
+                <text style="color: #333;">{{dat_uers[0].time}}</text>
+                <text style="float:right;color:#ff5767;">{{dat_uers[0].bias}}</text>
+            </view>
+            <view style="overflow: hidden;margin-top: 15rpx;border-bottom: 1px solid #e5e5e5;padding: 0 20rpx;">
+                <image style="float: left;width: 200rpx;height: 138rpx;border-radius: 10rpx;border:1px solid #e5e5e5;" src="{{dat_uers[0].img}}"></image>
+                <view style="float: left;margin-left: 15rpx;">
+                    <view style="font-size: 30rpx;color: #333;width: 433rpx;height: 96rpx;overflow: hidden;display:-webkit-box; -webkit-box-orient:vertical;-webkit-line-clamp:2; ">{{dat_uers[0].text}}</view>
+                    <text style="font-size: 32rpx;color:#ff5767;">{{dat_uers[0].yeas}}元</text>
+                </view>
+            </view>
+            <!--项目说明-->
+            <view>
+                <text style="font-size: 26rpx;color:#666;padding: 0 20rpx;">{{dat_uers[0].name}}</text>
+                <view style="overflow: hidden;font-size: 24rpx;color:#999;margin-top: 20rpx;padding: 0 20rpx;">
+                    <view style="width: 188rpx;border-right: 1rpx solid #e5e5e5;float: left;">使用{{dat_uers[0].sun}}次</view>
+                    <view style="width: 255rpx;float: left;text-align: center;">有效期{{dat_uers[0].yxq}}天</view>
+                    <view style="width: 203rpx;border-left: 1rpx solid #e5e5e5;float: left;text-align: right;">{{dat_uers[0].xf}}天前消费过</view>
+                </view>
+                <view style="font-size: 26rpx;overflow: hidden;height: 89rpx;line-height: 89rpx;border-top: 1px solid #e5e5e5;margin-top: 20rpx;padding: 0 20rpx;">
+                    <text style="color:#333;">已付定金：200元</text>
+                    <text style="color:#ff5767;float: right">待结尾款：800元</text>
+                </view>
+            </view>
+        </view>
+    </view>
+    <!--生成结算码-->
+    <view style="overflow:hidden;height: 98rpx;line-height: 98rpx;position: fixed;bottom: 0;">
+        <text style="float: left;width: 490rpx;background: #fff;font-size: 30rpx;color: #ff5767;text-indent: 40rpx;">合计还款：1400元</text>
+        <text style="float: right;width: 260rpx;background: #26cad3;font-size: 32rpx;color: #fff;text-align: center">生成结算码</text>
+    </view>
+</template>
+
+<script>
+	import wepy from 'wepy'
+
+	export default class Customer extends wepy.page {
+		config = {
+			navigationBarTitleText: '还款订单'
+		}
+		components = {
+
+		}
+
+		data = {
+			dat_uers:[{
+				time:'2018-08-21',
+				yeas:'800',
+				img:'/images/logo.png',
+				name:'小气泡水氧清透护理',
+				text:'你的份内is来额大连开发接啊老费劲哦ie',
+				sun:'5/12',
+				yxq:'360',
+				xf:'20',
+				tx:'../../../images/logo.png',
+				ures:'陈伟皆',
+				phone:'10086',
+				bias:'项目有欠款'
+			}]
+		}
+
+		computed = {
+
+		}
+		methods = {
+
+		}
+
+		events = {
+
+		}
+
+		onLoad() {
+
+		}
+	}
+</script>

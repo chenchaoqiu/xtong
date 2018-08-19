@@ -1,0 +1,217 @@
+<style lang="less">
+    page{background: #f4f4f4;font-family: PingFang-SC-Regular; }
+    /** 修改默认的navigator点击态 **/
+    .navigator-hover {
+        color:blue;
+    }
+    /** 自定义其他点击态样式类 **/
+    .other-navigator-hover {
+        color:red;
+    }
+    .font30{font-size: 30rpx;}
+    .font26{font-size: 26rpx;}
+    .color6{color:#666666}
+    .color3{color:#333333}
+    .yeji-con{height: 144rpx;display: flex;display: -webkit-flex;background: #ffffff;padding: 20rpx 30rpx}
+    .user-img{width: 84rpx;height: 84rpx;border-radius: 50%;overflow: hidden;margin-top: 14rpx}
+    .user-yeji{flex: 1;-webkit-flex: 1;margin-left: 30rpx;display: flex;display: -webkit-flex;flex-direction: column;-webkit-flex-direction: column}
+    .user-yeji-t{border-bottom: 1rpx solid #f4f4f4}
+    .user-yeji-b{}
+    .yeji-list{width: 100%;height: auto;background: #ffffff;margin-top: 20rpx;}
+    .yeji-list-title{height: 80rpx;border-bottom: 1rpx solid #f4f4f4;display: flex;display: -webkit-flex;padding: 0 30rpx;}
+    .list-item{flex: 1;-webkit-flex: 1;font-size: 26rpx;color: #666666;line-height: 80rpx;text-align: center}
+    .data-list{height: 80rpx;padding: 0 30rpx;border-bottom: 1rpx solid #f4f4f4;display: flex;display: -webkit-flex;
+        border-bottom: 1rpx solid #f4f4f4;background: #ffffff}
+    .yeji-bottom{width: 100%;height: 50rpx;background:#333333;color:#ffffff;font-size: 30rpx;
+        position: fixed;left: 0;bottom: 0;display: flex;display: -webkit-flex;padding: 23rpx 0;}
+    .yeji-bottom-item{flex:1;-webkit-flex: 1;height:50rpx;text-align: center}
+    .yeji-bottom .item-right{border-right: 1rpx solid #ffffff}
+</style>
+<template>
+    <view style="height: 1px;width: 100%;background: #f4f4f4; position: fixed;top:0;left: 0"></view>
+    <!--个人业绩-->
+    <view class="yeji-con">
+        <view class="user-img">
+            <open-data type="userAvatarUrl"></open-data>
+        </view>
+        <view class="user-yeji">
+            <view class="user-yeji-t">
+                <text class="font30" style="vertical-align: text-top">{{employeeName}}</text>
+                <text class="font30 color6" style="vertical-align: text-top">({{roleName}})</text>
+            </view>
+            <view class="user-yeji-b">
+                <view style="float: left;margin-top: 5rpx;">
+                    <text class="color6" style="display: block;font-size: 26rpx;">{{dateStart}}业绩</text>
+                    <text class="font30" style="display: block;color: #ff5767">{{totalSale}}元</text>
+                </view>
+                <picker mode="date" value="{{dateStart}}" fields="month" start="2017-02"  bindchange="bindDateChange">
+                    <view class="picker">
+                        <image src="../../images/icon-day.png" style="display: inline-block;float: right;width: 44rpx;height: 44rpx;margin-top: 10rpx;"></image>
+                    </view>
+                </picker>
+            </view>
+        </view>
+    </view>
+    <!--content-->
+    <view class="yeji-list">
+        <view class="yeji-list-title">
+            <view class="list-item" style="text-align: left">日期</view>
+            <view class="list-item">销售业绩</view>
+            <view class="list-item">消耗业绩</view>
+            <view class="list-item">手工费</view>
+            <view class="list-item" style="text-align: right">服务人数</view>
+        </view>
+    </view>
+    <view style="padding-bottom: 100rpx;">
+        <view wx:for="{{dayAchieveList}}" >
+            <navigator url="performanceDetail?dateStart={{item.dateStart}}" class="data-list" >
+                <view class="list-item" style="font-size: 24rpx;text-align: left">{{item.day}}</view>
+                <view class="list-item" style="font-size: 24rpx;color:#333333;">{{item.daySale}}</view>
+                <view class="list-item" style="font-size: 24rpx;color:#333333;">{{item.dayConsume}}</view>
+                <view class="list-item" style="font-size: 24rpx;color:#333333;">{{item.dayHand}}</view>
+                <view class="list-item" style="font-size: 24rpx;color:#333333;text-align: right">{{item.dayMember}}人</view>
+            </navigator>
+        </view>
+    </view>
+        <!--<text wx:if="{{dayAchieveList.length == 0}}" style="font-size: 30rpx;text-align: center;padding: 0 auto">暂无数据</text>-->
+    <!--底部-->
+    <view class="yeji-bottom">
+        <view class="yeji-bottom-item item-right" style="text-align: left">
+            <text style="padding-left: 30rpx;">汇总(元)</text>
+        </view>
+        <view class="yeji-bottom-item item-right">
+            <text>{{totalConsume}}</text>
+        </view>
+        <view class="yeji-bottom-item item-right">
+            <text>{{totalHand}}</text>
+        </view>
+        <view class="yeji-bottom-item " style="text-align: right">
+            <text style="padding-right: 30rpx;">{{totalMember}}人</text>
+        </view>
+    </view>
+    <zanDialog></zanDialog>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import util from '../../utils/util'
+    import api from '../../api/api'
+    import zanDialog from '@/components/zan-dialog'
+    export default class userPerformance extends wepy.page {
+        config = {
+            navigationBarTitleText: '业绩',
+            "enablePullDownRefresh": true,     //关闭系统刷新
+        }
+        components = {
+            zanDialog
+        }
+
+        data = {
+//            "date" :"2018-02",
+            "dayAchieveList":[],
+            "dateStart":"",
+            "employeeId" :"",
+            "employeeName" :"",
+            "roleName" :"",
+            "totalHand": "",                    // 合计手工费
+            "totalConsume": "",                // 合计消耗业绩
+            "totalMember": "",                // 合计服务人数
+            "totalSale": "" ,                   // 合计销售业绩
+            headerImg:'',
+            userInfo:[],
+        }
+
+
+        computed = {}
+        methods = {
+            bindDateChange(e) {
+                this.dateStart = e.detail.value;
+                console.log(this.dateStart);
+                this.ajax();
+            },
+        }
+
+        events = {}
+
+        onPullDownRefresh() {
+            wx.showNavigationBarLoading(); //在标题栏中显示加载
+            //模拟加载
+
+            setTimeout(function () {
+                this.ajax();
+                wx.hideNavigationBarLoading(); //完成停止加载
+                wx.stopPullDownRefresh() //停止下拉刷新
+            }.bind(this), 1500);
+            this.$apply();
+        }
+//        调取接口
+        async ajax(){
+            var session= wx.getStorageSync('session', json);
+//            let {userInfo} = await wepy.getUserInfo();
+//            let {userInfo} = wx.getStorageSync('session', json);
+//            this.userInfo = userInfo;
+            this.employeeId = session.employeeId || '';
+            this.employeeName = session.employeeName || '';
+            this.mobilePhone = session.mobilePhone || '';
+            this.roleName = session.roleName || '';
+            this.shopName = session.shopName || '';
+            const json = await api.employeeDayAchieve({
+                query: {
+                    employeeId: this.employeeId,
+                    dateStart : this.dateStart,
+                }
+            });
+            if(json.data.dayAchieveList.length == 0){
+                wx.showToast({
+                    title: '暂无数据',
+                    icon: 'none',
+                    duration: 1500
+                })
+            }
+
+            this.data = json.data;
+            this.totalSale = json.data.totalSale;
+            this.totalMember = json.data.totalMember;
+            this.totalConsume = json.data.totalConsume;
+            this.totalHand = json.data.totalHand;
+//            console.log(this.data.totalSale);
+//            console.log(this.data);
+            this.dayAchieveList = json.data.dayAchieveList;
+            this.$apply();
+        }
+        async onLoad() {
+            var time = util.getCurrentTime();
+            var time1 = time.substr(0, 4);
+            var time2 = time.substr(4,2);
+//            默认当前月时间
+            this.dateStart = time1 + '-' + time2;
+            this.$parent.verifyAccredit(1);
+            this.$apply();
+        }
+        showAccreditDialog() {
+            this.$invoke('zanDialog', 'showZanDialog', {
+                title: '是否授权',
+                content: '我们请求获得您的授权允许，只收集您在微信自愿提供的昵称、头像等信息，为您提供更多功能操作。',
+                showCancel: true,
+                buttons:[
+                    {
+                        type: 'confirm',
+                        text: '好的',
+                        color: '#26cad3',
+                        openType:'getUserInfo',
+                    }
+                ],
+//                openType: 'getUserInfo'
+            })
+                .then(() => {
+
+                })
+                .catch(() => {
+
+                })
+        }
+        onShow(){
+            this.ajax();
+        }
+    }
+</script>

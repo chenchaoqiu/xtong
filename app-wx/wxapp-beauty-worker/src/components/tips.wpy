@@ -1,0 +1,136 @@
+<style lang="less">
+    button:after{border:0;}
+    .dialog {
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 100;
+        background-color: rgba(0,0,0,.8);
+        overflow: hidden;
+        .modal-wrap {
+            padding: 0 50rpx;
+            width: 560rpx;
+            margin: 400rpx auto 0 auto;
+            overflow: hidden;
+            .centen {
+                position: relative;
+                text-align: center;
+                background-color: #fff;
+                border-radius: 10rpx;
+                .btn-group {
+                    border-top:1rpx solid #ddd;
+                }
+                .btn-group view {
+                    display: inline-block;
+                    width: 50%;
+                    box-sizing: border-box;
+                    text-align: center;
+                    font-size: 36rpx;
+                    height: 100rpx;
+                    line-height: 100rpx;
+                    background-color: #fff;
+                    border-bottom-left-radius: 10rpx;
+                }
+                .confirm {
+                    color: #26cad3 !important;
+                    border-bottom-right-radius: 10rpx !important;
+                    border-bottom-left-radius: 0 !important;
+                    box-sizing: border-box;
+                    border-left: 1rpx solid #ddd;
+                }
+            }
+        }
+    }
+</style>
+<template>
+    <view class="dialog" wx:if="{{isShow}}">
+        <view class="modal-wrap">
+            <view class="centen">
+                <view style="font-size: 32rpx;color: #333;padding: 50rpx 0 30rpx;">{{title}}</view>
+                <view style="color: #666;font-size: 30rpx;line-height: 30rpx;margin-bottom: 20rpx;">{{name}}</view>
+                <view style="color: #666;font-size: 30rpx;line-height: 30rpx;margin-bottom: 30rpx;">{{time}}</view>
+                <view class="btn-group">
+                    <view class="color-33" @tap="cancel">取消</view>
+                    <view class="confirm" @tap="ensure">确定</view>
+                </view>
+            </view>
+        </view>
+    </view>
+</template>
+
+
+<script>
+	import wepy from 'wepy'
+	import api from '../api/api'
+	export default class yyCode extends wepy.component {
+		config = {
+			navigationBarTitleText: '',
+		}
+		components = {
+		}
+        props = {
+            title: String,
+            name: String,
+            time: String,
+            type:String,
+            isShow:Boolean,
+        }
+		data = {
+//            isShow:false
+		}
+
+		computed = {}
+
+		//提交接口
+
+
+		//            授权码点击事件
+		abc(){
+			this.isShow=true;
+			this.$apply();
+		}
+		methods = {
+//		    取消
+            cancel(){
+                this.isShow = false;
+                this.$apply();
+            },
+//            确定
+            ensure(){
+//                带参数判断，如果是yy，则请求接口取消预约，如果是billing，则请求开消耗单接kou
+                if(this.type == 'yy'){
+                    this.$parent.yySure();
+                }else if(this.type == 'billing'){
+                    this.$parent.billingSure();
+                }
+
+            },
+            ensureClose(){
+                this.isShow = false;
+                this.$apply();
+            }
+		}
+
+//		async ajax(){
+//            const postAuth = await api.yyAuth({
+//                query: {}
+//            });
+//            if (postAuth.imei_error_msg == 0) {
+//                this.isShow = false;
+//                this.$apply();
+//            }
+//        }
+
+		events = {
+		}
+
+		watch = {
+
+		}
+		async onLoad() {
+//
+		}
+	}
+</script>

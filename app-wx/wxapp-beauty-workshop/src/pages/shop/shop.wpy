@@ -1,0 +1,269 @@
+<style lang="less">
+  page {
+    background-color: #ebf0ef;
+    border-top:1px solid #ddd;
+  }
+  page > view{
+    background: #fff;
+  }
+  .posi{
+    height:99rpx;
+    border-bottom:1px solid #ddd;
+    padding: 0 25rpx;
+  }
+  .posi text,.posi image{
+    float: left;
+  }
+  .posi text{
+    font-size: 34rpx;
+    color: #333;
+    margin-top: 22.5rpx;
+  }
+  .posi > image{
+    width:20rpx;
+    height:10rpx;
+    margin-top: 44.5rpx;
+    margin-left: 19rpx;
+    margin-right: 19rpx;
+  }
+  .posi view{
+    float: left;
+    width:560rpx;
+    height:60rpx;
+    background: #eee;
+    border-radius: 20rpx;
+    margin-top: 19.5rpx;
+  }
+  .posi view image{
+    width:24rpx;
+    height:24rpx;
+    float: left;
+    margin-top: 18rpx;
+    margin-left: 37rpx;
+    margin-right:19rpx;
+  }
+  .posi view input{
+    font-size: 24rpx;
+    color: #666;
+    /*margin-top:5rpx;*/
+    height: 60rpx;
+    line-height: 60rpx;
+  }
+  .lately{
+  }
+  .lately-list{
+    border-top:1px solid #eee;
+    height:136rpx;
+    padding:0 25rpx;
+    color: #666;
+  }
+  .lately-list:first-child{
+    border-top:1px solid #ddd;
+  }
+  .lately-list .pull-left view:nth-child(1){
+    font-size: 32rpx;
+    /*font-weight: bold;*/
+    margin:22rpx 0 5rpx;
+    width:475rpx;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: #333;
+  }
+  .lately-list .pull-left view:nth-child(2){
+    font-size: 26rpx;
+    width:475rpx;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+  .lately-list .pull-right{
+    width:180rpx;
+    text-align: center;
+    height:87rpx;
+    margin-top: 25.5rpx;
+  }
+  .lately-list image{
+    width:36rpx;
+    height:52rpx;
+    display: block;
+    margin:0 auto;
+  }
+  .lately-list text{
+    display: block;
+    font-size: 24rpx;
+    color: #666;
+  }
+</style>
+<template>
+  <!--定位-->
+  <view class="posi">
+    <text>广州</text>
+    <image src="../../images/xix.png"></image>
+    <view>
+      <image src="../../images/ss.png"></image>
+      <input type="text" bindinput="placeho" placeholder="输入地址...." />
+    </view>
+  </view>
+  <!--离我最近-->
+  <view wx:if="{{dat.recentlyDistanceShop.length>0}}" class="lately">
+    <view style="background: #ebf0ef;height: 71rpx;line-height: 71rpx;text-indent: 25rpx;font-size: 24rpx;color: #666;">离我最近</view>
+    <view>
+      <view wx:for="{{dat.recentlyDistanceShop}}" wx:key="{{index}}" @tap="tren({{item.address}},{{item.description}},{{item.shopId}},{{item.shopName}},{{item.telephone}},{{item.shopLogo}},{{item}})" class="lately-list">
+        <view class="pull-left">
+          <view>{{item.shopName}}</view>
+          <view>{{item.address}}</view>
+        </view>
+        <view class="pull-right">
+          <image src="../../images/dw.png"></image>
+          <text wx:if="{{item.distance > 1000}}">{{filter.toFixed(item.distance / 1000)}}km</text>
+          <text wx:else>{{item.distance}}m</text>
+        </view>
+      </view>
+    </view>
+  </view>
+  <!--最近去过-->
+  <view wx:if="{{dat.recentlyShop.length>0}}" class="lately">
+    <view style="background: #ebf0ef;height: 71rpx;line-height: 71rpx;text-indent: 25rpx;font-size: 24rpx;color: #666;">最近去过</view>
+    <view>
+      <view wx:for="{{dat.recentlyShop}}" wx:key="{{index}}" @tap="tren({{item.address}},{{item.description}},{{item.shopId}},{{item.shopName}},{{item.telephone}},{{item.shopLogo}},{{item}})" class="lately-list">
+        <view class="pull-left">
+          <view>{{item.shopName}}</view>
+          <view>{{item.address}}</view>
+        </view>
+        <view class="pull-right">
+          <image src="../../images/dw.png"></image>
+          <text wx:if="{{item.distance > 1000}}">{{filter.toFixed(item.distance / 1000)}}km</text>
+          <text wx:else>{{item.distance}}m</text>
+        </view>
+      </view>
+    </view>
+  </view>
+  <!--最常去-->
+  <view wx:if="{{dat.oftenGoToShop.length>0}}" class="lately">
+    <view style="background: #ebf0ef;height: 71rpx;line-height: 71rpx;text-indent: 25rpx;font-size: 24rpx;color: #666;">最常去</view>
+    <view>
+      <view wx:for="{{dat.oftenGoToShop}}" wx:key="{{index}}" @tap="tren({{item.address}},{{item.description}},{{item.shopId}},{{item.shopName}},{{item.telephone}},{{item.shopLogo}},{{item}})" class="lately-list">
+        <view class="pull-left">
+          <view>{{item.shopName}}</view>
+          <view>{{item.address}}</view>
+        </view>
+        <view class="pull-right">
+          <image src="../../images/dw.png"></image>
+          <text wx:if="{{item.distance > 1000}}">{{filter.toFixed(item.distance / 1000)}}km</text>
+          <text wx:else>{{item.distance}}m</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import api from '../../api/api'
+  import filter from '../../wxs/toFix.wxs'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '切换门店',
+      backgroundColor: '#f4f4f4'
+    };
+    components = {
+    }
+
+    data = {
+      dat:[/*oftenGoToShop(经常去的门店),recentlyDistanceShop(距离最近的门店),recentlyShop(最近到的一间门店)*/],
+      posidw:false,
+      imageUrl: wepy.$appConfig.imageUrl,
+    }
+    onShareAppMessage(res){
+      if (res.from === 'button') {
+        // 来自页面内转发按钮
+//        console.log(res.target)
+      }else{
+        return {
+          title: '亲爱的 推荐你一个女生必备的小程序 要关注哦！',
+          imageUrl: this.imageUrl + 'share_img.png',
+          path: '/pages/index/index?shareMemberCompanyId='+wx.getStorageSync('session').memberCompanyId
+        }
+      }
+    }
+
+    async getposi(e){
+      /*获取门店*/
+      const json = await api.tabShop({
+        query: {
+          longitude:e.lo,
+          latitude:e.la,
+          keyword:e.keyword || ''
+        }
+      });
+      this.dat = json.data;
+      this.$apply();
+    }
+
+    placeho(e){
+      /*搜索门店*/
+      var That=this;
+      wx.getLocation({
+        type: 'gcj02',
+        success: function(res) {
+          var latitude = res.latitude
+          var longitude = res.longitude
+          That.getposi({keyword:e.detail.value,lo:longitude,la:latitude});
+        }
+      })
+    }qa
+
+    wxs = {
+      filter: filter
+    }
+
+    methods = {
+      tren(e,e1,e2,e3,e4,e5,e6){
+        wx.setStorageSync('posi', [e,e1,e2,e3,e4,e5,e6])
+        wx.navigateBack({
+          url: '/pages/cart/order/order'
+        })
+      }
+    }
+    poSition(){
+      var That=this;
+      wx.getLocation({
+        type: 'gcj02',
+        success: function(res) {
+          var latitude = res.latitude
+          var longitude = res.longitude
+          console.log(455)
+          That.getposi({lo:longitude,la:latitude})
+        },
+        fail:function () {
+          wx.openSetting({
+            complete: res => {
+              const {authSetting:{'scope.userLocation':l,'scope.userInfo':u}} = res;
+              if(!l || !u) {
+                wx.showModal({
+                  title: '提示',
+                  content: '请开启地理位置和用户信息',
+                  showCancel:false,
+                  success: function(res) {
+                    That.poSition();
+                  },
+                  fail:function () {
+                    That.poSition();
+                  }
+                })
+              }else{
+                That.poSition();
+              }
+            }
+          })
+        }
+      })
+    }
+
+    onLoad() {
+      this.poSition();
+    }
+  }
+</script>

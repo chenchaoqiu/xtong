@@ -1,0 +1,159 @@
+<style lang="less">
+  page{
+    background: #fff;
+  }
+  navigator{
+    margin:15rpx 30rpx;
+    border-radius: 20px;
+  }
+  /** 修改默认的navigator点击态 **/
+  .navigator-hover {
+    color:blue;
+  }
+  /** 自定义其他点击态样式类 **/
+  .other-navigator-hover {
+    color:red;
+  }
+  .group{
+    background: #f4f4f4;
+    border-radius: 20px;
+    text-align: center;
+    padding: 5px 0;
+  }
+  .group text{
+    color: #666;
+    font-size: 26rpx;
+    margin-left: 5px;
+  }
+  .custom-til{
+    height: 78rpx;
+    line-height: 78rpx;
+    background: #f4f4f4;
+    font-size: 30rpx;
+    color: #666;
+    padding:0 30rpx;
+  }
+  .custom-list{
+    margin:0 30rpx;
+  }
+  .custom-list > view{
+    padding: 20rpx 0;
+    overflow: hidden;
+    border-bottom: 2rpx solid #e5e5e5;
+  }
+  .custom-list image{
+    width: 84rpx;
+    height: 84rpx;
+    border-radius: 50%;
+    border:1px solid #e5e5e5;
+    margin-right: 20rpx;
+  }
+  .custom-list text{
+    display: block;
+    font-size: 30rpx;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+</style>
+<template>
+  <view style="position: fixed;top: 0px;width: 100%;background: #fff;">
+    <view style="height: 1px;width: 100%;background: #f4f4f4; "></view>
+    <!--搜索-->
+    <navigator url="/pages/addNew/search" hover-class="navigator-hover">
+      <view class="group">
+        <block wx:for="{{iconType}}">
+          <icon type="{{item}}" size="20"/>
+        </block>
+        <text>输入顾客手机号/姓名</text>
+      </view>
+    </navigator>
+    <!--总计人数-->
+    <view class="custom-til">
+      <text style="float: left;">最近到店顾客</text>
+      <text style="float: right;font-size: 26rpx;">共{{array.length}}名</text>
+    </view>
+  </view>
+  <!--员工查询-->
+  <view style="margin-top: 180rpx;">
+    <view class="custom-list">
+      <view wx:for="{{array}}">
+        <navigator style="margin: 15rpx 0;" url="/pages/addNew/addNew?id={{item.memberCompanyId}}" hover-class="navigator-hover">
+          <view>
+            <image style="float: left;margin-top: 5rpx;" src="{{item.headImgUrl}}"></image>
+            <view style="float: left;width: 582rpx;">
+              <text style="color: #333;margin-bottom: 5px;float: left;width: 55%;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;">{{item.memberName}}</text>
+              <text style="float: right;color: #999;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;width: 254rpx;">到店次数：{{item.toShopNum}}次</text>
+            </view>
+            <view style="font-size: 24rpx;color: #666;">最近消费：{{item.recentConsumptionTime}}</view>
+          </view>
+        </navigator>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+	import wepy from 'wepy'
+    import api from '../../api/api'
+    import dom from '../../utils/dom'
+
+	export default class Customer extends wepy.page {
+		config = {
+			navigationBarTitleText: '顾客列表',
+            enablePullDownRefresh: false
+		}
+		components = {
+
+		}
+
+		data = {
+          iconType: [
+            'search'
+          ],
+          array:[],
+          pageno:1,
+          zt:false,
+		}
+      onReachBottom(e){//监控滚动到底部
+        if (this.zt){
+          return;
+        }
+        this.ajxa(++this.pageno)
+      }
+
+        async ajxa(e){
+          /*加载列表*/
+          const json = await api.customerlist({
+            query: {
+//              shopId: wx.getStorageSync('session').shopId,
+              pageNo:e,
+              pageSize:15,
+            }
+          });
+
+          this.array = this.array.concat(json.data.list);
+
+           if(this.array.length==json.data.totalSize){
+             this.zt=true;
+           }
+
+          this.$apply();
+        }
+
+		computed = {
+
+		}
+		methods = {
+
+		}
+
+		events = {
+
+		}
+
+		onLoad() {
+          this.ajxa(this.pageno)
+		}
+	}
+</script>

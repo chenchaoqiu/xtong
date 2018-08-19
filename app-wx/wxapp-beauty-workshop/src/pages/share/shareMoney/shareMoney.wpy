@@ -1,0 +1,172 @@
+<style lang="less">
+  page {
+    overflow: auto !important;
+  }
+  .share_money{
+    position: relative;
+    image{
+      width:100%;
+      display: block;
+    }
+    > view{
+      width:100%;
+      height: 100%;
+      position: absolute;
+      top:50%;
+      transform: translateY(-50%);
+      left:0;
+      text-align: center;
+      color: #fff;
+      display: table;
+      view:first-child{
+        font-size: 30rpx;
+      }
+      view:nth-child(2){
+        font-size: 76rpx;
+        height:78rpx;
+        line-height: 78rpx;
+      }
+    }
+  }
+  .share_list{
+    background: #fff;
+    .share_bk{
+      padding: 24rpx 0;
+      margin:0 30rpx;
+      height:100rpx;
+      line-height: 100rpx;
+      border-top: 1rpx solid #ddd;
+      overflow: hidden;
+      image{
+        width:100rpx;
+        height:100%;
+        border-radius: 50%;
+        margin-right: 20rpx;
+      }
+      view{
+        height:100%;
+        view{
+          height: 50%;
+          line-height:50rpx;
+          font-size: 30rpx;
+          color: #333;
+        }
+        view:nth-child(2){
+          font-size: 26rpx;
+          color:#666;
+        }
+      }
+      text{
+        font-size: 36rpx;
+        color: #e4393c;
+      }
+    }
+    .share_bk:first-child{
+      border:none;
+    }
+  }
+</style>
+<template>
+  <view class="share_money">
+    <image mode="widthFix" src="../images/share_money.png"></image>
+    <view>
+      <view>我的分享金（元）</view>
+      <view>¥ {{money}}</view>
+    </view>
+  </view>
+  <view style="height: 60rpx;line-height: 60rpx;padding: 0 30rpx;font-size: 30rpx;color: #333;background: #f2f2f4;">明细</view>
+  <view class="share_list">
+    <view wx:for="{{attr}}" wx:if="{{attr.length != 0}}"  wx:key="index" memberCompanyId="{{item.memberCompanyId}}" class="share_bk">
+      <image class="pull-left" src="{{item.headImgUrl?item.headImgUrl:'../images/mrtx.png'}}"></image>
+      <view class="pull-left">
+        <view>{{item.name}}</view>
+        <view>{{item.date}}</view>
+      </view>
+      <text class="pull-right">+{{item.money}}</text>
+    </view>
+  </view>
+  <view wx:if="{{attr.length == 0}}" style=" padding-top: 240rpx;text-align: center; font-size: 32rpx;color: #ddd;">当前暂无分享金</view>
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../../api/api'
+
+	export default class InvitationCode extends wepy.page {
+		config = {
+			navigationBarTitleText: '我的分享金',
+			backgroundColor: '#ebf0ef',
+			disableScroll: true,
+      "enablePullDownRefresh": true, //开启下拉刷新
+		};
+
+		data = {
+      attr:[],
+      zt:false,
+      lenf:1,
+      money:0,
+      imageUrl: wepy.$appConfig.imageUrl,
+		};
+    onShareAppMessage(res){
+      if (res.from === 'button') {
+        // 来自页面内转发按钮
+//        console.log(res.target)
+      }else{
+        return {
+          title: '亲爱的 推荐你一个女生必备的小程序 要关注哦！',
+          imageUrl: this.imageUrl + 'share_img.png',
+          path: '/pages/index/index?shareMemberCompanyId='+wx.getStorageSync('session').memberCompanyId
+        }
+      }
+    }
+
+    onReachBottom(e){//监控滚动到底部
+      if(this.zt){
+        return;
+      }
+      this.shareMoney(++this.lenf,'top')
+    }
+
+    onPullDownRefresh(){
+      /*上拉刷新*/
+      wx.showNavigationBarLoading() //在标题栏中显示加载
+      this.lenf=1;
+      this.shareMoney(1)
+    }
+
+    async shareMoney(e,e1){
+      const json=await api.shareMoney({
+        query:{
+          pageNo:e,
+          pageSize:20,
+        }
+      });
+      if(e1=='top'){
+        this.attr = this.attr.concat(json.data.detailList);
+      }else{
+        this.attr=json.data.detailList;
+      }
+      this.money=json.data.totalMoney;
+      /*下拉刷新结束*/
+      setTimeout(function () {
+        wx.hideNavigationBarLoading() //完成停止加载
+        wx.stopPullDownRefresh() //停止下拉刷新
+      },500)
+
+      if(this.attr.length >= json.data.totalSize){
+        /*判断数据是否加载完毕*/
+        this.zt=true;
+      }else{
+        this.zt=false;
+      }
+      this.$apply();
+    }
+
+		methods = {
+
+		};
+
+    onLoad() {
+      this.shareMoney(1);
+    }
+	}
+</script>

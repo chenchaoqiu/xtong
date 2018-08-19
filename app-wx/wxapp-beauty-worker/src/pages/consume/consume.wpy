@@ -1,0 +1,739 @@
+<style lang="scss">
+    page {
+        background-color: #f4f4f4;
+    }
+    .page-body {
+        padding: 0 15px;
+        padding-bottom: 116rpx;
+    }
+    .user-phone {
+        font-size: 26rpx;
+        color: #666;
+    }
+    .userinfo-avatar {
+        width: 100rpx;
+        height: 100rpx;
+        margin: 30rpx 20rpx 30rpx 0;
+        border-radius: 50%;
+        border:1px solid #E6E6E6;
+        display: block;
+    }
+    .phone-logo {
+        width: 48rpx;
+        height: 48rpx;
+        display: block;
+        margin-left: 30rpx;
+    }
+    .module {
+        margin: 40rpx 0;
+    }
+    .module-title {
+        color: #333;
+        font-size: 36rpx;
+        /*margin-bottom: 20rpx;*/
+    }
+    .module-body {
+        background-color: #fff;
+        padding: 0 30rpx;
+        .logo {
+            height: 36rpx;
+            width: 36rpx;
+            margin: 30rpx 20rpx 30rpx 0;
+            display: block;
+        }
+    }
+    .border-bot {
+        border-bottom: 1rpx solid #ddd;
+    }
+    .arrows-g  {
+        width: 16rpx;
+        height: 30rpx;
+        display: block;
+    }
+    .project-top {
+        padding: 30rpx;
+        border-bottom: 1rpx solid #ddd;
+    }
+    .project-module {
+        border-radius: 5px;
+        position: relative;
+        max-width: 100%;
+        overflow: hidden;
+    }
+    .sp-mt-14 {
+        margin-top: 14rpx;
+    }
+    .sp-ml-40 {
+        margin-left: 40rpx;
+    }
+    .project-top .flex-right {
+        color: #333;
+        font-size: 30rpx;
+    }
+    .label {
+        font-size: 30rpx;
+    }
+    .weui-media-box {
+        padding: 0;
+    }
+    .weui-media-box:before {
+        height:1px;
+        border-top: 0;
+    }
+    .weui-media-box__hd_in-appmsg {
+        height: 140rpx;
+        width: 200rpx;
+    }
+    .weui-media-box__thumb {
+        /* border-radius: 5px;*/
+        border: 1rpx solid #E9E9E9;
+    }
+    .weui-media-box__bd_in-appmsg {
+        height: 140rpx;
+    }
+    .item-end {
+        align-self: flex-end;
+    }
+    .project-name {
+        font-size: 30rpx;
+        color: #333;
+        line-height: 1.5;
+        /* min-height: 96rpx;*/
+    }
+    .project-describe {
+        font-size: 26rpx;
+    }
+    .operation {
+        font-size: 24rpx;
+        color: #666;
+    }
+    .sp-mb-30 {
+        margin-bottom: 30rpx;
+    }
+    .weui-media-box+.weui-media-box {
+        margin-top: 20rpx;
+    }
+    .project-info {
+        height: 100%;
+        display:-webkit-box;
+        display:-webkit-flex;
+        display: flex;
+        flex-direction:column;
+        -webkit-flex-direction: column;
+        -webkit-box-align:center;
+        justify-content: space-between;
+        -webkit-justify-content: space-between;
+    }
+    .border {
+        border: 1rpx solid #ddd;
+    }
+    .project-module+.project-module {
+        margin-top: 15px;
+    }
+    .project-follow {
+        padding: 0 30rpx;
+        font-size: 24rpx;
+        position: relative;
+    }
+    .project-follow+.project-follow {
+        border-top: 1rpx solid #ddd;
+    }
+    .del {
+        background-color: #27CAD3;
+        color: #fff;
+        font-size: 32rpx;
+        position: absolute;
+        height: 100%;
+        width: 114px;
+        top: 0;
+        right: -114px;
+    }
+    .weui-cell{
+        padding:30rpx;
+    }
+    .weui-cell:before,.weui-cells:before{
+        border:none;
+    }
+    .gjr-bot text{
+        display: inline-block;
+        width:50%;
+        text-align: center;
+        font-size: 30rpx;
+        color: #999;
+        height: 98rpx;
+        line-height: 98rpx;
+        position: relative;
+    }
+    .gjr-bot text:first-child:before{
+        content:'';
+        position: absolute;
+        height:100%;
+        width: 1px;
+        right: -0.5rpx;
+        background: #ddd;
+    }
+    .gkimg{
+        margin-top:21rpx;
+        display:inline-block;
+        width: 64rpx;
+        height: 64rpx;
+        border-radius: 50%;
+        position: absolute;
+    }
+    .counter {
+        width: 170rpx;
+        height: 46rpx;
+        color:#333;
+        text-align: center;
+        float: right;
+    }
+    .count {
+        font-size: 30rpx;
+        border: 1rpx solid #ddd;
+        border-left: none;
+        border-right: none;
+        height: 46rpx;
+        line-height: 46rpx;
+    }
+    .minus{
+        width: 54rpx;
+        height: 46rpx;
+        border: 1rpx solid #ddd;
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
+        line-height: 46rpx;
+    }
+    .plus{
+        width: 54rpx;
+        height: 46rpx;
+        border: 1rpx solid #ddd;
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+        line-height: 46rpx;
+    }
+    .centen-right {
+        justify-content: flex-end;
+        -webkit-justify-content: flex-end;
+    }
+</style>
+<template>
+    <view class="page-body">
+        <view class="module work-modal">
+            <view class="module-title">业务中心</view>
+        </view>
+        <view class="module-body">
+            <view class="flex-box border-bot">
+                <view  class="user-img-wrap">
+                    <image class="userinfo-avatar" src="{{uData.memberAvatar || '../../images/memberAvatar-no.png'}}"></image>
+                </view>
+                <view>
+                    <text class="font-30 color-33 ellipsis-1">{{uData.userName || uData.mobile}}</text>
+                </view>
+                <view class="weui-flex__item">
+                    <image @tap="call" class="phone-logo" src="../../images/tel.png"></image>
+                </view>
+            </view>
+            <view class="flex-box" style="border-bottom: 1rpx solid #eee">
+                <view  class="user-img-wrap size-28">
+                    <view class="flex-box">
+                        <view class="img-wrap"><image class="logo pull-left" src="../../images/bed.png"></image></view>
+                        <view class="label color-66"> 预约时间：</view>
+                    </view>
+                </view>
+                <view class="weui-flex__item text-right size-28">
+                    {{uData.bookBeginTime}} {{uData.bookBeginHour}}
+                </view>
+            </view>
+            <view class="flex-box" style="border-bottom: 1rpx solid #eee">
+                <view  class="user-img-wrap size-28">
+                    <view class="flex-box">
+                        <view class="img-wrap"><image class="logo pull-left" src="../../images/time.png"></image></view>
+                        <view class="label color-66"> 安排床位：</view>
+                    </view>
+                </view>
+                <view class="weui-flex__item text-right size-28" style="color: #27CAD3;">
+                    <text style="font-size: 30rpx;">V</text>
+                    <text style="font-size: 24rpx;">{{uData.bedNum}}</text>
+                </view>
+            </view>
+            <view class="flex-box">
+                <view  class="user-img-wrap size-28">
+                    <view class="flex-box">
+                        <view class="img-wrap"><image class="logo pull-left" src="../../images/service.png"></image></view>
+                        <view class="label color-66"> 跟进人：</view>
+                    </view>
+                </view>
+                <view class="weui-flex__item text-right size-28 color-66 ellipsis-1">
+                    <block wx:for="{{uData.follwerList}}" wx:key="{{item.follwerId}}">
+                        <text wx:if="{{index < 3}}">{{item.followerName}}{{index+1 != (index+1 == 3 ? 3 : uData.follwerList.length) ? '、': ''}}</text>
+                        <text wx:else>
+                            <block wx:if="{{index == 3}}">...</block>
+                        </text>
+                    </block>
+                </view>
+            </view>
+        </view>
+
+        <navigator url="/pages/select_service/select_service?id={{uData.memberCompanyId}}" hover-class="none" class="module work-modal flex-box">
+            <view class="module-title">选择服务</view>
+            <view class="weui-flex__item text-right size-28" style="color: #27CAD3;padding-right: 10px;padding-top: 1px;">
+                选择
+            </view>
+            <view>
+                <image style="margin-top: -1px;" class="arrows-g" src="../../images/arrows_g.png"/>
+            </view>
+        </navigator>
+
+        <view class="project-module" wx:for="{{salePackageList}}" wx:for-index="wrapIndex" wx:key="{{item.courseCardId}}">
+            <view style="background-color: #fff; max-width: 100%">
+                <view class="project-top">
+                    <view class="weui-media-box weui-media-box_appmsg">
+                        <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+                            <image class="weui-media-box__thumb" src="{{item.coverImageUrl}}" />
+                        </view>
+                        <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+                            <view class="project-info">
+                                <view class="project-name ellipsis-2">{{item.courseCardName}}</view>
+                                <view class="operation ellipsis-1">{{item.specName}}</view>
+                            </view>
+                        </view>
+                    </view>
+                </view>
+                <view class="project-follow" wx:for="{{item.projectList}}" wx:key="{{index}}" wx:for-item="itemPro" style=" max-width: 100%" animation="{{isDel && slideIndex == index && slideWrapIndex == wrapIndex && animationData}}" @touchstart="slideStart({{index}},{{wrapIndex}})" @touchmove="slideIng"  @touchend="slideEnd">
+                    <view class="flex-box" style="padding:22rpx 0;border-bottom: 1rpx solid #eee;margin-left:{{ slideIndex == index && slideWrapIndex == wrapIndex ? left : 0 }}px;max-width: 100%">
+                        <view class="weui-flex__item color-66">
+                            {{itemPro.projectName}}
+                        </view>
+                        <view class="weui-flex__item color-33" style="text-align: center;">
+                            <block wx:if="{{item.isOpenSetting == 1}}">
+                                {{item.isNumLimit > 0 ? '余'+item.remainServiceNum+'次' : '无限次'}}
+                            </block>
+                            <block wx:else>
+                                {{itemPro.isNumLimit > 0 ? '余'+itemPro.remainConsumeNum+'次' : '无限次'}}
+                            </block>
+                        </view>
+                        <view class="weui-flex__item color-33">
+                            <view class="counter flex-box" >
+                                <view class="minus" @tap="minus({{wrapIndex}},{{index}})" >  -  </view>
+                                <block wx:if="{{item.isOpenSetting == 1}}">
+                                    <block wx:if="{{item.isNumLimit > 0}}">
+                                        <view class="count weui-flex__item" >{{itemPro.selectNum >= (item.remainServiceNum > 6 ? 6 : item.remainServiceNum) ? (item.remainServiceNum > 6 ? 6 : (item.remainServiceNum > 0 ? item.remainServiceNum : 1)) : itemPro.selectNum}}</view>
+                                    </block>
+                                    <block wx:else>
+                                        <view class="count weui-flex__item" >{{itemPro.selectNum >=6 ? 6 : itemPro.selectNum}}</view>
+                                    </block>
+                                    <view class="plus" @tap="plus({{wrapIndex}},{{index}},{{item.isNumLimit > 0}})" >  +  </view>
+                                </block>
+                                <block wx:else>
+                                    <block wx:if="{{itemPro.isNumLimit > 0}}">
+                                        <view class="count weui-flex__item" >{{itemPro.selectNum >= (itemPro.remainConsumeNum > 6 ? 6 : itemPro.remainConsumeNum) ? (itemPro.remainConsumeNum > 6 ? 6 : (itemPro.remainConsumeNum > 0 ? itemPro.remainConsumeNum : 1)) : itemPro.selectNum}}</view>
+                                    </block>
+                                    <block wx:else>
+                                        <view class="count weui-flex__item" >{{itemPro.selectNum >=6 ? 6 : itemPro.selectNum}}</view>
+                                    </block>
+                                    <view class="plus" @tap="plus({{wrapIndex}},{{index}},{{itemPro.isNumLimit > 0}})" >  +  </view>
+                                </block>
+                            </view>
+                        </view>
+                    </view>
+                    <view class="flex-box" @tap="selectPerson({{wrapIndex}},{{index}})" style="padding: 22rpx 0;margin-left:{{ slideIndex == index && slideWrapIndex == wrapIndex ? left : 0 }}px;max-width: 100%">
+                        <view class="color-66">跟进人：</view>
+                        <view class="weui-flex__item text-right ellipsis-1 color-99" style="padding-right: 10px">
+                            <block wx:for="{{itemPro.selectArr[0].employeeId}}">
+                                <text wx:if="{{index < 3}}">{{itemPro.selectArr[0].employeeName[index]}}{{index+1 != (index+1 == 3 ? 3 : itemPro.selectArr[0].employeeId.length) ? '、': ''}}</text>
+                                <text wx:else><block wx:if="{{index == 3}}">...</block></text>
+                            </block>
+                            <block wx:if="{{itemPro.selectArr[0].employeeId.length === 0}}">
+                                选择
+                            </block>
+                        </view>
+                        <view><image class="arrows" src="../../images/arrows.png"/></view>
+                    </view>
+                    <view class="del" @tap.stop="delete({{itemPro.projectName}})" style="right:{{ slideIndex == index && slideWrapIndex == wrapIndex && left != 0 ?  -114 - left : -114 }}px">
+                        <view style=" text-align: center; display: table; table-layout: fixed;height: 100%;width: 228rpx;">
+                            <view style="display: table-cell;vertical-align: middle;height: 100%">
+                                删除
+                            </view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <view wx:if="{{isShow}}" @touchmove.stop="stop" style="position: fixed;top: 0px;left: 0;width: 100%;height: 100%;z-index: 2;-webkit-overflow-scrolling: touch;">
+        <view animation="{{animationData_yc}}" style="width: 100%;height: 100%;background: #000;opacity: .8;"></view>
+        <view id="modal" @touchmove.stop="stop" animation="{{animationData}}" style="position: fixed;bottom: 0;left: 0;background: #fff;width: 100%;">
+            <view style="overflow: hidden;font-size: 30rpx;color: #333;padding:0 20rpx;line-height: 99rpx;-webkit-overflow-scrolling:touch;">
+                <text style="float:left;" class="color-33">选择跟进人</text>
+            </view>
+            <view @touchmove.stop="stop" class="weui-cells pay-module weui-cells_after-title" style="max-height:624rpx; overflow-y: scroll;-webkit-overflow-scrolling:touch;">
+                <scroll-view scroll-y style="max-height: 624rpx">
+                    <checkbox-group bindchange="changePerson">
+                        <label class="weui-cell weui-check__label" style="margin:0 30rpx 30rpx;border: 1px solid {{item.checked?'#26cad3':'#ddd'}};" wx:for="{{checkboxPerson}}" wx:key="value">
+                            <checkbox class="weui-check" value="{{item.employeeId}}" checked="{{item.checked}}"/>
+
+                            <image style="width:64rpx;height:64rpx;border-radius: 50%;margin-right: 20rpx;" class="pay-logo" src="{{item.headImgUrl}}"></image>
+                            <view class="weui-cell__bd color-33">{{item.employeeName}}<text style="font-size: 26rpx;color: #999;margin-left: 17rpx;">{{item.roleName}}</text></view>
+                            <view class="weui-cell__ft weui-cell__ft_in-radio">
+                                <image wx:if="{{item.checked}}" style="width: 37rpx;height: 31rpx;" src="/images/dui.png"></image>
+                            </view>
+                        </label>
+                    </checkbox-group>
+                </scroll-view>
+
+            </view>
+            <!--确认-->
+            <view class="gjr-bot">
+                <text @tap="hideModal()">取消</text>
+                <text @tap="nock()" style="color: #26cad3;">确认</text>
+            </view>
+        </view>
+    </view>
+
+    <view style="height: 96rpx;line-height:96rpx;border-top:1px solid #e5e5e5;background: #fff;text-align: right;position: fixed;bottom: 0;width: 100%;">
+        <navigator  open-type="navigateBack" style="padding:0 30rpx;border-radius:10rpx;margin-right:30rpx;text-align:center;display:inline-block;height: 70rpx;line-height: 70rpx;background: #26cad3;font-size: 32rpx;color: #fff;" >取消</navigator>
+        <text @tap="saveConsumeList" style="padding:0 30rpx;border-radius:10rpx;margin-right:30rpx;text-align:center;display:inline-block;height: 70rpx;line-height: 70rpx;background: #26cad3;font-size: 32rpx;color: #fff;" >确定</text>
+    </view>
+    <zanDialog></zanDialog>
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+	import zanDialog from '@/components/zan-dialog'
+
+	export default class Consume extends wepy.page {
+		config = {
+			navigationBarTitleText: '开单消耗',
+			backgroundColor: '#f4f4f4',
+			enablePullDownRefresh: false
+		};
+		components = {
+			zanDialog
+		};
+		onLoad(o) {
+			this.uData = JSON.parse(o.data);
+			this.getEmployeeList();
+			wx.setStorageSync('serviceArr',[]);
+		}
+
+		onShow() {
+			this.salePackageList = wx.getStorageSync('serviceArr') || [];
+			console.log(this.salePackageList)
+		}
+
+		onReady() {
+
+		}
+
+		onPullDownRefresh() {
+			wx.showNavigationBarLoading(); //在标题栏中显示加载
+		}
+
+		data = {
+			left: 0,
+			startX: 0,
+			slideIndex: 0,
+			slideWrapIndex: 0,
+			modalHeight: 0,
+			isDel: false,
+			isShow: false,
+			salePackageList: [],
+			checkboxPerson: [],//操作师数组
+			indexArr:[],//点击选择操作师下标索引数组
+			changePersonArr: [{employeeId: [], employeeName: [''], headImgUrl: []}],//选择操作师缓存数组
+			uData: {
+
+			},
+		};
+
+		watch = {
+			/*num (curVal, oldVal) {
+				console.log(`旧值：${oldVal}，新值：${curVal}`)
+			}*/
+		};
+		showAccreditDialog(title) {
+			this.$invoke('zanDialog', 'showZanDialog', {
+				title: '确认取消项目？',
+				content: '你确定是否真的',
+				nextContent: '要取消['+title+']',
+				showCancel: true,
+				buttons:[{
+					type: 'cancel',
+					text: '取消',
+				},{
+					type: 'confirm',
+					text: '确定',
+					color: '#26cad3'
+				}],
+			})
+				.then((res) => {
+					if (res.type === 'confirm') {
+						if (this.salePackageList[this.slideWrapIndex].projectList.length == 1) {
+							this.salePackageList.splice(this.slideWrapIndex, 1);
+						} else {
+							this.salePackageList[this.slideWrapIndex].projectList.splice(this.slideIndex, 1);
+						}
+
+						this.$apply();
+					}
+				})
+				.catch(() => {
+
+				})
+		}
+		methods = {
+			minus(oindex, index) {
+				if (this.salePackageList[oindex].projectList[index].selectNum > 1) {
+					this.salePackageList[oindex].projectList[index].selectNum--;
+					this.$apply();
+				}
+			},
+			plus(oindex, index, boole) {
+				let obj = this.salePackageList[oindex].projectList[index];
+                if (this.salePackageList[oindex].isOpenSetting == 1) {
+	                if (boole) {
+	                	let num = 0;
+	                	for (let x of this.salePackageList[oindex].projectList) {
+                            num += x.selectNum;
+                        }
+
+                        if (num >= this.salePackageList[oindex].remainServiceNum) {
+	                        wx.showModal({
+		                        title: '错误提醒',
+		                        content: '已达到最大次数！',
+		                        showCancel:false
+	                        })
+	                		return
+                        }
+
+		                if (obj.selectNum < (this.salePackageList[oindex].remainServiceNum > 6 ? 6 : this.salePackageList[oindex].remainServiceNum)) {
+			                this.salePackageList[oindex].projectList[index].selectNum ++;
+			                this.$apply();
+		                }
+	                } else {
+		                if (obj.selectNum < 6) {
+			                this.salePackageList[oindex].projectList[index].selectNum ++;
+			                this.$apply();
+		                }
+	                }
+                } else {
+	                if (boole) {
+		                if (obj.selectNum < (obj.remainConsumeNum > 6 ? 6 : obj.remainConsumeNum)) {
+			                this.salePackageList[oindex].projectList[index].selectNum ++;
+			                this.$apply();
+		                }
+	                } else {
+		                if (obj.selectNum < 6) {
+			                this.salePackageList[oindex].projectList[index].selectNum ++;
+			                this.$apply();
+		                }
+	                }
+                }
+
+			},
+			call() {
+				wx.makePhoneCall({
+					phoneNumber: this.uData.mobile
+				})
+            },
+			saveConsumeList() {
+				let l = this.salePackageList.length;
+				let arr = [];
+				for (let i = 0; i < l; i++) {
+					for (let v of this.salePackageList[i].projectList) {
+						for (let av of v.selectArr) {
+							if (av.employeeId.length == 0) {
+								wx.showModal({
+									title: '错误提醒',
+									content: '请检查所选项目是否已选跟进人',
+									showCancel:false
+								})
+								return
+							} else {
+								arr.push({
+									orderProjectId: v.orderProjectId,                        // 订单项目id
+									employeeIds: av.employeeId,
+									num: v.selectNum
+								})
+							}
+						}
+					}
+				}
+				this.saveConsumeList(arr);
+			},
+			nock() {
+				if (!this.changePersonArr[0].employeeId.length) {
+					wx.showModal({
+						title: '提示',
+						content: '请先选择操作师',
+						showCancel:false
+					})
+				} else {
+					this.salePackageList[this.indexArr[0]].projectList[this.indexArr[1]].selectArr[0] = this.changePersonArr[0];
+					this.close();
+					this.$apply();
+				}
+
+			},
+			statis() {
+
+			},
+			slideStart(index,wIndex,e) {//滑动开始
+				this.startX = e.touches[0].clientX;
+				this.slideIndex = index;
+				this.slideWrapIndex = wIndex;
+				this.left = 0;
+				this.$apply();
+			},
+			slideIng(e) {//滑动中
+				var left = e.touches[0].clientX - this.startX;
+
+				if (left < 0 && this.left >= -114) {
+
+					if (this.left == -114) {
+						return false;
+					}
+					this.left = left;
+					this.slideIndex = e.currentTarget.dataset.num;
+				} else if (left <= 114 && (this.left >= -114 && this.left <= 0)) {
+					this.left = this.left + left > 0 ? 0 : this.left + left;
+				}
+				this.$apply();
+			},
+			slideEnd(e) {//滑动结束
+				if (this.left <= -57) {
+					this.left = -114;
+				} else {
+					this.left = 0;
+				}
+			},
+			delete(name,e) {
+				this.showAccreditDialog(name);
+			},
+			selectPerson(oindex, index) {
+
+				var checkboxPerson = this.checkboxPerson,values = this.salePackageList[oindex].projectList[index].selectArr[0].employeeId;
+				for (var i = 0, lenI = checkboxPerson.length; i < lenI; ++i) {
+					checkboxPerson[i].checked = false;
+					for (var j = 0, lenJ = values.length; j < lenJ; ++j) {
+						if(checkboxPerson[i].employeeId == values[j]){
+							checkboxPerson[i].checked = true;
+							break;
+						}
+					}
+				}
+
+				this.indexArr = [oindex, index, 0];
+				this.$apply();
+				this.showModal();
+			},
+			changePerson(e) {
+
+				var checkboxPerson = this.checkboxPerson, values = e.detail.value;
+				this.changePersonArr = [{employeeId: e.detail.value, employeeName: [], headImgUrl: []}];
+
+				for (var i = 0, lenI = checkboxPerson.length; i < lenI; ++i) {
+					checkboxPerson[i].checked = false;
+
+					for (var j = 0, lenJ = values.length; j < lenJ; ++j) {
+						if(checkboxPerson[i].employeeId == values[j]){
+							checkboxPerson[i].checked = true;
+							this.changePersonArr[0].employeeName.push(checkboxPerson[i].employeeName);
+							this.changePersonArr[0].headImgUrl.push(checkboxPerson[i].headImgUrl);
+							break;
+						}
+					}
+				}
+
+				this.setData({
+					checkboxPerson: checkboxPerson
+				});
+			},
+			hideModal() {
+				this.close();
+			}
+		};
+
+		close() {//关闭跟进人弹窗
+			if (!this.modalHeight) {
+				let query = wepy.createSelectorQuery();
+				query.select('#modal').boundingClientRect().exec((res) => {
+					this.modalHeight = res[0].height
+				});
+			}
+
+			var animation = wx.createAnimation({
+				duration: 500,
+				timingFunction: 'ease',
+			})
+			var animation_yc = wx.createAnimation({
+				duration: 500,
+				timingFunction: 'ease',
+			})
+			this.animation = animation;
+			animation_yc.opacity(0).step();
+			this.animationData_yc = animation_yc.export();
+			animation.translateY(this.modalHeight).step();
+			this.animationData = animation.export();
+			setTimeout(function () {
+				this.isShow = false;
+				this.$apply();
+			}.bind(this),500);
+		}
+		showModal() {//显示跟进人弹窗
+			this.isShow = true;
+			/*this.changePersonArr = [{employeeId: [], employeeName: [], headImgUrl: []}];*/
+			var animation = wx.createAnimation({
+				duration: 500,
+				timingFunction: 'ease',
+			})
+			var animation_yc = wx.createAnimation({
+				duration: 500,
+				timingFunction: 'ease',
+			})
+			this.animation = animation;
+
+			animation_yc.opacity(0.8).step();
+			animation.translateY(0).step();
+			this.animationData_yc = animation_yc.export();
+			this.animationData = animation.export();
+			this.$apply();
+			if (!this.modalHeight) {
+				setTimeout(function () {
+					let query = wepy.createSelectorQuery();
+					query.select('#modal').boundingClientRect().exec((res) => {
+						this.modalHeight = res[0].height
+					});
+				}.bind(this),500)
+			}
+		}
+
+		async getEmployeeList() {//员工列表
+			const {data} = await api.getEmployeeList();
+
+			if (data) {
+				this.checkboxPerson = data.list;
+				this.$apply();
+			}
+
+		}
+		async saveConsumeList(datas) {//开单消耗
+			const {imei_error_code} = await api.saveConsumeList({
+				query: {
+					bookingId: this.uData.memberBookingId,
+					projects: datas
+				}
+			})
+
+			if (imei_error_code == 0) {
+				/*wx.navigateBack({
+					delta: 1
+				})*/
+				wx.redirectTo({
+					url: '/pages/finish/finish?id='+this.uData.serviceWorkNo
+				})
+			}
+		}
+	}
+</script>

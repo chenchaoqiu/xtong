@@ -1,0 +1,268 @@
+<style lang="less">
+  .time-kj{
+    font-size: 28rpx;
+    text-align: center;
+    overflow: hidden;
+    transition: 2s;
+    -webkit-transition: 2s; /* Safari */
+    position: fixed;
+    z-index: 2;
+    bottom:101rpx;
+    left:0px;
+    width:100%;
+    background: #fff;
+  }
+  .time-mc{
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left:0px;
+    width:100%;
+    height: 100%;
+    background: #000;
+    opacity: .5;
+  }
+  .bot{
+    width:100%;
+    position: fixed;
+    bottom:0;
+    left:0;
+    height:100rpx;
+    line-height: 100rpx;
+    border-top: 1rpx solid #ddd;
+    text-align: center;
+    z-index: 3;
+    font-size: 30rpx;
+  }
+  .bot text{
+    display: inline-block;
+    width:50%;
+    position: relative;
+    background: #fff;
+    color: #666;
+  }
+  .bot text:first-child:before{
+    content: '';
+    position: absolute;
+    width:1px;
+    height:100%;
+    background: #ddd;
+    top:0;
+    right: 0;
+  }
+</style>
+<template>
+  <view wx:if="{{isShow}}" animation="{{animationData_yc}}" @tap="no" class="time-mc"></view>
+  <view wx:if="{{isShow}}" animation="{{animationData}}" class="time-kj">
+    <view style="overflow: hidden;padding:10px;text-align: left">
+      <!--<text style="float: left" @tap="no">取消</text>-->
+      <!--<text style="float: right" @tap="ok">确定</text>-->
+      <text style="font-size: 30rpx;color: #333;">请选择时间</text>
+      <text style="font-size: 24rpx;color: #666;"> 可预约两周内</text>
+    </view>
+    <!--<view style="text-align: right">
+      &lt;!&ndash;<text style="font-size: 28rpx;width: 66.66%;text-align: center;display: inline-block;">选择日期</text>&ndash;&gt;
+      &lt;!&ndash;<text style="font-size: 28rpx;width: 33.33%;text-align: center;display: inline-block;">预约时间</text>&ndash;&gt;
+      &lt;!&ndash;<text style="font-size: 28rpx;width: 25%;text-align: center;display: inline-block;">结束时间</text>&ndash;&gt;
+    </view>-->
+    <picker-view indicator-style="height: 50px;color:#26cad3;" style="width: 100%; height: 200px;overflow: hidden;" value="{{month}}" bindchange="bindChange">
+      <!--<picker-view-column>-->
+      <!--<view wx:for="{{years}}" style="line-height: 50px">{{item}}年</view>-->
+      <!--</picker-view-column>-->
+      <picker-view-column>
+        <view wx:for="{{days}}" wx:key="index" style="line-height: 50px;color: {{index==month[0]?'#26cad3':'#666'}};">
+          {{(index>inde && year.length?year[1]:year.length?year[0]:year)+'年'}}
+          {{(index>inde?months[1]:months[0])+'月'}}
+          {{item+'日'}}
+        </view>
+      </picker-view-column>
+      <!--<picker-view-column>
+        <view wx:for="{{days}}" style="line-height: 50px">{{item}}日</view>
+      </picker-view-column>-->
+      <picker-view-column>
+        <view wx:for="{{grouplist}}" wx:key="index" style="line-height: 50px;color: {{index==month[1]?'#26cad3':'#666'}};">{{item}}</view>
+      </picker-view-column>
+      <!--<picker-view-column>-->
+        <!--<view wx:for="{{gindex}}" style="line-height: 50px">{{item}}</view>-->
+      <!--</picker-view-column>-->
+    </picker-view>
+  </view>
+  <view wx:if="{{isShow}}" class="bot">
+    <text @tap="no">取消</text>
+    <text style="color: #26cad3;" @tap="ok">确定</text>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+
+  const date = new Date()
+  const years = []
+  const months = []
+  let days = []
+  let d='';
+  if((date.getMonth()+2)==13){
+    d = new Date( new Date(date.getFullYear()+'/'+(date.getMonth()+1)+'/'+31)).getDate();
+  }else{
+    d = new Date( new Date(date.getFullYear()+'/'+(date.getMonth()+2)+'/'+1)- 1000*3600*24).getDate();
+  }
+
+  for (let i = 1990; i <= date.getFullYear(); i++) {
+    years.push(i)
+  }
+//  console.log(date.getMonth()+1)
+  for (let i = date.getMonth()+1 ; i <= 12; i++) {
+    months.push(i<10?'0'+i:i)
+  }
+
+  for (let i = date.getDate() ; i <=d; i++) {
+    days.push(i<10?'0'+i:i)
+  }
+
+  export default class Days extends wepy.component {
+      data={
+        years: years,
+        year: date.getFullYear(),
+        months: months,
+        month: [0,0],
+        days: days,
+        day: 0,
+        value: [0,1],
+          isShow:false,
+        animationData:{},
+        animationData_yc:{},
+        inde:0,
+          sile:0,
+      }
+    props = {
+      grouplist: {},
+//      gindex: {},
+    }
+
+    yc(){
+      var animation = wx.createAnimation({
+        duration: 500,
+        timingFunction: 'ease',
+      })
+
+      this.animation = animation
+
+      animation.translateY(264).step()
+
+      var animation_yc = wx.createAnimation({
+        duration: 500,
+        timingFunction: 'ease',
+      })
+
+      this.animation = animation_yc
+
+      animation_yc.opacity(0).step()
+
+      this.animationData_yc=animation_yc.export()
+      this.animationData=animation.export()
+      setTimeout(function () {
+        this.isShow = false;
+        this.$apply();
+      }.bind(this),300)
+    }
+
+      shwoIN(e){
+        this.sile=e;
+          this.onLoad();
+          var animation = wx.createAnimation({
+              duration: 500,
+              timingFunction: 'ease',
+          })
+
+          this.animation = animation
+
+          animation.translateY(0).step()
+
+          var animation_yc = wx.createAnimation({
+              duration: 500,
+              timingFunction: 'ease',
+          })
+
+          this.animation = animation_yc
+
+          animation_yc.opacity(0.5).step()
+
+          this.animationData_yc=animation_yc.export()
+          this.animationData=animation.export()
+//          setTimeout(function () {
+              this.isShow = true;
+              this.$apply();
+//          }.bind(this),300)
+      }
+
+    onLoad() {
+          if(this.sile==0)return;
+        this.days.splice(this.sile,this.days.length);
+        if(this.inde==0){
+            this.inde=this.days.length-1;
+        }
+        for(var i = this.days.length,j=1;i<this.sile;i++){
+            if(j==1){
+                if(this.months.length<2){
+                    this.year=[this.year,this.year+1]
+                }
+                this.months.push(1);
+                this.months.splice(2,this.months.length);
+            }
+            this.days.push(j)
+            j++;
+        }
+        this.$apply();
+    }
+
+    methods = {
+      //  点击日期组件确定事件
+      no:function (e) {
+        this.yc()
+      },
+      ok:function () {
+          /*{{(index>inde && year.length?year[1]:year.length?year[0]:year)+'年'}}
+           {{(index>inde?months[1]:months[0])+'月'}}
+           {{item+'日'}}*/
+          var years=(this.month[0]>this.inde && this.year.length?this.year[1]:this.year.length?this.year[0]:this.year);
+          var monther=this.month[0]>this.inde?this.months[1]:this.months[0];
+          var hoesr=years+'-'+monther+'-'+this.days[this.month[0]];
+        this.$parent.eidk(hoesr,this.month)
+        this.yc();
+      },
+      bindChange: function(e) {
+//        days.splice(0,days.length);
+        const val = e.detail.value;
+        let year = this.data.months[val[0]] + 1 == 13 ? date.getFullYear() +1 : date.getFullYear();
+        let month = this.data.months[val[0]]+1 == 13 ? '01' : this.data.months[val[0]]+1;
+//        d = new Date(new Date(year+'/'+date.getMonth()+(month+'/'+1)).getTime() - 1000*3600*24).getDate();
+        d = new Date(new Date(year+'/'+(month+'/'+1)).getTime() - 1000*3600*24).getDate();
+//        console.log(month)
+
+        if(date.getMonth()+1==this.data.months[val[0]]){
+          for (let i = date.getDate() ; i <=d; i++) {
+//            days.push(i)
+          }
+        }else{
+          for (let i = 1 ; i <=d; i++) {
+//            days.push(i)
+          }
+        }
+//        console.log(val[0])
+        this.setData({
+          year: this.data.years[val[0]],
+          days: days[val[2]],
+        })
+        this.day = val[0]
+        if(this.month[0]!=val[0]){
+          val[1]=0;
+          this.$apply();
+        }
+        this.month=val
+      },
+      tap () {
+        this.grouplist.name = `Parent Random(${Math.random()})`
+//        console.log(`Clicked Group ${this.$index}, ID is ${this.grouplist.id}`)
+      }
+    }
+  }
+</script>

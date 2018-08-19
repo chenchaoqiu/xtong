@@ -1,0 +1,91 @@
+<style lang="scss">
+    .dialog-logo {
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 140;
+        background-color: rgba(0,0,0,.8);
+        overflow: hidden;
+        .modal-wrap {
+            padding: 0 100rpx;
+            margin-top: 374rpx;
+            .centen {
+                position: relative;
+                text-align: center;
+                background-color: #fff;
+                border-radius: 3px;
+                .title-1 {
+                    color: #333;
+                    font-size: 36rpx;
+                }
+                .title-1 {
+                    padding-top: 36rpx;
+                }
+                .title-2, .title-3{
+                    padding-top: 8rpx;
+                    font-size: 28rpx;
+                    color: #666;
+                }
+                .btn-wrap {
+                    margin-top: 30rpx;
+                    border-top: 1rpx solid #eee;
+                    .logo-btn {
+                        background-color: #fff;
+                        border: none !important;
+                        color: #26cad3;
+                    }
+                    .logo-btn::before {
+                        border: 0 !important;
+                        border-radius: 0 !important;
+                    }
+                    .logo-btn::after {
+                        border: 0 !important;
+                        border-radius: 0 !important;
+                    }
+                }
+            }
+        }
+    }
+</style>
+<template>
+    <view wx:if="{{isShow}}" class="dialog-logo" @touchmove.stop="stop">
+        <view class="modal-wrap">
+            <view class="centen">
+                <view class="title-1">取消预约</view>
+                <view class="title-2">您已成功预约服务</view>
+                <view class="title-2" style="padding-left: 18rpx">如需取消，请联系客服。</view>
+                <view class="btn-wrap">
+                    <button class="logo-btn" @tap="clear" open-type="contact">确定</button>
+                </view>
+            </view>
+        </view>
+    </view>
+</template>
+<script>
+	import wepy from 'wepy'
+
+	export default class serviceDialog extends wepy.component {
+		data = {
+
+		}
+
+		props = {
+			isShow: Boolean
+		}
+
+		onLoad() {
+
+		}
+
+		methods = {
+			stop() {
+				return false;
+			},
+			clear() {
+				this.$emit("hideServiceDialog");
+			}
+		}
+	}
+</script>

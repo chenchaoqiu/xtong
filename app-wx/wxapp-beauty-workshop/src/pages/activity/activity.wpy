@@ -1,0 +1,406 @@
+<style lang="scss">
+  image{width: 100%}
+  button:after{border:0;}
+  .dialog {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 100;
+    background-color: rgba(0,0,0,.8);
+    overflow: hidden;
+    .modal-wrap {
+      padding: 0 50rpx;
+      margin-top: 300rpx;
+      .centen {
+        position: relative;
+        text-align: center;
+        background-color: #fff;
+        border-radius: 3px;
+        .list{width: 100%;height: 90rpx;margin: 0 auto;display: flex;display: -webkit-flex;justify-content:center;-webkit-justify-content: center;
+          align-items: center; -webkit-align-items: center;border-top: 1px solid #ddd}
+        .icon-left{width: 130rpx;height: 90rpx;line-height: 90rpx;}
+        .icon-phone{width: 44rpx;height: 44rpx;float:right;margin-right: 30rpx;}
+        .input-phone{flex: 1;-webkit-flex: 1;font-size: 30rpx;color:#999999;text-align: left;height:90rpx;line-height: 90rpx;}
+        .input-code{flex: 1;-webkit-flex: 1;font-size: 30rpx;color:#999999;text-align: left}
+        /*.code{width: 156rpx;height: 54rpx;line-height: 54rpx;border:1rpx solid #26cad3;color:#26cad3;font-family: PingFang-SC-Regular;font-size: 26rpx;text-align: center;padding: 0!important;}*/
+        .code{display: block;border-radius: 14rpx;width: 170rpx;height: 66rpx;line-height: 66rpx;
+          color:#fff;font-size: 26rpx;background: #ff8589;text-align: center;padding: 0!important;margin-right: 24rpx;}
+        .code-hui{display: block;border-radius: 14rpx;width: 170rpx;height: 66rpx;line-height: 66rpx;
+          color:#666;font-size: 26rpx;background: #e6e6e6;text-align: center;padding: 0!important;margin-right: 24rpx;}
+        .btn-group {
+        }
+        .btn-group view {
+          display: inline-block;
+          width: 50%;
+          box-sizing: border-box;
+          text-align: center;
+          font-size: 36rpx;
+          height: 100rpx;
+          line-height: 100rpx;
+          background-color: #ddd;
+          border-bottom-left-radius: 3px;
+        }
+        .confirm {
+          color: #fff;
+          background-color: #ff8589 !important;
+          border-bottom-right-radius: 3px !important;
+          border-bottom-left-radius: 0 !important;
+        }
+      }
+    }
+  }
+  page{
+    width:100%;
+    /*height: 100%;*/
+    background: #fff;
+  }
+  .bg{
+    /*margin: 20rpx 24rpx 0rpx;*/
+
+  }
+  .img-con{
+    width:100%;
+    margin: 0 auto;
+    overflow: hidden;
+  }
+  .footer-btn{position:fixed;width: 100%;height:80rpx;line-height:80rpx;display: block;bottom:0;left:0;
+    text-align: center;border-radius: 0!important;font-size: 40rpx;}
+  .active{background: #ff8589!important;color:#fff!important;}
+  .hui{background: #ddd!important;color:#fff!important;}
+</style>
+<template>
+  <view style="height: 1rpx;width: 100%;background: #dddddd; position: fixed;top:0;left: 0"></view>
+  <view class="bg" >
+      <view class="img-con">
+        <image width="100%" mode="widthFix" src="{{sceneList.backgroundImage}}" style="padding-bottom: 65rpx;"></image><!--images/99.png-->
+      </view>
+  </view>
+  <button @tap="buy" class="footer-btn {{sceneList.buy ? 'hui' : 'active'}}" disabled="{{sceneList.buy}}">{{sceneList.buttonName}}</button>
+  <!--<button open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber" class="footer-btn {{sceneList.buy ? 'hui' : 'active'}}" disabled="{{sceneList.buy}}">{{sceneList.buttonName}}</button>-->
+  <!--登陆-->
+  <view class="dialog" wx:if="{{isShow}}">
+    <view class="modal-wrap">
+      <view class="centen">
+        <view style="font-size: 32rpx;color: #333;padding: 19rpx 0;">手机号认证</view>
+        <view class="list">
+          <view class="icon-left" style="font-size: 30rpx;color: #666">
+            手机号
+          </view>
+          <input type="number" class="input-phone" id="phoneNum" bindinput="input_phoneNum" placeholder="请输入手机号" maxlength="11" value="{{phoneNum}}"/>
+          <button  disabled="{{disabled}}"  class="code" @tap="send">{{time}}</button>
+        </view>
+        <view class="list">
+          <view class="icon-left" style="font-size: 30rpx;color: #666">
+            验证码
+          </view>
+          <input type="number" class="input-code" bindinput="input_code" placeholder="请输入验证码" maxlength="4" value="{{verifyCode}}"/>
+        </view>
+        <view class="btn-group">
+          <view class="color-66" @tap="cancel">取消</view>
+          <view class="confirm" @tap="pho">确定</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!--弹出框-->
+  <view wx:if="{{status}}" style="width: 100%;height: 100%;position: fixed;left: 0;top: 0;background: rgba(0,0,0,0.5)">
+    <view style="margin: 32vh auto 0;width: 73%;background: #fff;padding: 30rpx 0 0;border-radius: 10rpx;text-align: center">
+      <view style="font-size: 37rpx;color: #333;padding:0 30rpx;">领取成功</view>
+      <view style="font-size: 34rpx;color: #666;margin: 18rpx 0 10rpx;padding:0 30rpx;">恭喜 小仙女 喜得美肤项目礼品</view>
+      <view style="font-size: 24rpx;color: #666;padding:0 30rpx;">赶紧去预约 开启变美之旅</view>
+      <view @tap="save" style="font-size: 36rpx;color: #26bac3;height: 86rpx;line-height:86rpx;border-top: 1px solid #ddd;padding:0 30rpx;margin-top: 33rpx;">知道了</view>
+    </view>
+  </view>
+
+  <dialog wx:if="{{inshowIn}}" :isShow="inshow"></dialog>
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+  import pay from '../../utils/pay'
+  import Dialog from '../../components/dialog'
+  var maxTime = 60;
+  var currentTime = maxTime;//倒计时的事件（单位：s）
+  var timeinterval = null;
+	export default class activity extends wepy.page {
+		config = {
+			backgroundColor: '#ffffff'
+		};
+    components = {
+      dialog:Dialog
+    }
+    data = {
+      inshowIn:false,
+      inshow:true,
+      scene:'', //传过来的scene值
+      sceneList:{},//接口返回的对象
+      activityId:'',//接口返回的id
+      isShow:false, //登陆框
+      phoneNum:"",
+      time:"获取验证码",
+      disabled: false,
+      verifyCode:'',
+      token:'',
+      interval:'',
+      cartItemId:'',//购物车返回的id
+      moneySn:'',
+      mobileiv:'',//授权的手机号
+      marketId:'',
+      status:false,
+    };
+    async onLoad(options) {
+      wx.setStorageSync("isLoadMyA", true);
+      this.scene = options.scene;
+      if(this.scene){
+          this.getScene();//scene接口获取marketId;
+      }else{
+          this.marketId = options.marketId;
+          this.moDetails();//请求详情接口
+      }
+      this.$apply();
+    }
+//    scene接口
+    async getScene() {
+      const {data} = await api.scene({
+        query: {
+          scene: this.scene,
+        }
+      });
+      this.marketId = data.marketId;
+      this.moDetails();//请求详情接口
+      this.$apply();
+    }
+//    活动详情
+    async moDetails(){
+      const getmMoDetails = await api.activityPage({
+        query: {
+          marketId:this.marketId,
+        }
+      });
+        this.sceneList = getmMoDetails.data;
+        this.activityId = this.sceneList.activityId;
+        console.log(this.sceneList);
+        wx.setNavigationBarTitle({
+          title: this.sceneList.navTitle
+        });
+        this.addMq();
+      this.$apply();
+    }
+
+    async addMq() {
+      const postAddMq = await api.addMq({
+        query: {
+          key: this.scene || '',
+          activityId:this.activityId,
+          marketId:this.marketId,
+        }
+      });
+    }
+
+    //立即购买
+    events = {
+      'finishBindPhone': () => {
+        this.finishBindPhone();
+      }
+    };
+    async finishBindPhone(){
+      /*获取手机号码成功返回*/
+     this.activityAddCart();
+      this.inshowIn=false;
+      this.$apply();
+//        console.log(add);
+//      var id = add.data.cartItemId;
+//      wx.navigateTo({
+//        url: '/pages/cart/order/order?id=' + id +'&shopId=' + this.sid,
+//      });
+    }
+
+    //加入购物平台接口
+    async activityAddCart(){
+      const ACart = await api.activityAddCart({
+        query: {
+          activityId: this.activityId,
+          marketId:this.marketId,
+          key:this.scene || '',
+        }
+      });
+      this.cartItemId = ACart.data.cartItemId;
+      //成功后请求创建活动订单接口
+      if(ACart.imei_error_code == 0 ){
+        const aAdd = await api.activityAdd({
+          query: {
+            cartItemIds: this.cartItemId,
+            shopId:0,
+            key:this.scene || '',
+            activityId:this.activityId,
+            marketId:this.marketId,
+//            key:'SCENE_ACTIVE_iyMjw1FEQsZJ0MTs',
+          },
+        });
+        this.moneySn = aAdd.data.moneySn;
+        if(aAdd.imei_error_code == 0){//调起支付
+          var Thiss=this;
+          /*支付流程*/
+          if(aAdd.data.callWeChatPay!=0){
+            pay.wxPay({
+              monS:this.moneySn,
+              This:this,
+              api:api,
+              url:'/pages/payOk/payOk?id='+aAdd.data.parentSn+'&mory=' + this.sceneList.activityPrice,
+              oreS:false,//取消支付，false的时候跳回首页
+              fail(){
+                setTimeout(function () {
+                  wx.reLaunch({
+                    url:'/pages/index/index?reset=true'
+                  });
+                  Thiss.$apply();
+                },100)
+              }
+            });
+          }else{
+            this.status=true;
+            Thiss.$apply();
+          }
+        }
+      }
+
+
+    }
+    //点击购买
+    buy(){
+//      if(this.mobileiv != ''){//判断是否获取到手机号
+//        this.activityAddCart();//加入购物车接口
+//      }else{
+//        this.isShow = true;
+//      }
+      if(!wx.getStorageSync('session').mobilePhone){
+//        this.activityAddCart();//加入购物车接口
+        this.inshowIn=true;
+        this.$apply();
+      }else{
+        this.finishBindPhone();
+      }
+    }
+    methods = {
+      save(){
+          /*去看看*/
+        wx.reLaunch({
+          url: '/pages/appointment/my_appointment'
+        })
+      },
+//      getPhoneNumber(e){
+//        if(e.detail.errMsg == "getPhoneNumber:ok"){
+//          this.mobileiv = e.detail.iv;
+//          this.buy();
+//        }
+//      },
+
+      //        登录
+      async pho(){
+//          判断手机号码是否存在和验证码正则是否为4个数字为才可以提交,
+        if(!(/^1[345678]\d{9}$/.test(this.phoneNum))){
+          wx.showToast({
+            title: '请输入正确的手机号码！',
+            icon : 'none',
+            duration : 1000
+          });
+        }
+        else if(!(/^\d{4}$/.test(this.verifyCode))){
+          wx.showToast({
+            title: '请输入4位数的验证码！',
+            icon : 'none',
+            duration : 1000
+          });
+        }else{
+          const activityBindMobile = await api.activityBindMobile({
+            query: {
+              mobilePhone: this.phoneNum,
+              verifyCode:this.verifyCode,
+//              key:this.scene,
+            }
+          });
+          if(activityBindMobile.imei_error_code == 0){//成功后弹出框消失，并调取接口
+              this.isShow = false;
+              this.activityAddCart();
+          }
+        }
+      },
+
+//      发送验证码
+      send(){
+        if (this.disabled == false) {
+          this.disabled = true;
+          this.reSendPhoneNum();
+        }
+      },
+//      点击取消按钮
+      quxiao(){
+        this.phoneNum = "";
+        this.disabled = false;
+      },
+
+      cancel(){
+        this.isShow = false;//关闭手动登陆
+      }
+    };
+    input_phoneNum(e){
+      this.phoneNum = e.detail.value;
+//      if(this.phoneNum.length == 11){
+//        this.disabled = false;
+//        this.$apply();
+//      }
+    };
+    input_code(e){
+      this.verifyCode = e.detail.value;
+    };
+    async reSendPhoneNum(){
+      if(!(/^1[345678]\d{9}$/.test(this.phoneNum))){
+        wx.showToast({
+          title: '请输入正确的手机号码！',
+          icon : 'none',
+          duration : 1000
+        });
+        this.disabled = false;
+//        return false;
+      }
+      else{
+//        请求短信接口-
+        const json = await api.verifyCode({
+          query: {
+            mobilePhone: this.phoneNum,
+          }
+        });
+        if (json.imei_error_code == 0) {
+          this.countdown();
+        } else {
+          this.disabled = false;
+        }
+        this.$apply();
+//        倒计时
+      }
+    }
+    //倒计时
+    countdown(){
+      var that = this;
+      currentTime = maxTime;
+      that.time = '重新获取' + 60 + 's';
+      let interval = setInterval(function(){
+        currentTime--;
+        that.time = '重新获取' + currentTime + 's';
+//                that.disabled = true;
+        if(currentTime <= 0){
+          clearInterval(interval);
+          that.time = "重新获取";
+          that.currentTime = 59;
+          that.disabled=false;
+        }
+        that.$apply();
+      }, 1000)
+    }
+		onShow() {}
+	}
+</script>
+

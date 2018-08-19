@@ -1,0 +1,99 @@
+<style lang="scss">
+    .share {
+        width: 100vw;
+        height: 100vh;
+        opacity: 0;
+        position: absolute;
+        z-index: 9999;
+    }
+</style>
+<template>
+   <!-- <button  @longpress="share"class="share" open-type="share">http://image.ivymei.com/wxapp/workshop/about_us.png
+http://image.ivymei.com/wxapp/workshop/qrcode.png</button>-->
+    <image  style="width: 100vw; height: 1576rpx; display: block;"  src="{{imageUrl}}about_us.png"></image>
+    <image @tap="previewImg" style="width: 100vw; height: 255rpx; display: block;"  src="http://image.ivymei.com/wxapp/workshop/qrcode.png"></image>
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+
+	export default class AboutUs extends wepy.page {
+		config = {
+			navigationBarTitleText: '关于我们',
+			backgroundColor: '#ebf0ef'
+		};
+
+		async onLoad() {
+
+		}
+
+		onShareAppMessage(res){
+			if (res.from === 'button') {
+				// 来自页面内转发按钮
+//        console.log(res.target)
+			} else {
+				return {
+					title: '亲爱的 推荐你一个女生必备的小程序 要关注哦！',
+					path: '/pages/about_us/about_us?shareMemberCompanyId='+wx.getStorageSync('session').memberCompanyId,
+					imageUrl: this.imageUrl + 'share_img.png'
+				}
+			}
+		}
+
+		/*onShareAppMessage (res) {
+			if (res.from === 'button') {
+				// 来自页面内转发按钮
+				console.log(res.target)
+			}
+			return {
+				title: '自定义转发标题',
+				success: function(res) {
+					// 转发成功
+				},
+				fail: function(res) {
+					// 转发失败
+				}
+			}
+		}*/
+
+		onShow() {
+
+        }
+
+		data = {
+			imageUrl: wepy.$appConfig.imageUrl,
+		};
+
+		watch = {
+			/*num (curVal, oldVal) {
+				console.log(`旧值：${oldVal}，新值：${curVal}`)
+			}*/
+		};
+
+		methods = {
+			previewImg(e) {
+
+				wx.previewImage({
+					current: 'http://image.ivymei.com/wxapp/workshop/qrcode.png', // 当前显示图片的http链接
+					urls: ['http://image.ivymei.com/wxapp/workshop/qrcode.png'] // 需要预览的图片http链接列表
+				})
+			}
+			/*share() {
+				wx.showShareMenu({
+					withShareTicket: true,
+					imageUrl: 'http://image.ivymei.com/wxapp/workshop/qrcode.jpg',
+					success: function (res) {
+						// 分享成功
+						console.log('shareMenu share success')
+						console.log('分享'+res)
+					},
+					fail: function (res) {
+						// 分享失败
+						console.log(res)
+					}
+				})
+
+            }*/
+        }
+	}
+</script>

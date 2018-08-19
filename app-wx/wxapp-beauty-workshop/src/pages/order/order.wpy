@@ -1,0 +1,373 @@
+<style lang="scss">
+  page {
+    background-color: #ebf0ef;
+    border-top:1px solid #ddd;
+  }
+  page > view{
+    background: #fff;
+  }
+  .or-tab{
+    padding:0 25rpx;
+    overflow: hidden;
+    display:-webkit-box;
+    display:-webkit-flex;
+    display: flex;
+    -webkit-box-align:center;
+    -webkit-align-items:center;
+    align-items:center;
+    font-size: 28rpx;
+    color: #999;
+    height:82rpx;
+    line-height: 82rpx;
+    border-bottom:1px solid #ddd;
+    position: fixed;
+    width:700rpx;
+    top:0;
+    left:0;
+    z-index:2;
+  }
+  .or-tab > view{
+    -webkit-box-flex:1;
+    -webkit-flex:1;
+    flex:1;
+    text-align: center;
+    margin:0 5rpx;
+    position: relative;
+  }
+  .or-tab > view.xs{
+    color: #26cad3;
+  }
+  .or-tab > view view{
+    position: absolute;
+    width:167.5rpx;
+    bottom: 0;
+    left:0;
+    border-bottom: 4rpx solid #26cad3;
+    transition: .3s;
+  }
+  .or-list{
+    margin-top: 102rpx;
+  }
+  .or-l-bk{
+    margin:20rpx 0;
+    border-top:1px solid #ddd;
+  }
+  .or-l-top{
+    padding: 0 25rpx;
+    overflow: hidden;
+    font-size: 28rpx;
+    color: #333;
+    height:78rpx;
+    line-height:78rpx;
+  }
+  .or-l-top text:nth-child(2){
+    font-size: 26rpx;
+    color: #999;
+  }
+  .or-l-o{
+    background: #f8f8f8;
+    padding: 0 25rpx;
+  }
+  .or-l-o view{
+    height:179rpx;
+    line-height:40rpx;
+    overflow: hidden;
+  }
+  .or-l-o image{
+    width:210rpx;
+    height:140rpx;
+    float: left;
+    margin-top: 19.5rpx;
+  }
+  .or-l-o .fixl{
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
+    justify-content:center;
+    align-items: center;
+    -webkit-align-items: center;
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
+    padding-left:25rpx;
+    -webkit-box-flex: 1;
+  }
+  .or-l-o text{
+    flex:1;
+    -webkit-box-flex: 1;
+    -webkit-flex:1;
+    font-size: 30rpx;
+    color: #333;
+  }
+  .or-l-o > view{
+     border-top:1px solid #eee;
+   }
+  .or-l-o > view:first-child{
+    border:none;
+  }
+  .mony{
+    font-size: 26rpx;
+    color: #333;
+    text-align: right;
+    padding: 0 25rpx;
+    height:85rpx;
+    line-height: 85rpx;
+    border-bottom:1px solid #eee;
+  }
+  .go-ro{
+    height:84rpx;
+    padding: 0 25rpx;
+  }
+  .go-ro text{
+    padding: 0 20rpx;
+    font-size: 30rpx;
+    color: #e4393c;
+    border:1px solid #e4393c;
+    border-radius: 10rpx;
+    height:58rpx;
+    line-height:58rpx;
+    float: right;
+    margin-top: 13rpx;
+    min-width:106rpx;
+    text-align: center;
+  }
+</style>
+<template>
+  <!--tab头部-->
+  <view class="or-tab">
+    <view @tap="tab(0,'all')" class="{{size==0?'xs':''}}">全部<view style="left:{{left}}"></view></view>
+    <view @tap="tab(1,'unpay')" class="{{size==1?'xs':''}}">待付款</view>
+    <view @tap="tab(2,'needpay')" class="{{size==2?'xs':''}}">结尾款</view>
+    <view @tap="tab(3,'buy')" class="{{size==3?'xs':''}}">已购买</view>
+  </view>
+  <!--订单列表-->
+  <view wx:if="{{dat.length>=1}}" class="or-list" style="background: 0">
+    <view wx:for="{{dat}}" wx:key="{{index}}" class="or-l-bk" style="background: #fff;">
+      <!--购买时间-->
+      <view class="or-l-top">
+        <text class="pull-left">购买时间：{{item.addTime}}</text>
+        <text class="pull-right" style="color: {{color[item.orderStatus]}};">{{status[item.orderStatus]}}</text>
+      </view>
+      <!--商品-->
+      <view class="or-l-o">
+        <navigator url="/pages/order/details/details?orderid={{item.orderSn}}">
+          <view wx:for="{{item.items}}" wx:key="{{index}}">
+              <image src="{{item.imageUrl}}"></image>
+              <view class="fixl">
+                <text class="ellipsis-2">{{item.name}}</text>
+              </view>
+          </view>
+        </navigator>
+      </view>
+      <!--合计-->
+      <view class="mony">
+        共{{item.projectTotalTerms}}项服务  合计：<text style="font-size: 32rpx;">￥{{item.orderAmount}}</text>
+      </view>
+      <!--动作-->
+      <view class="go-ro">
+        <text wx:if="{{item.orderType!=1}}" @tap="agian({{item.orderStatus}},{{item.orderSn}},{{'?id='+item.orderId}})">{{item.orderStatus==1?'再次购买':'去支付'}}</text>
+      </view>
+    </view>
+  </view>
+  <!--空车-->
+  <nullp wx:if="{{dat.length==0}}" :grouplist="grouplists"></nullp>
+  <dialog wx:if="{{inshowIn}}" :isShow="inshow"></dialog>
+</template>
+<script>
+	import wepy from 'wepy'
+  import api from '../../api/api'
+  import pay from '../../utils/pay'
+  import Nullp from  '../../components/nullp'
+  import Dialog from '../../components/dialog'
+
+
+  export default class Cart extends wepy.page {
+		config = {
+			navigationBarTitleText: '我的订单',
+			backgroundColor: '#f4f4f4',
+      "enablePullDownRefresh": true, //开启下拉刷新
+		};
+    components = {
+      nullp:Nullp,
+      dialog:Dialog
+    }
+		data = {
+        orderSnL:'',
+      inshowIn:false,
+      inshow:true,
+      grouplists:{
+        img:'../../images/no.png',
+        name:'哎呀，空空如也 赶紧去逛逛吧',
+        url:'/pages/selectAuto/selectAuto',
+        bot:'去购物',
+      },
+      size:0,/*头部下标*/
+      left:0,/*头部动作左的值*/
+      url:[
+        '/pages/cart/order/order',
+        '/pages/cart/order/order?id=',
+        '/pages/order/details/details'
+      ],
+      sta:['all','unpay','needpay','buy'],
+      status:['待付款','购买成功','结尾款'],
+      color:['#666','#e4393c','#e4393c'],
+      dat:[/*{
+        "orderAmount": 100,
+        "addTime": "2018-02-03 17:52:54",
+        "orderId": 1,
+        "orderSn": "201802031731",
+        "items": [
+          {
+            "imageUrl": "https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3773155417,501162367&fm=27&gp=0.jpg",
+            "name": "疗程卡",
+            "subTotalPrice": 100
+          }
+        ],
+        "orderStatus": 1,/!*0、未支付；1、已购买；2、有待结尾款*!/
+      }*/],
+      so:0,/*判断页面是否第一次加载*/
+      lenf:1,/*页码*/
+      zt:false,/*上拉加载状态*/
+      tobstu:['all',0],
+      imageUrl: wepy.$appConfig.imageUrl,
+		};
+
+    onShareAppMessage(res){
+      if (res.from === 'button') {
+        // 来自页面内转发按钮
+//        console.log(res.target)
+      }else{
+        return {
+          title: '亲爱的 推荐你一个女生必备的小程序 要关注哦！',
+          imageUrl: this.imageUrl + 'share_img.png',
+          path: '/pages/index/index?shareMemberCompanyId='+wx.getStorageSync('session').memberCompanyId
+        }
+      }
+    }
+
+    onShow(){
+        if(this.so==0) {
+          this.so = 1
+        }else{
+          this.lenf=1;
+          this.dat=[];
+
+          this.left=(176*this.size+'rpx');
+          this.ajxa({status:this.sta[this.size] || 'all'})
+//          this.onLoad({id:this.sta[this.size],tusta:this.tobstu});
+        }
+    }
+
+    onPullDownRefresh(){
+      /*上拉刷新*/
+      wx.showNavigationBarLoading() //在标题栏中显示加载
+      this.lenf=1;
+      this.ajxa({status:this.sta[this.size]},'topscroll');
+    }
+
+    onReachBottom(e){//监控滚动到底部
+      if(this.zt){
+          return;
+      }
+      this.ajxa({status:this.sta[this.size],page:++this.lenf},'scroll')
+    }
+     async ajxa(e,e1){
+       /*加载列表*/
+       const json = await api.getOrderList({
+         query: {
+           orderStatus:e.status,
+           pageNo:e.page || 1,
+           pageSize:4,
+         }
+       });
+       if(e1=='scroll'){
+         this.dat = this.dat.concat(json.data.list);
+       }else{
+         this.dat=json.data.list;
+       }
+       if(this.dat.length == json.data.totalSize){
+         this.zt=true;
+       }else{
+         this.zt=false;
+       }
+       if(e1=='topscroll'){
+         /*下拉刷新结束*/
+         setTimeout(function () {
+           wx.hideNavigationBarLoading() //完成停止加载
+           wx.stopPullDownRefresh() //停止下拉刷新
+         },500)
+       }
+       this.$apply();
+     }
+
+    async createOrderMoney(e){
+      /*生成流水订单号*/
+      const json = await api.createOrderMoney({
+        query: {
+          orderSn:e.orderSn,
+          type:(e.type == 2 ? e.type-1:e.type),
+        }
+      });
+      pay.wxPay({
+        monS:json.data.moneySn,
+        This:this,
+        api:api,
+        url:'/pages/order/order?id='+this.tobstu[0]+'&tusta='+this.tobstu[1],
+        oreS:e.orderSn
+      });
+      this.$apply();
+    }
+    async addAgain(e,e1){
+      /*再次购买*/
+      const json = await api.addAgain({
+        query: {
+          orderSn:e,
+        }
+      });
+      wx.navigateTo({
+        url: this.url[e1]+json.data.cartItemIds
+      });
+      this.$apply();
+    }
+
+    events = {
+      'finishBindPhone': () => {
+        this.finishBindPhone(this.orderSnL);
+      }
+    };
+    finishBindPhone(e){
+      this.createOrderMoney(e);
+      this.inshowIn=false;
+    }
+
+		methods = {
+      tab(e,stutas){
+        this.tobstu=[stutas,e];
+        this.lenf=1;
+        this.ajxa({status:stutas})
+        this.size=e;
+        this.left=(176*this.size+'rpx');
+      },
+      agian(e,e1,e2){
+          if(e==1){
+            /*再次购买*/
+            this.addAgain(e1,e);
+          }else{
+            /*支付流程*/
+            this.orderSnL={orderSn:e1,type:e};
+            if(!wx.getStorageSync('session').mobilePhone){
+              this.inshowIn=true;
+            }else{
+              this.finishBindPhone({orderSn:e1,type:e});
+            }
+          }
+      }
+		};
+
+
+    onLoad(e) {
+      this.size=e.tusta?e.tusta : 0;
+      this.left=(176*this.size+'rpx');
+      this.ajxa({status:e.id || 'all'})
+    }
+	}
+</script>

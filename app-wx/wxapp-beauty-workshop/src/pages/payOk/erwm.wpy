@@ -1,0 +1,54 @@
+<style lang="less">
+  page{
+    background: #fff;
+  }
+</style>
+<template>
+  <image style="width: 100%;" mode="widthFix" src="http://image.ivymei.com/wxapp/workshop/qrcode2.png"></image>
+</template>
+
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+
+	export default class Index extends wepy.page {
+		config = {
+			navigationBarTitleText: '关注公证号',
+			backgroundColor: '#f4f4f4'
+		};
+		components = {
+		}
+
+		data = {
+      orderSn:'',
+      imageUrl: wepy.$appConfig.imageUrl,
+		}
+
+    onShareAppMessage(res){
+      if (res.from === 'button') {
+        // 来自页面内转发按钮
+//        console.log(res.target)
+      }else{
+        return {
+          title: '亲爱的 推荐你一个女生必备的小程序 要关注哦！',
+          imageUrl: this.imageUrl + 'share_img.png',
+          path: '/pages/index/index'
+        }
+      }
+    }
+
+
+
+		methods = {
+
+    }
+
+
+		onLoad(e) {
+      wx.previewImage({
+        current: 'http://image.ivymei.com/wxapp/workshop/qrcode2.png', // 当前显示图片的http链接
+        urls: ['http://image.ivymei.com/wxapp/workshop/qrcode2.png'] // 需要预览的图片http链接列表
+      })
+		}
+	}
+</script>

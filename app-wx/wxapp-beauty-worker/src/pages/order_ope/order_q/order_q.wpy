@@ -1,0 +1,204 @@
+<style lang="less">
+    page{background: #f4f4f4;padding-bottom: 120rpx;}
+    .hat{
+        font-size: 30rpx;
+        height: 70rpx;
+        line-height: 35rpx;
+        overflow: hidden;
+        display:-webkit-box;
+        -webkit-box-orient:vertical;
+        -webkit-line-clamp:2;
+    }
+</style>
+<template>
+    <!--顾客信息-->
+    <text style="display: block;font-size: 30rpx;color:#333;margin: 20rpx 0 10rpx;padding-left: 30rpx;">顾客信息</text>
+    <view style="margin: 20rpx 30rpx;background: #fff;border-radius: 10rpx;">
+        <view style="padding: 20rpx;">
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;">顾客名称：</text>
+                <text style="color: #333;">{{arrxm[0].userName}}</text>
+            </view>
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;">手机号码：</text>
+                <text style="color: #333;">{{arrxm[0].mobile}}</text>
+            </view>
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;margin: 10rpx 0;">开户时间：</text>
+                <text style="color: #333;">{{arrxm[0].openAccountTime}}</text>
+            </view>
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;margin: 10rpx 0;">上次到店时间：</text>
+                <text style="color: #333;">{{arrxm[0].lastArriveTime}}</text>
+            </view>
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;">上次到店门店：</text>
+                <text style="color: #333;">{{arrxm[0].lastArriveShop}}</text>
+            </view>
+        </view>
+    </view>
+    <!--预约信息-->
+    <text style="display: block;font-size: 30rpx;color:#333;margin: 20rpx 0 10rpx;padding-left: 30rpx;">预约信息</text>
+    <view style="margin: 20rpx 30rpx;background: #fff;border-radius: 10rpx;">
+        <view style="height: 90rpx;font-size: 30rpx;line-height: 90rpx;padding: 0 20rpx;border-bottom: 1px solid #e5e5e5">
+            <text style="color: #999;margin: 10rpx 0;">预约单号：</text>
+            <text style="color: #333;">{{arrxm[0].serviceWorkNo}}</text>
+        </view>
+        <view style="height: 90rpx;font-size: 30rpx;line-height: 90rpx;padding: 0 20rpx;border-bottom: 1px solid #e5e5e5">
+            <text style="color: #999;margin: 10rpx 0;">客户空闲时长：</text>
+            <text style="color: #333;">{{arrxm[0].serviceDuration || '无需求'}}</text>
+        </view>
+        <view style="height: 90rpx;font-size: 30rpx;line-height: 90rpx;padding: 0 20rpx;border-bottom: 1px solid #e5e5e5">
+            <text style="color: #999;margin: 10rpx 0;">预约时间：</text>
+            <text style="color: #333;">{{arrxm[0].bookBeginTime}}</text>
+        </view>
+    </view>
+    <view style="height: 96rpx;line-height:96rpx;border-top:1px solid #e5e5e5;background: #fff;text-align: right;position: fixed;bottom: 0;width: 100%;">
+        <text @tap="statis('det')" style="border-radius:10rpx;margin-right:30rpx;text-align:center;display:inline-block;width: 186rpx;height: 70rpx;line-height: 70rpx;background: #26cad3;font-size: 32rpx;color: #fff;" hover-class="navigator-hover">取消预约</text>
+        <text @tap="statis('ok',{{arrxm[0].memberBookingId}})" style="border-radius:10rpx;margin-right:30rpx;text-align:center;display:inline-block;width: 186rpx;height: 70rpx;line-height: 70rpx;background: #26cad3;font-size: 32rpx;color: #fff;" hover-class="navigator-hover">接受预约</text>
+    </view>
+    <!--明天ckeout这个参数改变一下，这个已用参数，不能重用-->
+    <view wx:if="{{endout}}" style="width: 100%;height: 100%;position: fixed;top: 0;left: 0;">
+        <view @tap="nock('no')" animation="{{animationData_yc}}" style="width: 100%;height: 100%;background: #000;opacity: .7;"></view>
+        <view class="gjr" animation="{{animationData}}" style="position: fixed;width: 100%;bottom: 0;left: 0;background: #fff;">
+            <view style="height: 94rpx;line-height:94rpx;font-size: 36rpx;color: #333;text-indent: 30rpx;">取消预约原因</view>
+            <view style="max-height: 450rpx;overflow-y:scroll;">
+                <view wx:for="{{imatx}}" @tap="nock('whey',{{item.id}},{{arrxm[0].memberBookingId}})" style="border-top: 2rpx solid #ddd;height: 89rpx;line-height: 89rpx;text-align:center;font-size: 32rpx;color: #333;">{{item.name}}</view>
+            </view>
+        </view>
+    </view>
+</template>
+
+<script>
+	import wepy from 'wepy'
+    import Days from '../../../components/days'
+    import animo from '../../../utils/animove'
+    import dom from '../../../utils/dom'
+    import api from '../../../api/api'
+
+	export default class Customer extends wepy.page {
+		config = {
+			navigationBarTitleText: '待确认预约',
+          enablePullDownRefresh: false,
+		}
+		components = {
+            days:Days
+		}
+
+		data = {
+		  cus:'/pages/customer/customeintion/cusdetails/cusdetails?order_t=eill&',
+            arrxm:[/*{
+                img:'../../../../images/logo.png',
+                tit:'标准小气泡护理小气泡清洁护理',
+                xm:'小气泡水氧清透护理',
+                hr:'',
+                arr:[
+                    '陈伟皆','三利','好好'
+                ]
+            }*/],
+          animationData:{},
+          animationData_yc:{},
+          endout:false,
+          imatx:[],
+		}
+          async ajxa(e){
+              /*接口加载*/
+            const json = await api.orderd({
+              query: {
+                serviceWorkNo:e.service,
+//                pageNo:e.page,
+//                pageSize:15,
+              }
+            });
+
+            this.arrxm = this.arrxm.concat(json.data);
+            this.fwsj=(json.data.bookEndTime.split('-')[1]*1+'月'+json.data.bookEndTime.split('-')[2]*1+'日 '+json.data.bookBeginHour+'-'+json.data.bookEndHour);
+
+            this.$apply();
+          }
+
+
+        computed = {
+
+        }
+		methods = {
+          async nock(e,e1,e2){
+            var This=this;
+            if(e=='whey'){
+                /*取消预约，关闭弹框，获取到2个id*/
+              const json = await api.deleBook({
+                query: {
+                  memberBookingId:e2,
+                  reasonId:e1
+                }
+              });
+              wx.showToast({
+                title: '取消成功',
+                icon: 'success',
+                duration: 2000,
+                success:function () {
+                  setTimeout(function () {
+                    wx.navigateBack({
+                      delta:1
+                    })
+                  },500);
+                }
+              })
+            }
+            dom.height('.gjr',function (e) {
+              console.log(e)
+              animo.yc({
+                This:This,
+                height:e
+              })
+            })
+            setTimeout(function () {
+              this.endout=false;
+              this.$apply();
+            }.bind(this),300)
+          },
+          async statis(e,e1){
+              if(e=='det'){
+                /*取消预约*/
+                if(this.imatx.length==0){
+                  const json = await api.closeReason();
+                  this.imatx=json.data.list;
+                }
+                this.endout=true;
+                this.$apply();
+                setTimeout(function () {
+                  animo.shwoIN(this);
+                  this.$apply();
+                }.bind(this),30)
+              }else{
+                /*接受预约*/
+                const json = await api.acceptBook({
+                  query: {
+                    memberBookingId: e1
+                  }
+                });
+                wx.showToast({
+                  title: '成功',
+                  icon: 'success',
+                  duration: 2000,
+                  success:function () {
+                    setTimeout(function () {
+                      wx.navigateBack({
+                        delta:1
+                      })
+                    },500);
+                  }
+                })
+              }
+          }
+
+		}
+
+		events = {
+		}
+
+		onLoad(e) {
+          this.ajxa({service:e.id});
+		}
+	}
+</script>

@@ -1,0 +1,361 @@
+<style lang="less">
+    page{background: #f4f4f4;padding-bottom: 120rpx;}
+    .hat{
+        font-size: 30rpx;
+        height: 70rpx;
+        line-height: 35rpx;
+        overflow: hidden;
+        display:-webkit-box;
+        -webkit-box-orient:vertical;
+        -webkit-line-clamp:2;
+    }
+    .gkimg{
+        margin-top:12rpx;
+        display:inline-block;
+        width: 64rpx;
+        height: 64rpx;
+        border-radius: 50%;
+        position: absolute;
+    }
+</style>
+<template>
+    <!--顾客信息-->
+    <text style="display: block;font-size: 30rpx;color:#333;margin: 20rpx 0 10rpx;padding-left: 30rpx;">顾客信息</text>
+    <view style="margin: 20rpx 30rpx;background: #fff;border-radius: 10rpx;">
+        <view style="padding: 20rpx;">
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;">顾客名称：</text>
+                <text style="color: #333;">{{arrxm[0].userName}}</text>
+            </view>
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;">手机号码：</text>
+                <text style="color: #333;">{{arrxm[0].mobile}}</text>
+            </view>
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;margin: 10rpx 0;">上次到店时间：</text>
+                <text style="color: #333;">{{arrxm[0].lastArriveTime}}</text>
+            </view>
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;">上次到店门店：</text>
+                <text style="color: #333;">{{arrxm[0].lastArriveShop}}</text>
+            </view>
+        </view>
+    </view>
+    <!--预约信息-->
+    <text style="display: block;font-size: 30rpx;color:#333;margin: 20rpx 0 10rpx;padding-left: 30rpx;">顾客信息</text>
+    <view style="margin: 20rpx 30rpx;background: #fff;border-radius: 10rpx;">
+        <view style="padding: 20rpx;">
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;">预约单号：</text>
+                <text style="color: #333;">{{arrxm[0].serviceWorkNo}}</text>
+            </view>
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;">预约时间：</text>
+                <text style="color: #333;">{{arrxm[0].bookBeginTime}}</text>
+            </view>
+        </view>
+    </view>
+    <!--分配服务-->
+    <text style="display: block;font-size: 30rpx;color:#333;margin: 20rpx 0 10rpx;padding-left: 30rpx;">预约信息</text>
+    <view style="margin: 20rpx 30rpx;background: #fff;border-radius: 10rpx;">
+        <view @tap="gjgw" style="height: 90rpx;font-size: 30rpx;line-height: 90rpx;padding: 0 20rpx;overflow: hidden;border-bottom: 1px solid #e5e5e5">
+            <text style="color: #666;margin: 10rpx 0;">选择跟进顾问</text>
+            <view style="color: #333;float: right;height: 100%;"><!--wx:for="{{arrxm[0].counselorList}}42"-->
+                <view style="position: relative;height: 100%;width: 200rpx;float: left">
+                    <image wx:for="{{imatx}}" class="gkimg" src='{{item.followCounselorImage}}' style="right: {{index*42}}rpx;"></image>
+                </view>
+                <text wx:if="{{imatx.length==1}}" style="color: #333;float: left;margin-left: 10rpx;">{{imatx[0].followCounselor}}</text>
+                <text style="font-family: '宋体';color: #666;font-size: 32rpx;float: right;margin-left: 10rpx;"> &gt;</text>
+            </view>
+        </view>
+        <view style="height: 90rpx;font-size: 30rpx;line-height: 90rpx;padding: 0 20rpx;overflow: hidden;border-bottom: 1px solid #e5e5e5">
+            <navigator url="{{url}}">
+                <text style="color: #666;margin: 10rpx 0;">选择服务</text>
+                <text style="color: #333;float: right">{{projeLength.length==0?'请选择服务':('已预约'+projeLength.length+'项服务')}} <text style="font-family: '宋体';color: #666;font-size: 32rpx;">&gt;</text></text>
+            </navigator>
+        </view>
+    </view>
+    <!--选择跟进顾客-->
+    <view wx:if="{{ckeout}}" style="position: fixed;top: 0px;left: 0;width: 100%;height: 100%;z-index: 2;">
+        <view @tap="nock" animation="{{animationData_yc}}" style="width: 100%;height: 100%;background: #000;opacity: .8;"></view>
+        <view class="gjr" animation="{{animationData}}" style="position: fixed;bottom: 0;left: 0;background: #fff;width: 100%;">
+            <view style="overflow: hidden;font-size: 30rpx;color: #333;padding:0 20rpx;line-height: 99rpx;">
+                <text style="float:left;">选择跟进人</text>
+                <text class="cc" @tap="nock" style="float:right;font-size: 40rpx;">×</text>
+            </view>
+            <view class="weui-cells pay-module weui-cells_after-title" style="max-height: 600rpx;overflow-y: auto">
+                <checkbox-group bindchange="checkboxChange">
+                    <label class="weui-cell weui-check__label" wx:for="{{checkboxItems}}" wx:key="value">
+                        <checkbox class="weui-check" value="{{item.followCounselorId}}" checked="{{item.checked}}"/>
+                        <image style="width:64rpx;height:64rpx;border-radius: 50%;margin-right: 20rpx;" class="pay-logo" src="{{item.followCounselorImage}}"></image>
+                        <view class="weui-cell__bd color-33">{{item.followCounselor}}</view>
+                        <view class="weui-cell__ft weui-cell__ft_in-radio">
+                            <icon class="weui-icon-checkbox_circle" type="circle" size="23" wx:if="{{!item.checked}}"></icon>
+                            <icon class="weui-icon-checkbox_success" type="success" size="23" color="#27CAD3" wx:if="{{item.checked}}"></icon>
+                        </view>
+                    </label>
+                </checkbox-group>
+            </view>
+            <!--确认-->
+            <view @tap="nock('ok')" style="height: 98rpx;line-height: 98rpx;text-align: center;background: #26cad3;font-size: 32rpx;color: #fff;">确定</view>
+        </view>
+    </view>
+    <days :grouplist.sync="Grouplist"></days>
+    <view style="height: 96rpx;line-height:96rpx;border-top:1px solid #e5e5e5;background: #fff;text-align: right;position: fixed;bottom: 0;width: 100%;">
+        <text @tap="statis('save')" style="padding:0 30rpx;border-radius:10rpx;margin-right:30rpx;text-align:center;display:inline-block;height: 70rpx;line-height: 70rpx;background: #26cad3;font-size: 32rpx;color: #fff;" hover-class="navigator-hover">保存填写</text>
+        <text @tap="statis('det')" style="padding:0 30rpx;border-radius:10rpx;margin-right:30rpx;text-align:center;display:inline-block;height: 70rpx;line-height: 70rpx;background: #26cad3;font-size: 32rpx;color: #fff;" hover-class="navigator-hover">取消预约</text>
+        <text @tap="statis('ok')" style="padding:0 30rpx;border-radius:10rpx;margin-right:30rpx;text-align:center;display:inline-block;height: 70rpx;line-height: 70rpx;background: {{(projeLength.length>0 && imatx.length>0)?'#26cad3':'#ddd'}};font-size: 32rpx;color: #fff;" hover-class="navigator-hover">确定</text>
+    </view>
+    <!--明天ckeout这个参数改变一下，这个已用参数，不能重用-->
+    <view wx:if="{{endout}}" style="width: 100%;height: 100%;position: fixed;top: 0;left: 0;">
+        <view @tap="nock('no')" animation="{{animationData_yc}}" style="width: 100%;height: 100%;background: #000;opacity: .7;"></view>
+        <view class="gjr" animation="{{animationData}}" style="position: fixed;width: 100%;bottom: 0;left: 0;background: #fff;">
+            <view style="height: 94rpx;line-height:94rpx;font-size: 36rpx;color: #333;text-indent: 30rpx;">取消预约原因</view>
+            <view style="max-height: 450rpx;overflow-y:scroll;">
+                <view wx:for="{{imatx}}" @tap="nock('whey',{{item.id}},{{arrxm[0].memberBookingId}})" style="border-top: 2rpx solid #ddd;height: 89rpx;line-height: 89rpx;text-align:center;font-size: 32rpx;color: #333;">{{item.name}}</view>
+            </view>
+        </view>
+    </view>
+</template>
+
+<script>
+	import wepy from 'wepy'
+    import Days from '../../../components/days'
+    import animo from '../../../utils/animove'
+    import dom from '../../../utils/dom'
+    import api from '../../../api/api'
+
+	export default class Customer extends wepy.page {
+		config = {
+			navigationBarTitleText: '待分配预约',
+            enablePullDownRefresh: false,
+		}
+		components = {
+            days:Days
+		}
+
+		data = {
+		  cus:'/pages/customer/customeintion/cusdetails/cusdetails?order_t=eill&',
+          checkboxItems: [
+            /*{name: '微信支付', value: '0', src: '../../../../images/logo.png'},
+            {name: '现金支付', value: '1', checked: true, src: '../../../../images/logo.png'},
+            {name: 'POS支付', value: '2', src: '../../../../images/logo.png'}*/
+          ],
+            ckeout:false,
+            endout:false,
+		    check:[false],
+            Grouplist:['22:30-22:45','55:30-55:45','22:20-22:35'],
+            imatx:[],
+            arrxm:[/*{
+                img:'../../../../images/logo.png',
+                tit:'标准小气泡护理小气泡清洁护理',
+                xm:'小气泡水氧清透护理',
+                hr:'',
+                arr:[
+                    '陈伟皆','三利','好好'
+                ]
+            }*/],
+          url:'',
+          fwsj:'2月15日 14:00-16:00',
+          animationData:{},
+          animationData_yc:{},
+          stutas:true,
+          projeLength:[],
+		}
+        eidk(e1,e2,e3){
+		    /*时间返回参数*/
+            console.log(e1,e2,e3)
+            this.fwsj=(e1+'月'+e2+'日 '+this.Grouplist[e3[2]]);
+            this.$apply();
+        }
+          async ajxa(e){
+              /*接口加载*/
+            const json = await api.orderd({
+              query: {
+                serviceWorkNo:e.service,
+//                pageNo:e.page,
+//                pageSize:15,
+              }
+            });
+            this.arrxm = this.arrxm.concat(json.data);
+            this.url = "/pages/select_project/select_project?page=13154896556&id="+this.arrxm[0].memberId+"&bid="+this.arrxm[0].memberBookingId+"&mobile="+this.arrxm[0].mobile+"&name="+this.arrxm[0].userName+"&img="+this.arrxm[0].memberAvatar+"&sid="+this.arrxm[0].serviceWorkNo,
+              this.imatx = json.data.counselorList;
+            this.projeLength = json.data.projects;
+            console.log(this.imatx)
+            this.fwsj=(json.data.bookEndTime.split('-')[1]*1+'月'+json.data.bookEndTime.split('-')[2]*1+'日 '+json.data.bookBeginHour+'-'+json.data.bookEndHour);
+
+            this.$apply();
+          }
+
+        computed = {
+
+        }
+		methods = {
+          checkboxChange: function (e) {
+            console.log('checkbox发生change事件，携带value值为：', e.detail.value);
+
+            var checkboxItems = this.checkboxItems, values = e.detail.value;
+            for (var i = 0, lenI = checkboxItems.length; i < lenI; ++i) {
+              checkboxItems[i].checked = false;
+
+              for (var j = 0, lenJ = values.length; j < lenJ; ++j) {
+                if(checkboxItems[i].followCounselorId == values[j]){
+                  checkboxItems[i].checked = true;
+                  break;
+                }
+              }
+            }
+
+            this.setData({
+              checkboxItems: checkboxItems
+            });
+          },
+          async gjgw(){
+            if(this.stutas){
+              var This=this;
+              const json = await api.employeeList();
+              this.checkboxItems = json.data.list;
+
+              this.imatx.forEach(function (p) {
+                This.checkboxItems.forEach(function (p1,p2) {
+                  if(p1.followCounselorId==p.followCounselorId){
+                    This.checkboxItems[p2].checked = true;
+                  }
+                })
+              })
+
+              this.stutas=false;
+            }
+            this.ckeout=true;
+            setTimeout(function () {
+              animo.shwoIN(this)
+              this.$apply();
+            }.bind(this),50)
+          },
+          async nock(e,e1,e2){
+            /*顾问列表隐藏*/
+            var This=this;
+            if(e=='ok'){
+              This.imatx=[];
+              this.checkboxItems.forEach(function (p) {
+                if(p.checked){
+                  This.imatx.push(p);
+                }
+              })
+            }
+            console.log(this.imatx)
+            if(e=='whey'){
+              /*取消预约，关闭弹框，获取到2个id*/
+              const json = await api.deleBook({
+                query: {
+                  memberBookingId:e2,
+                  reasonId:e1
+                }
+              });
+              wx.showToast({
+                title: '取消成功',
+                icon: 'success',
+                duration: 2000,
+                success:function () {
+                  setTimeout(function () {
+                    wx.navigateBack({
+                      delta:1
+                    })
+                  },500);
+                }
+              })
+            }
+            dom.height('.gjr',function (e) {
+              console.log(e)
+              animo.yc({
+                This:This,
+                height:e
+              })
+            })
+            setTimeout(function () {
+              this.ckeout=false;
+              this.endout=false;
+              this.$apply();
+            }.bind(this),300)
+          },
+          async statis(e){
+              console.log(e)
+            var employId=[];
+            this.imatx.forEach(function (p) {
+              employId.push(p.followCounselorId)
+            })
+            if(e=='det'){
+                //取消预约
+              const json = await api.closeReason();
+              this.imatx=json.data.list;
+              this.endout=true;
+              this.$apply();
+              setTimeout(function () {
+                animo.shwoIN(this);
+                this.$apply();
+              }.bind(this),30)
+              console.log(json.data.list)
+
+            }else if(e=='ok'){
+              //确定预约
+              if(this.projeLength.length>0 && this.imatx.length>0){
+                const json = await api.selBook({
+                  query: {
+                    employeeIds:employId,
+                    memberBookingId:this.arrxm[0].memberBookingId,
+                    project:(this.projeLength.length>0?this.projeLength:(wx.getStorageSync('arr') || [])),
+                    type:'confirm',
+                  }
+                });
+                wx.showToast({
+                  title: '成功',
+                  icon: 'success',
+                  duration: 500,
+                  success:function () {
+                      setTimeout(function () {
+                        wx.navigateBack({
+                          delta:1
+                        })
+                      },500);
+                  }
+                });
+              }
+            }else{
+                //保存填写memberBookingId
+                console.log('保存')
+                  const json = await api.selBook({
+                    query: {
+                      employeeIds:employId,
+                      memberBookingId:this.arrxm[0].memberBookingId,
+                      project:(this.projeLength.length>0?this.projeLength:(wx.getStorageSync('arr') || [])),
+                    }
+                  });
+                  wx.showToast({
+                    title: '保存成功',
+                    icon: 'success',
+                    duration: 500,
+                    success:function () {
+//                      setTimeout(function () {
+//                        wx.navigateBack({
+//                          delta:1
+//                        })
+//                      },500);
+                    }
+                  });
+            }
+          }
+
+		}
+
+		events = {
+		}
+        onShow(){
+            if(wx.getStorageSync('arr')){
+              this.projeLength = wx.getStorageSync('arr');
+            }
+        }
+		onLoad(e) {
+          this.ajxa({service:e.id});
+		}
+	}
+</script>

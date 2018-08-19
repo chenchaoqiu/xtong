@@ -1,0 +1,112 @@
+<style lang="scss">
+    .wrap {
+        margin-top: 20rpx;
+    }
+    .cell {
+        display:-webkit-box;
+        display:-webkit-flex;
+        display: flex;
+        -webkit-box-align:center;
+        -webkit-align-items:center;
+        align-items:center;
+        height: 100rpx;
+        padding-left: 30rpx;
+        padding-right: 24rpx;
+        border-bottom: 1rpx solid #ddd;
+        background-color: #fff;
+    }
+    .logo-code-warp {
+        height: 42rpx;
+    }
+    .user-code {
+        width: 42rpx;
+        height: 42rpx;
+        margin-right: 20rpx;
+    }
+    .user-name,
+    .code,
+    .user-phone,
+    .user-birthday {
+        -webkit-box-flex:1;
+        -webkit-flex:1;
+        flex:1;
+        text-align: right;
+        padding-top: 3rpx;
+        color: #666;
+        padding-right: 20rpx;
+    }
+    .arrows {
+        vertical-align: inherit;
+        margin-bottom: -2rpx;
+    }
+</style>
+<template>
+   <view class="wrap">
+        <navigator class="cell" url="/pages/my_info/edit_name">
+            <view class="size-30 color-33">姓名</view>
+            <view class="flex-1 size-28 user-name">{{res.memberName}}</view>
+            <view>
+                <image class="arrows" src="../../images/arrows.png"/>
+            </view>
+        </navigator>
+       <!--<navigator class="cell" url="/pages/my_info/code">
+           <view class="size-30 color-33">我的二维码</view>
+           <view class="flex-1 size-28 code"></view>
+           <view class="logo-code-warp">
+               <image class="user-code" url="/pages/my_info/info" src="../../images/code.png"/>
+           </view>
+           <view>
+               <image class="arrows" src="../../images/arrows.png"/>
+           </view>
+       </navigator>-->
+       <navigator class="cell" url="/pages/my_info/select_birthday">
+           <view class="size-30 color-33">生日</view>
+           <view class="flex-1 size-28 user-birthday">{{res.birthday}}</view>
+           <view>
+               <image class="arrows" src="../../images/arrows.png"/>
+           </view>
+       </navigator>
+       <navigator class="cell" url="/pages/my_info/verify_phone">
+           <view class="size-30 color-33">常用手机</view>
+           <view class="flex-1 size-28 user-phone">{{res.mobilePhone}}</view>
+           <view>
+               <image class="arrows" src="../../images/arrows.png"/>
+           </view>
+       </navigator>
+   </view>
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+
+	export default class Info extends wepy.page {
+		config = {
+			navigationBarTitleText: '个人资料',
+			backgroundColor: '#ebf0ef'
+		};
+
+		async onLoad() {
+			/*this.res = wx.getStorageSync('eInfo');*/
+		}
+
+		onShow() {
+			this.res = wx.getStorageSync('eInfo');
+        }
+
+		data = {
+			res: {
+
+            }
+		};
+
+		watch = {
+			/*num (curVal, oldVal) {
+				console.log(`旧值：${oldVal}，新值：${curVal}`)
+			}*/
+		};
+
+		methods = {
+
+		};
+	}
+</script>

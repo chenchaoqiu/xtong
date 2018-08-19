@@ -1,0 +1,539 @@
+<style lang="less">
+    .centen-wrap {
+        position: relative;
+        padding-bottom: 40rxp;
+        background-color: #F7C3D1;
+        .bg-img {
+            width: 100vw;
+            min-height: 5100rpx;
+            display: block;
+            position: absolute;
+            z-index: 100;
+            top: 0;
+            background-color: #F6C2D0;
+        }
+        .body {
+            position: absolute;
+            z-index: 110;
+            width: 100vw;
+        }
+    }
+    .progress-wrap {
+        margin-top: 310rpx;
+        padding-left: 28rpx;
+        padding-right: 58rpx;
+        .hint-logo {
+            width: 139rpx;
+            height: 99rpx;
+        }
+        .bar-wrap {
+            position: relative;
+            width: 100%;
+        }
+        .bar {
+            margin-top: 12rpx;
+            position: relative;
+            overflow-x: hidden;
+            width: 100%;
+            .bar-bg-w {
+                position: absolute;
+                display: block;
+                width: 100%;
+                height: 22rpx;
+                top: 0;
+                margin-right: -0%;
+                left: 0;
+                transition: left 2s;
+            }
+            .bar-bg {
+                display: block;
+                width: 100%;
+                height: 22rpx;
+            }
+        }
+        .node-wrap {
+            position: absolute;
+            top: 0;
+            margin-top: -8rpx;
+            width: 100%;
+            .node-logo {
+                width: 41rpx;
+                height: 41rpx;
+                display: block;
+                transition:opacity  4s;
+            }
+        }
+        .progress-title {
+            color: #fff;
+            margin-top: 10rpx;
+            font-size: 26rpx;
+            letter-spacing: 2px;
+            .active {
+                color: #e26774;
+            }
+        }
+    }
+    .summation {
+        margin-top: 40rpx;
+        font-size: 30rpx;
+        color: #fff;
+        letter-spacing: 4px;
+        text-align: center;
+        text {
+            color: #FF8684;
+        }
+    }
+    .friends-logo {
+        margin-top: 56rpx;
+        margin-bottom: 56rpx;
+        text-align: center;
+        font-size: 0;
+        position: relative;
+        .logo {
+            height: 80rpx;
+            width: 80rpx;
+            border-radius: 50%;
+            background-color: #27CAD3;
+        }
+        .img-wrap {
+            position: relative;
+            display: inline-block;
+            min-height: 80rpx;
+            min-width: 80rpx;
+        }
+        .fg {
+            width: 45rpx;
+            height: 5rpx;
+            position: absolute;
+            left: 268rpx;
+            top: 50%;
+            margin-top: -2.5rpx;
+        }
+    }
+    .share-wrap {
+        padding: 0 30rpx;
+        text-align: center;
+        min-height: 90rpx;
+        .share {
+            background-color: #F3DB93;
+            font-size: 30rpx;
+            color: #e26774;
+            letter-spacing: 4px;
+            height: 90rpx;
+            border-radius: 45px;
+            line-height: 90rpx;
+            border: none !important;
+            &:after{
+                border: none;
+            }
+        }
+        .animation {
+            animation: myfirst 0.3s ease 0.3s infinite alternate;
+        }
+        .appointment {
+            letter-spacing: 4px;
+            color: #fff;
+            height: 90rpx;
+            line-height: 90rpx;
+            border-radius: 45px;
+            background-color: #F5A4BC;
+            box-shadow: 0 0 10px #E39CA6;
+            text-align: center;
+            margin-top: 40rpx;
+            font-size: 30rpx;
+        }
+        .hint-text {
+            color: #fff;
+            font-size: 24rpx;
+            letter-spacing: 4px;
+            .num {
+                color: #e26774;
+            }
+        }
+    }
+    .introduce,.instructions {
+        text-align: center;
+        margin-top: 90rpx;
+        .img {
+            width: 480rpx;
+            height: 82rpx;
+        }
+    }
+    .regulation {
+        margin-top: 60rpx;
+        padding-left: 10rpx;
+        .img {
+            width: 691rpx;
+            height: 387rpx;
+        }
+        .regulation_i {
+            width: 691rpx;
+            height: 544rpx;
+        }
+    }
+    .little {
+        text-align: center;
+        margin-top: 90rpx;
+        .img {
+            width: 488rpx;
+            height: 569rpx;
+        }
+    }
+    .water {
+        text-align: center;
+        margin-top: 74rpx;
+        .img {
+            width: 488rpx;
+            height: 569rpx;
+        }
+    }
+    .text-center {
+        text-align: center;
+    }
+    .text-right {
+        text-align: right;
+    }
+    .flex-2 {
+        -webkit-box-flex:2;
+        -webkit-flex:2;
+        flex:2;
+    }
+    .flex-3 {
+        -webkit-box-flex:3;
+        -webkit-flex:3;
+        flex:3;
+    }
+    .dialog-wrap {
+        position: fixed;
+        overflow: hidden;
+        height: 100vh;
+        width: 100vw;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        z-index: 777;
+        .dialog {
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            z-index: 110;
+            background-color: rgba(0,0,0,.8);
+            overflow: hidden;
+            padding: 0;
+        }
+        .body {
+            position: relative;
+            text-align:center;
+            font-size: 0;
+            height: 100vh;
+            padding: 0;
+            .wrap {
+                z-index: 112;
+                position: absolute;
+                width: 690rpx;
+                height: 690rpx;
+                top: 50%;
+                margin-top: -345rpx;
+                left: 50%;
+                margin-left: -345rpx;
+                .img {
+                    width: 100%;
+                    height: 100%;
+                    display: block;
+                }
+                .share {
+                    width: 580rpx;
+                    height: 80rpx;
+                    position: absolute;
+                    left: 50%;
+                    margin-left: -290rpx;
+                    bottom: 50rpx;
+                    opacity: 0;
+                }
+            }
+        }
+    }
+
+    @keyframes myfirst
+    {
+        from {width: 100%;height: 90rpx; line-height: 45px;}
+        to {width: 95%; height: 80rpx; line-height: 40px;}
+    }
+</style>
+<template>
+    <zanNoticebar :text.sync="longText" :tips.sync="tips" componentId="movable" ></zanNoticebar>
+    <view class="centen-wrap">
+        <image class="bg-img" src="{{imageUrl}}f_bg.png"></image>
+        <view class="body">
+            <view class="progress-wrap">
+                <view class="flex-box">
+                    <view class="flex-1">
+                        <image class="hint-logo" src="{{imageUrl}}hint_1.png"></image>
+                    </view>
+                    <view class="flex-1">
+                        <image class="hint-logo" src="{{res.friendPushNum >= 8 ? imageUrl+'hint_4.png' : imageUrl+'hint_2.png'}}"></image>
+                    </view>
+                    <view class="flex-1">
+                        <image class="hint-logo pull-right" src="{{res.friendPushNum == 20 ? imageUrl+'hint_5.png' : imageUrl+'hint_3.png'}}"></image>
+                    </view>
+                </view>
+                <view class="bar-wrap">
+                    <view class="bar">
+                        <image class="bar-bg-w" style="left:{{res.friendPushNum * 5}}%" src="{{imageUrl}}bar_bg_w.png"></image>
+                        <image class="bar-bg" src="{{imageUrl}}bar_bg.png"></image>
+                    </view>
+                    <view class="node-wrap">
+                        <view class="flex-box">
+                            <view class="flex-2">
+                                <image class="node-logo" src="{{imageUrl}}one_node.png"></image>
+                            </view>
+                            <view class="">
+                                <image  class="node-logo" src="{{res.friendPushNum >= 8 ? imageUrl+'tow_node.png' : '../../images/w_node.png'}}"></image>
+                            </view>
+                            <view class="flex-3">
+                                <image  class="node-logo pull-right" style="margin-right: -2rpx;" src="{{res.friendPushNum == 20 ? imageUrl+'three_node.png' : '../../images/w_node.png'}}"></image>
+                            </view>
+                        </view>
+                    </view>
+                </view>
+
+                <view class="flex-box progress-title">
+                    <view class="flex-2 active">免费领取</view>
+                    <view class="{{res.friendPushNum >= 8 ? 'active' : ''}}">
+                        <view>{{res.friendPushNum >= 8 ? '满' : '需'}}8人</view>
+                        <view>{{res.friendPushNum >= 8 ? '已领取' : '未开启'}}</view>
+                    </view>
+                    <view class="flex-3 text-right {{res.friendPushNum == 20 ? 'active' : ''}}">
+                        <view>{{friendPushNum == 20 ? '满' : '需'}}20人</view>
+                        <view style="padding-right: 3px">{{res.friendPushNum == 20 ? '已领取' : '未开启'}}</view>
+                    </view>
+                </view>
+
+            </view>
+            <view class="summation">累计<text>{{res.friendPushNum}}</text>位好友来助力咯！</view>
+            <view class="friends-logo">
+                <view class="img-wrap" style="width: {{res.friendPushNum < 7 ? (res.friendPushNum+1)*40 : 600}}rpx">
+                    <block wx:if="{{res.friendPushNum < 7}}">
+                        <block wx:for="{{res.helpFsHeadImgUrl}}" wx:key="{{index}}">
+                            <image class="logo" src="{{item}}" style="position: absolute;z-index: {{index}} top: 0;left: {{index*40}}rpx;"></image>
+                        </block>
+                    </block>
+                    <block wx:else>
+                        <image class="logo" src="{{res.helpFsHeadImgUrl[res.helpFsHeadImgUrl.length -6]}}" style="position: absolute;z-index: 2; top: 0;left: 80rpx;"></image>
+                        <image class="logo" src="{{res.helpFsHeadImgUrl[res.helpFsHeadImgUrl.length -5]}}" style="position: absolute;z-index: 3; top: 0;left: 120rpx;"></image>
+                        <image class="logo" src="{{res.helpFsHeadImgUrl[res.helpFsHeadImgUrl.length -4]}}" style="position: absolute;z-index: 4; top: 0;left: 160rpx;"></image>
+                        <image class="fg"   src="../../images/partition.png"></image>
+                        <image class="logo" src="{{res.helpFsHeadImgUrl[res.helpFsHeadImgUrl.length -3]}}" style="position: absolute;z-index: 6; top: 0;left: 340rpx;"></image>
+                        <image class="logo" src="{{res.helpFsHeadImgUrl[res.helpFsHeadImgUrl.length -2]}}" style="position: absolute;z-index: 7; top: 0;left: 380rpx;"></image>
+                        <image class="logo" src="{{res.helpFsHeadImgUrl[res.helpFsHeadImgUrl.length -1]}}" style="position: absolute;z-index: 8; top: 0;left: 420rpx;"></image>
+                        <!--<block wx:for="{{res.helpFsHeadImgUrl}}">
+                           <image class="logo" wx:if="{{(index >= res.helpFsHeadImgUrl.length -7 && index < res.helpFsHeadImgUrl.length -4)}}" src="{{item}}" style="position: absolute;z-index: {{index}} top: 0;left: {{index*40}}rpx;"></image>
+                        </block>
+                        <image class="fg" src="../../images/partition.png"></image>
+                        <block wx:for="{{res.helpFsHeadImgUrl}}">
+                            <image class="logo" wx:if="{{index > res.helpFsHeadImgUrl.length -4}}" src="{{item}}" style="position: absolute;z-index: {{index}} top: 0;left: {{100+index*40}}rpx;"></image>
+                        </block>-->
+                    </block>
+                </view>
+            </view>
+            <view class="share-wrap">
+                <button class="share animation" open-type="share">分享好友 获得更多美肤好礼</button>
+            </view>
+            <!--小气泡-->
+            <view class="introduce">
+                <image class="img" src="{{imageUrl}}activity_introduce.png"></image>
+            </view>
+            <view class="little">
+                <image class="img" src="{{res.prizeDetail[0].imageUrl}}"></image>
+            </view>
+            <view class="share-wrap">
+                <navigator class="appointment" url="/pages/appointment/my_appointment">
+                    已领取 去预约一下
+                </navigator>
+                <view class="hint-text" style="margin-top: 30rpx">小美已经偷偷将好礼塞进你的包囊了</view>
+                <view class="hint-text">请到witness速美工场小程序查看【我的】</view>
+            </view>
+            <!--水宝宝-->
+            <view class="water">
+                <image class="img" src="{{res.prizeDetail[1].imageUrl}}"></image>
+            </view>
+            <view class="share-wrap">
+                <block wx:if="{{res.friendPushNum >= 8}}">
+                    <navigator class="appointment" url="/pages/appointment/my_appointment">
+                        已领取 去预约一下
+                    </navigator>
+                    <view class="hint-text" style="margin-top: 30rpx">小美已经偷偷将好礼塞进你的包囊了</view>
+                    <view class="hint-text">请到witness速美工场小程序查看【我的】</view>
+                </block>
+                <block wx:else>
+                    <button class="share" style="color: #333; margin-top: 40rpx; background-color: #C8B2B2;" @tap="share">差一点点就拿到手 赶紧分享好友</button>
+                    <view class="hint-text" style="margin-top: 30rpx">偷偷告诉你，奖品在路上，分享给更多好友助力</view>
+                    <view class="hint-text">还差 <text class="num">{{8-res.friendPushNum}}</text>个人 即可获得</view>
+                </block>
+            </view>
+            <!--背部-->
+            <view class="water">
+                <image class="img" src="{{res.prizeDetail[2].imageUrl}}"></image>
+            </view>
+            <view class="share-wrap">
+                <block wx:if="{{res.friendPushNum == 20}}">
+                    <navigator class="appointment" url="/pages/appointment/my_appointment">
+                        已领取 去预约一下
+                    </navigator>
+                    <view class="hint-text" style="margin-top: 30rpx">小美已经偷偷将好礼塞进你的包囊了</view>
+                    <view class="hint-text">请到witness速美工场小程序查看【我的】</view>
+                </block>
+                <block wx:else>
+                    <button class="share" style="color: #333; margin-top: 40rpx; background-color: #C8B2B2;" @tap="share">{{res.friendPushNum >= 8 ? '还差一点点': '未开启'}}</button>
+                    <view class="hint-text" style="margin-top: 30rpx">终极大礼包 在等你  分享给更多好友助力</view>
+                    <view class="hint-text">还差<text class="num">{{20-res.friendPushNum}}</text>个人 即可获得</view>
+                </block>
+            </view>
+            <!--说明-->
+            <view class="instructions">
+                <image class="img" src="{{imageUrl}}activity_instructions.png"></image>
+            </view>
+            <view class="regulation">
+                <image class="img" src="{{imageUrl}}regulation.png"></image>
+                <image class="img regulation_i" style="margin-top: 24rpx" src="{{imageUrl}}regulation_i.png"></image>
+            </view>
+        </view>
+    </view>
+    <view class="dialog-wrap" wx:if="{{isShow}}">
+        <view class="dialog" @tap="clear"></view>
+        <view class="body" @tap="stop">
+            <view class="wrap">
+                <image class="img" src="{{imageUrl}}{{dialog}}"></image>
+                <button class="share" open-type="share">分享好友 获得更多美肤好礼</button>
+            </view>
+        </view>
+    </view>
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+	import zanNoticebar from '../../components/zan-noticebar'
+    let clearTime = 0;
+
+	export default class FriendsHelp extends wepy.page {
+		config = {
+			navigationBarTitleText: 'witness关注好礼',
+			backgroundColor: '#ffffff',
+			enablePullDownRefresh: true //开启下拉刷新
+		};
+		components = {
+			zanNoticebar
+		}
+		data = {
+			imageUrl: '/pages/activity/images/',//wepy.$appConfig.imageUr
+			dialog: 'dialog_1.png',
+			loading: false,
+			isShow: true,
+			showStatus: true,
+			memberId: '',
+            tips: '',
+			longText:'158****6968已经领取一张命名2 158****6968已经领取一张命名2 158****6968已经领取一张命名2 158****6968已经领取一张命名2 158****6968已经领取一张命名2',
+			res: {
+				joinNum:0,           //参与活动数量
+				topGetGiftInfo:"目前已经有523人参与 137****5373已经领取一张命名2",//没刷新一次短话号码和礼品名称改变一次
+				awardNum:0,         //this获得奖品数量
+				helpFsHeadImgUrl:[   //微信好友助力头像
+
+				],
+				friendPushNum:0     //助力好友数量
+			}
+		};
+
+		onLoad(options) {
+			this.isShow = !options.isJionActivity;
+			this.marketId = options.marketId;
+			this.getFriendPushDetail(options.marketId);
+		}
+		onReady() {
+			// 滚动通告栏需要initScroll
+			/*this.time = new Date().getTime();
+			this.$apply();*/
+		}
+		onUnload () {
+
+        }
+
+		onPullDownRefresh() {
+			wx.showNavigationBarLoading(); //在标题栏中显示加载
+			this.getFriendPushDetail();
+		}
+
+		onShareAppMessage (res) {
+			if (res.from === 'button') {
+				// 来自页面内转发按钮
+				this.isShow = false;
+			}
+			let {memberId=""} = wx.getStorageSync('session');
+			return {
+				title: '好友助力免费领取',
+				path: '/pages/activity/share?pushMemberId='+memberId+'&marketId='+this.marketId,
+				imageUrl: 'http://image01.ivymei.com/image/2018/05/31/ABCA9B474EF6435AB6404FD409531D20_COM.jpg'
+			}
+		}
+		methods = {
+            clear() {
+            	this.isShow = false;
+            	this.$apply();
+            },
+			stop() {
+
+            },
+			share() {
+				this.dialog = 'dialog_2.png';
+				this.isShow = true;
+            }
+		}
+		async getFriendPushDetail(marketId) {
+			const {data} = await api.getFriendPushDetail({
+				query: {
+					marketId:this.marketId
+				}
+			});
+			if (data) {
+				this.res = data;
+			}
+
+			switch(this.res.friendPushNum) {
+				case 8:
+					this.dialog = 'dialog_3.png';
+					if (this.showStatus) {
+						this.isShow = true;
+						this.showStatus = false;
+                    }
+					break;
+				case 20:
+					this.dialog = 'dialog_3.png';
+					this.isShow = true;
+					break;
+			}
+            //ajax轮询
+		/*	if (this.res.friendPushNum < 20) {
+				clearTime =	setTimeout(function () {
+					clearTimeout(wx.getStorageSync('clearAjax'));
+					this.getFriendPushDetail(marketId);
+				}.bind(this),15000);
+			}*/
+			/*wx.setStorageSync('clearAjax',clearTime);*/
+			//滚动弹幕
+			this.longText = this.res.topGetGiftInfoRight;
+			this.tips = this.res.topGetGiftInfo;
+			wx.hideNavigationBarLoading(); //完成停止加载
+			wx.stopPullDownRefresh(); //停止下拉刷新
+			this.$apply();
+			if (!this.loading) {
+				this.loading = true;
+				this.$invoke('zanNoticebar', 'initZanNoticeBarScroll');
+            }
+
+		}
+	}
+</script>
+

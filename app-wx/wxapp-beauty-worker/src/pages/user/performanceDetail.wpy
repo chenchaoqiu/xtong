@@ -1,0 +1,278 @@
+<style lang="less">
+    page{background: #f4f4f4;font-family: PingFang-SC-Regular; }
+    /** 修改默认的navigator点击态 **/
+    .navigator-hover {
+        color:blue;
+    }
+    /** 自定义其他点击态样式类 **/
+    .other-navigator-hover {
+        color:red;
+    }
+    .font30{font-size: 30rpx;}
+    .font26{font-size: 26rpx;}
+    .color6{color:#666666}
+    .color3{color:#333333}
+    .yeji-con{height: 84rpx;display: flex;display: -webkit-flex;background: #ffffff;padding: 35rpx 30rpx}
+    .user-img{width: 84rpx;height: 84rpx;border: 1rpx solid #f4f4f4;border-radius: 50%;overflow: hidden}
+    .user-yeji{flex: 1;-webkit-flex: 1;margin-left: 30rpx;display: flex;display: -webkit-flex;
+        flex-direction: column;-webkit-flex-direction: column}
+    .user-yeji-t{}
+    .user-yeji-b{}
+    .yeji-list{width: 100%;height: auto;background: #ffffff;margin-top: 10rpx;}
+    .yeji-list-title{height: 80rpx;border-bottom: 1rpx solid #f4f4f4;display: flex;display: -webkit-flex;padding: 0 30rpx;}
+    /*.list-item{flex: 1;-webkit-flex: 1;font-size: 26rpx;color: #666666;line-height: 80rpx;text-align: center*/
+    /*}*/
+    .list-item{flex: 1;-webkit-flex: 1;font-size: 26rpx;color: #666666;line-height: 80rpx;text-align: center;
+        overflow: hidden;text-overflow:ellipsis;  white-space: nowrap;display: inline-block;max-width: 60%;
+    }
+    .data-list{height: 80rpx;padding: 0 30rpx;border-bottom: 1rpx solid #f4f4f4;display: flex;display: -webkit-flex;
+        border-bottom: 1rpx solid #f4f4f4;background: #ffffff}
+    .yeji-bottom{width: 100%;height: 50rpx;background:#333333;color:#ffffff;font-size: 30rpx;
+        position: fixed;left: 0;bottom: 0;display: flex;display: -webkit-flex;padding: 23rpx 0;}
+    .yeji-bottom-item{flex:1;-webkit-flex: 1;height:50rpx;text-align: center}
+    .yeji-bottom .item-right{border-right: 1rpx solid #ffffff}
+    /*tab*/
+    swiper{}
+    .swiper-tab{
+        width: 100%;
+        border-bottom: 1rpx solid #f4f4f4;
+        text-align: center;
+        line-height: 90rpx;
+        background: #ffffff;
+        margin-top: 20rpx;
+        display: flex;
+        display: -webkit-flex;
+    }
+    .swiper-tab-list{
+        font-size: 30rpx;
+        flex: 1;
+        -webkit-flex: 1;
+    }
+    .on{ border-bottom: 2rpx solid #26cad3;}
+    /*文字1行溢出*/
+    .oneline-overflow{
+        overflow: hidden;text-overflow:ellipsis;  white-space: nowrap;}
+    /*文字2行溢出*/
+    .twoline-overflow{display: -webkit-box;  -webkit-box-orient: vertical;  -webkit-line-clamp: 2;
+        overflow: hidden;}
+</style>
+<template>
+    <view style="height: 1px;width: 100%;background: #f4f4f4; position: fixed;top:0;left: 0"></view>
+    <!--个人业绩-->
+    <view class="yeji-con">
+        <view class="user-img">
+            <open-data type="userAvatarUrl"></open-data>
+            <!--<image src="{{headerImg}}" style="width: 84rpx;height: 84rpx;border-radius: 50%"></image>-->
+        </view>
+        <view class="user-yeji">
+            <view class="user-yeji-t" style="margin-top: -10rpx;" >
+                <text class="font30" >{{employeeName}}</text>
+                <text class="font30 color6" >({{roleName}})</text>
+            </view>
+            <view class="user-yeji-b">
+                <view style="float: left">
+                    <text class="color6" style="display: block;font-size: 26rpx;">{{nowday}}业绩</text>
+                </view>
+                <view style="float: right">
+                    <text class="font30" style="display: block;color: #ff5767;margin-top: -4rpx;">{{todayAchieve}}元</text>
+                </view>
+            </view>
+        </view>
+    </view>
+    <!--swiper-tab-->
+    <view class="swiper-tab">
+        <view class="swiper-tab-list {{currentTab==0 ? 'on' : ''}}" data-current="0" bindtap="swichNav">销售</view>
+        <view class="swiper-tab-list {{currentTab==1 ? 'on' : ''}}" data-current="1" bindtap="swichNav">消耗</view>
+        <view class="swiper-tab-list {{currentTab==2 ? 'on' : ''}}" data-current="2" bindtap="swichNav">手工费</view>
+        <view class="swiper-tab-list {{currentTab==3 ? 'on' : ''}}" data-current="3" bindtap="swichNav">服务人数</view>
+    </view>
+
+    <swiper current="{{currentTab}}" class="swiper-box" duration="300" style="height:{{listwinHeight}}rpx" bindchange="bindChange">
+        <!-- 销售-->
+        <swiper-item>
+            <view>
+                <view class="yeji-list">
+                    <view class="yeji-list-title">
+                        <view class="list-item" style="text-align: left">成交顾客</view>
+                        <view class="list-item">实收金额</view>
+                        <view class="list-item" style="text-align: right">成交业绩</view>
+                    </view>
+                </view>
+                <view style="max-height: {{listwinHeight-90}}rpx;overflow-y: scroll">
+                    <view  class="data-list" wx:for="{{saleList}}">
+                        <view class="list-item" style="font-size: 24rpx;text-align: left">{{item.memberName}}</view>
+                        <view class="list-item" style="font-size: 24rpx;color:#333333;">{{item.reallyPrice}}</view>
+                        <view class="list-item" style="font-size: 24rpx;color:#333333;text-align: right">{{item.afterAchieve}}</view>
+                    </view>
+                </view>
+            </view>
+        </swiper-item>
+        <!-- 消耗 -->
+        <swiper-item>
+            <view>
+                <view class="yeji-list">
+                    <view class="yeji-list-title">
+                        <view class="list-item" style="text-align: left">消费顾客</view>
+                        <view class="list-item">消耗价格</view>
+                        <view class="list-item" style="text-align: right">消耗业绩</view>
+                    </view>
+                </view>
+                <view style="max-height: {{listwinHeight-90}}rpx;overflow-y: scroll">
+                    <view  class="data-list" wx:for="{{consumeList}}">
+                        <view class="list-item" style="font-size: 24rpx;text-align: left">{{item.memberName}}</view>
+                        <view class="list-item" style="font-size: 24rpx;color:#333333;">{{item.reallyPrice}}</view>
+                        <view class="list-item" style="font-size: 24rpx;color:#333333;text-align: right">{{item.afterAchieve}}</view>
+                    </view>
+                </view>
+            </view>
+        </swiper-item>
+        <!-- 手工费 -->
+        <swiper-item>
+            <view>
+                <view class="yeji-list">
+                    <view class="yeji-list-title">
+                        <view class="list-item" style="text-align: left">顾客姓名</view>
+                        <view class="list-item">操作项目</view>
+                        <view class="list-item" style="text-align: right">手工费金额</view>
+                    </view>
+                </view>
+                <view style="max-height: {{listwinHeight-90}}rpx;overflow-y: scroll">
+                    <view  class="data-list" wx:for="{{handList}}">
+                        <view class="list-item " style="font-size: 24rpx;text-align: left">{{item.memberName}}</view>
+                        <view class="list-item " style="font-size: 24rpx;color:#333333;">{{item.projectName}}</view>
+                        <view class="list-item " style="font-size: 24rpx;color:#333333;text-align: right">{{item.handPrice}}</view>
+                    </view>
+                </view>
+            </view>
+        </swiper-item>
+        <!-- 服务人数 -->
+        <swiper-item>
+            <view>
+                <view class="yeji-list">
+                    <view class="yeji-list-title">
+                        <view class="list-item" style="text-align: left">顾客姓名</view>
+                        <view class="list-item">顾客电话</view>
+                        <view class="list-item" style="text-align: right">消费金额</view>
+                    </view>
+                </view>
+                <view style="max-height: {{listwinHeight-90}}rpx;overflow-y: scroll">
+                    <view  class="data-list" wx:for="{{memberList}}">
+                        <view class="list-item" style="font-size: 24rpx;text-align: left">{{item.memberName}}</view>
+                        <view class="list-item" style="font-size: 24rpx;color:#333333;">{{item.memberPhone}}</view>
+                        <view class="list-item" style="font-size: 24rpx;color:#333333;text-align: right">{{item.reallyPrice}}</view>
+                    </view>
+                </view>
+            </view>
+        </swiper-item>
+    </swiper>
+
+    <!--content-->
+
+
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import api from '../../api/api'
+    export default class performanceDetail extends wepy.page {
+        config = {
+            navigationBarTitleText: '业绩详情',
+            "enablePullDownRefresh": false,     //关闭系统刷新
+        }
+        components = {}
+
+        data = {
+            "memberList":[],
+            "saleList":[],
+            "handList":[],
+            "consumeList":[],
+            "employeeName":"",
+            "roleName":"",
+            "todayAchieve":"",
+//            date: '2018-02',
+            "dateStart" :"",
+            "date":"",
+            "nowday":"",
+            "winWidth": "",
+            "winHeight": "",
+            listwinHeight:"",
+            // tab切换
+            currentTab: 0,
+            headerImg:'',
+//
+        }
+
+//          滑动切换tab
+        bindChange( e ) {
+            this.currentTab = e.detail.current;
+        }
+
+//         点击tab切换
+        swichNav( e ) {
+            var that = this;
+
+            if( this.data.currentTab === e.target.dataset.current ) {
+                return false;
+            } else {
+                this.currentTab = e.target.dataset.current
+            }
+        }
+        computed = {}
+        methods = {
+            bindDateChange(e) {
+                console.log('picker发送选择改变，携带值为', e.detail.value);
+                this.date = e.detail.value;
+            },
+        }
+
+        events = {}
+
+        async onLoad(options) {
+            /**
+             * 获取系统信息
+             */
+            wx.getSystemInfo( {
+                success: function( res ) {
+//                    this.winWidth=res.windowWidth;
+//                    this.winHeight= res.windowHeight;
+//                    this.listwinHeight= res.windowHeight - 130;
+                    this.winWidth = res.windowWidth;
+                    var winHeight = res.windowHeight;
+                    var rpxR = 750 / this.winWidth;
+                    this.winHeight = winHeight * rpxR;
+                    this.listwinHeight = winHeight * rpxR - 260;
+                    console.log(this.winHeight)
+                }.bind(this)
+            });
+
+            var session= wx.getStorageSync('session', json);
+//            console.log(session);
+//            this.headerImg = wx.getStorageSync('session').headerImg || '';
+            var employeeId = session.employeeId;
+            this.roleName = session.roleName;
+//            console.log(employeeId);
+            this.dateStart = options.dateStart;
+            const json = await api.employeeAchieve({
+                query: {
+                    employeeId: employeeId,
+                    dateStart : options.dateStart,
+                }
+            });
+//            console.log(json);
+            this.employeeName = json.data.employeeName;
+
+//            处理显示时间
+            var date = json.data.date;
+            var time1 = date.substr(5, 2);
+            var time2 = date.substr(8,2);
+            this.nowday = time1 + '月' + time2 + '日';
+            this.todayAchieve = json.data.todayAchieve;
+            this.memberList = json.data.memberList;
+            this.saleList = json.data.saleList;
+            this.handList = json.data.handList;
+            this.consumeList = json.data.consumeList;
+//            console.log(this.memberList);
+            this.$apply();
+        }
+    }
+</script>

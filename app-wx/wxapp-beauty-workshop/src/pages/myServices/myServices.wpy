@@ -1,0 +1,539 @@
+<style lang="less">
+  page {background-color: #ebf0ef;font-family: PingFang-SC-Regular; }
+  ::-webkit-scrollbar{
+    width: 0;
+    height: 0;
+    color: transparent;
+  }
+  .color-mian{color:#26cad3}
+  .color-fuzhu{color:#e4393c}
+  .color-333{color:#333333}
+  .color-666{color:#666666}
+  .color-999{color:#999999}
+  .font-30{font-size: 30rpx;}
+  .font-28{font-size: 28rpx;}
+  .font-26{font-size: 26rpx;}
+  .font-24{font-size: 24rpx;}
+  .swiper-tab{
+    height: 90rpx;line-height: 90rpx;width: 100%; box-sizing: border-box;overflow: hidden;background: #ffffff;
+    border-bottom: 1rpx solid #eeeeee;border-top:1rpx solid #dddddd; font-size: 30rpx; white-space: nowrap;position: fixed;top: 0; left: 0;
+    z-index: 99;color:#666666
+  }
+  .swiper-box{margin-top: 90rpx;}
+  .swiper-tab-list{display: inline-block;width: 50%;text-align: center}
+  .swiper-tab-list.active{position: relative;color: #26cad3;}
+  .swiper-tab-list.active:after{ content: "";display: block;height: 8rpx;width: 200rpx;background: #26cad3;position: absolute; bottom: 0;left: 84rpx;border-radius: 16rpx;}
+  .list{width: 100%;margin-top: 20rpx;background: #ffffff;border-bottom: 1rpx solid #eee}
+  .list-con{padding: 24rpx 0rpx;margin:0 24rpx;display: flex;display: -webkit-flex;}
+  .list-con2{border-bottom: 1rpx solid #eeeeee}
+  .list-con2:last-child{border-bottom:none!important;}
+  .con-img{width: 210rpx;height: 140rpx;}
+  .con-r{flex: 1;-webkit-flex:1;margin-left: 30rpx;display: flex;flex-direction: column;-webkit-flex-direction: column;justify-content: space-around;-webkit-justify-content:space-around}
+  .title{margin-top: 5rpx;line-height: 40rpx;display: -webkit-box;  -webkit-box-orient: vertical;  -webkit-line-clamp: 2;
+    overflow: hidden;}
+  .des{display: -webkit-box;  -webkit-box-orient: vertical;  -webkit-line-clamp: 1;
+    overflow: hidden;}
+  .price{margin-top: 10rpx;}
+  .list-guige{background: #fff9f9;height: auto;}
+  .list-guige-item{ margin: 0 24rpx;overflow: hidden;height: 24rpx;line-height: 24rpx;padding-top: 18rpx;font-size: 24rpx;}
+  .list-guige-item:last-child{padding-bottom: 18rpx;}
+  .book{height: 80rpx;line-height: 80rpx;margin: 0 24rpx;}
+  .book-btn{float: right;display: block;margin-top: 12rpx;width: 150rpx;height: 56rpx;line-height: 56rpx;font-size:26rpx;text-align: center;color:#e4393c;border: 1rpx solid #e4393c;border-radius: 10rpx;}
+  .list-shop{height: 74rpx;line-height: 74rpx;border-top:1rpx solid #ddd;border-bottom: 1rpx solid #ddd;padding: 0 24rpx;}
+  .oneline-overflow{overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+
+  .role {
+    position: fixed;
+    width: 215rpx;
+    height: 191rpx;
+    right: 30rpx;
+    bottom: 250rpx;
+  }
+
+  .pro-item{}
+  .pro-item-sel{padding: 0 30rpx;height: 88rpx;line-height:88rpx;color:#333;background: #fff9f9;}
+  .pro-item-sel .more{width: 36rpx;height: 36rpx;margin-top: 26rpx;float: right}
+  .pro-item-con{;border-top: 1rpx solid #eee;background: #fff;}
+  .pro-item-con-list{padding: 30rpx 30rpx;color: #666;font-size: 26rpx;line-height: 26rpx;border-bottom: 1rpx solid #eee}
+  .pro-item-con-des{font-size: 22rpx;height: 74rpx;line-height: 74rpx;padding: 0 30rpx;
+    display: flex;display: -webkit-flex;justify-content: space-between;-webkit-justify-content: space-between}
+  .con-des-sy{flex: 1;-webkit-flex: 1;text-align: center}
+  .info-ls {
+    position: relative;
+    font-size: 24rpx;
+    color: #999;
+    margin-top: 18rpx;
+    .omit {
+      font-size: 50rpx;
+      position: absolute;
+      bottom: 0;
+      margin-bottom: -8rpx;
+    }
+    .btn-wrap {
+      margin-top: 15rpx;
+      padding-top: 12rpx;
+      padding-bottom: 12rpx;
+      padding-right:24rpx;
+      border-top: 1rpx solid #eee;
+      .btn {
+        color: #333;
+        font-size: 26rpx;
+        padding: 12rpx 40rpx;
+        border: 1rpx solid #999;
+        border-radius: 4px;
+        +.btn {
+          margin-right: 30rpx;
+        }
+      }
+    }
+  }
+  .pj-info-box {
+    display:-webkit-box;
+    display:-webkit-flex;
+    display: flex;
+    -webkit-box-align:center;
+    -webkit-align-items:center;
+    align-items:center;
+    font-size: 30rpx;
+    padding: 0 24rpx;
+    font-size:24rpx;
+    .specification {
+      -webkit-box-flex:1;
+      -webkit-flex:1;
+      flex:1;
+      padding-right: 10rpx;
+    }
+    .pj-num,
+    .pay {
+      font-size: 24rpx;
+      color: #333;
+    }
+    .pay {
+      text-align: right;
+      text {
+        color: #E43C3F;
+      }
+    }
+  }
+  .dialog-present {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 110;
+    background-color: rgba(0,0,0,.8);
+    overflow: hidden;
+    .modal-wrap {
+      padding: 0 60rpx;
+      margin-top: 374rpx;
+      .centen {
+        position: relative;
+        text-align: center;
+        background-color: #fff;
+        border-radius: 3px;
+        .title-1 {
+          color: #333;
+          font-size: 36rpx;
+        }
+        .title-1 {
+          padding-top: 36rpx;
+        }
+        .title-2, .title-3{
+          padding-top: 8rpx;
+          font-size: 28rpx;
+          color: #666;
+        }
+        .input-wrap {
+          .table-wrap {
+            display: table;
+            table-layout: fixed;
+            width: 100%;
+            margin-top: 46rpx;
+            .cell {
+              display: table-cell;
+              vertical-align: middle;
+            }
+          }
+
+          .minus,
+          .add {
+            /*border: 1px solid #b7b7b7;*/
+            width: 60rpx;
+            font-size: 0;
+          }
+          .num {
+            font-size: 36rpx;
+            height: 46rpx;
+            line-height: 1;
+            padding: 0 12rpx;
+          }
+        }
+        .btn-wrap {
+          margin-top: 50rpx;
+          border-top: 1rpx solid #eee;
+          .confirm,
+          .cancel {
+            width: 50%;
+            color: #fff;
+            font-size: 36rpx;
+            box-sizing: border-box;
+            height: 100rpx;
+            line-height: 100rpx;
+          }
+          .confirm {
+            background-color: #27CAD3;
+            border: 0 !important;
+            border-radius: 0 !important;
+            &::before {
+              border: 0 !important;
+              border-radius: 0 !important;
+            }
+            &::after {
+              border: 0 !important;
+              border-radius: 0 !important;
+            }
+            border-bottom-right-radius: 3px !important;
+          }
+          .cancel {
+            background-color: #DDD;
+            border-bottom-left-radius: 3px;
+          }
+        }
+      }
+    }
+  }
+</style>
+<template>
+  <!--<view style="height: 1rpx;width: 100%;background: #dddddd;position: fixed;top:0;left: 0;overflow: hidden" ></view>-->
+  <!--swiper-tab-->
+  <view  class="swiper-tab"  >
+    <view class="swiper-tab-list {{currentTab==0 ? 'active' : ''}}" data-current="0" bindtap="swichNav" >可使用的服务</view>
+    <view class="swiper-tab-list {{currentTab==1 ? 'active' : ''}}" data-current="1" bindtap="swichNav" >已完成的服务</view>
+  </view>
+  <swiper current="{{currentTab}}" class="swiper-box" duration="300" style="height:{{winHeight}}rpx;" bindchange="bindChange" >
+    <!--list-->
+    <!--可使用的服务-->
+    <swiper-item  style="overflow-y: scroll">
+      <view class="list" wx:for="{{ableList}}" wx:key="{{item.orderSn}}" wx:if="{{ableList.length != 0}}">
+        <navigator url="/pages/myServices/servicesDetail?orderSn={{item.orderSn}}&courseCardId={{item.courseCardId}}&specId={{item.specId}}" hover-class="none" class="list-con">
+          <view class="con-img">
+            <image src="{{item.logo}}" style="width: 210rpx;height: 140rpx;"></image>
+          </view>
+          <view class="con-r">
+            <text class="title font-30 color-333" >{{item.name}}</text>
+            <text class="des font-24 color-999">{{item.specName}}</text>
+          </view>
+        </navigator>
+        <view class="info-ls">
+          <view class="pj-info-box">
+            <view class="specification">
+              <view wx:if="{{item.isNumLimit > 0}}" class="pj-num">购买 {{item.totalServiceNum}} 次 剩余 {{item.remainServiceNum}}</view>
+              <view wx:else class="pj-num">无限次</view>
+            </view>
+            <view class="pay">实付：<text>￥{{item.actuallyPay}}</text></view>
+          </view>
+          <view class="pj-info-box">
+            <view class="specification">
+              <view wx:if="{{item.isTimeLimit == 1}}" class="color-66" style="">有效期至：{{item.effectDate}}</view>
+              <view wx:else class="color-66" style="">有效期至永久有效</view>
+            </view>
+            <view class="pay" wx:if="{{item.sendSuccessNum}}">转赠中：{{item.sendSuccessNum}} 次</view>
+          </view>
+
+          <view class="btn-wrap clearfix">
+            <navigator class="btn pull-right" hover-class="none" url="/pages/appointment/add_appointment" wx:if="{{item.sendStatus != 2}}">预约</navigator>
+            <view class="btn pull-right" wx:if="{{item.sendStatus == 1}}"  @tap.stop="present({{index}},{{item}})">转赠</view>
+            <view class="btn pull-right" wx:if="{{item.sendStatus == 2}}"  @tap.stop="cancelPresent({{item.orderSendId}})">取消转赠</view>
+          </view>
+        </view>
+      </view>
+      <view wx:if="{{ableList.length == 0}}" style=" padding-top: 430rpx;text-align: center; font-size: 32rpx;color: #ddd;">暂无可用项目</view>
+    </swiper-item>
+    <!--已完成-->
+    <swiper-item  style="overflow-y: scroll">
+      <view class="list" wx:for="{{doneList}}" wx:if="{{doneList.length != 0}}" wx:key="{{item.bookingId}}">
+        <navigator url="/pages/servicesOK/servicesOK?id={{item.bookingId}}" hover-class="none">
+          <view class="list-shop">
+            <text class="font-26 color-666" style="display: block;float: left">服务门店：</text>
+            <text class="font-28 color-666 oneline-overflow" style="max-width: 42%;display: inline-block;float: left">{{item.shopName}}</text>
+            <text class="font-26 color-666" style="display: block;float: right">{{item.serviceTime}}</text>
+          </view>
+          <block wx:for="{{item.items}}" wx:for-item="itemb" wx:key="index">
+            <view  class="list-con list-con2" >
+              <view class="con-img">
+                <image src="{{itemb.imageUrl}}" style="width: 210rpx;height: 140rpx;"></image>
+              </view>
+              <view class="con-r">
+                <text class="title font-30 color-333" >{{itemb.specName}}</text>
+                <text class="des font-26 color-999"><text style="color:#26cad3">{{itemb.specName}}</text><text style="padding-left: 24rpx;color:#26cad3">X{{itemb.consumeNum}}</text><text style="padding-left: 24rpx;">服务完成</text></text>
+              </view>
+            </view>
+          </block>
+        </navigator>
+      </view>
+      <view wx:if="{{doneList.length == 0}}" style=" padding-top: 430rpx;text-align: center; font-size: 32rpx;color: #ddd;">当前无使用过服务</view>
+    </swiper-item>
+  </swiper>
+  <!--弹框-->
+  <view wx:if="{{isShowPresent}}" class="dialog-present">
+    <view class="modal-wrap">
+      <view class="centen">
+        <view class="title-1 ellipsis-2">{{checkedProject.courseCardName}}</view>
+        <view class="title-2">（最多可赠送{{checkedProject.remainServiceNum}}次）</view>
+        <view class="input-wrap">
+          <view class="table-wrap">
+            <view class="cell" style="width: 33%"></view>
+            <image @tap="minus" mode="widthFix" src="../../images/minus.png" class="minus cell"></image>
+            <text class="num cell">{{number}}</text>
+            <image @tap="add" mode="widthFix" src="../../images/add.png" class="add cell"></image>
+            <view class="cell" style="width: 33%"></view>
+          </view>
+        </view>
+        <view class="btn-wrap clearfix">
+          <view @tap="cancel" class="cancel pull-left">取消</view>
+          <button open-type="share"  class="confirm pull-right">确定</button>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import api from '../../api/api'
+
+  export default class myServices extends wepy.page {
+    config = {
+      navigationBarTitleText: '我的服务',
+      "enablePullDownRefresh": true, //开启下拉刷新
+    }
+    onShareAppMessage (res) {
+      let _this = this;
+      let {memberCompanyId=""} = wx.getStorageSync('session');
+      if (res.from === 'button') {
+        return {
+          title: '您的好友给你赠送了1个项目',
+          path: '/pages/productDetails/getGift?orderSendId=' + this.checkedProject.orderSendId + '&shareMemberCompanyId=' + memberCompanyId,
+          imageUrl: this.checkedProject.logo,
+          success: function (res) {
+            // 转发成功之后的回调
+            if (res.errMsg == 'shareAppMessage:ok') {
+              _this.sendConfirm();
+            }
+          },
+          fail: function () {
+            // 转发失败之后的回调
+            if (res.errMsg == 'shareAppMessage:fail cancel') {
+              // 用户取消转发
+            } else if (res.errMsg == 'shareAppMessage:fail') {
+              // 转发失败，其中 detail message 为详细失败信息
+            }
+          }
+        }
+      }
+      return {
+        title: '亲爱的 推荐你一个女生必备的小程序 要关注哦！',
+        path: '/pages/index/index?shareMemberCompanyId='+wx.getStorageSync('session').memberCompanyId,
+        imageUrl: this.imageUrl + 'share_img.png'
+      }
+    }
+    data = {
+      imageUrl: wepy.$appConfig.imageUrl,
+      winWidth:"",
+      winHeight:"",
+      currentTab :0,
+      istime:true,    //是否有截止时间
+      ableList:[],//门店的信息列表-待使用
+      doneList:[],  ////门店的信息列表-已完成
+      serviecesList:[], //门店下服务的列表
+      page:1,
+      pageSize:0,
+      isReset: true,
+      roleSrc: '../../images/role.png',
+      number: 1,
+      isShowPresent: false,
+      checkedProject: {}
+    }
+
+    //         点击tab切换
+    swichNav( e ) {
+      if( this.data.currentTab === e.target.dataset.current ) {
+        return false;
+      } else {
+        this.currentTab = e.target.dataset.current;
+//        this.ajax();
+      }
+    }
+//            滑动切换
+    bindChange( e ) {
+      this.currentTab = e.detail.current;
+//      console.log(this.currentTab);
+    }
+//    onReachBottom(e){//监控滚动到底部
+//      if(this.zt){
+//        return;
+//      }
+//      this.ajxa({status:this.sta[this.size],page:++this.lenf},'scroll')
+//    }
+    watch = { }
+
+    methods = {
+      //点击展示
+      more(index,b) {
+        this.ableList[index].more = b;
+        this.$apply();
+      },
+      minus() {
+        this.number > 1 && this.number --
+      },
+      add() {
+        this.checkedProject.remainServiceNum > this.number && this.number ++
+      },
+      confirm() {
+        this.isShowPresent = false;
+      },
+      cancel() {
+        this.isShowPresent = false;
+      },
+      present(index,obj,e) {
+        this.number = 1;
+        this.isShowPresent = true;
+        this.checkedProject = obj;
+        this.sendCreate();
+      },
+      cancelPresent(id) {
+        this.sendCancel(id);
+      }
+    }
+    //我的服务-可使用
+    async getAbleList(){
+      const getAbleList = await api.getAbleList({
+        query: {
+//          pageNo:1,//   第几页
+//          pageSize:2,   //显示几条
+        }
+      });
+      this.ableList = getAbleList.data.list;      //门店的信息列表
+      this.$apply();
+    }
+////    上拉刷新
+    onPullDownRefresh()
+    {
+      this.isReset = false;
+      wx.showNavigationBarLoading(); //在标题栏中显示加载
+      //模拟加载
+      if(this.currentTab == 0){
+        this.getAbleList();
+      }
+      if(this.currentTab == 1){
+        this.getDoneList(false);
+      }
+      setTimeout(function()
+      {
+        wx.hideNavigationBarLoading(); //完成停止加载
+        wx.stopPullDownRefresh() //停止下拉刷新
+        this.isReset = true;
+      }.bind(this),1500);
+    }
+//    下拉加载更多
+    onReachBottom(){
+      if (!this.isReset) {
+        return
+      }
+        if(this.currentTab == 1){
+          if(this.doneList.length < this.pageSize){
+            this.page=this.page + 1;
+            this.getDoneList(true);
+          }else{
+            wx.showToast({
+              title: '没有更多了',
+              icon: 'loading',
+              duration: 2000
+            })
+            return;
+          }
+        }
+
+
+    }
+    //我的服务-已完成
+    async getDoneList(e){
+      if(!e){
+        this.page=1;
+      }
+      const getDoneList = await api.getDoneList({
+        query: {
+          pageNo:this.page,//   第几页
+          pageSize:8,   //显示几条
+        }
+      });
+//      this.doneList = getDoneList.data.list;      //门店的信息列表
+      if(e){
+        this.doneList = this.doneList.concat(getDoneList.data.list);
+      }else{
+        this.doneList = getDoneList.data.list;      //门店的信息列表
+        this.pageSize =  getDoneList.data.totalSize;
+      }
+      for(var i in this.doneList){
+        var oldtime = this.doneList[i].serviceTime; //获取完成时间
+        this.doneList[i].serviceTime = oldtime.substr(0, 10);
+      }
+      this.$apply();
+    }
+    async sendCancel(id) {
+      const {imei_error_code} = await api.sendCancel({
+        query:{
+          orderSendId: id
+        }
+      });
+      if (imei_error_code == 0) {
+        this.getAbleList();
+      }
+    }
+    async sendCreate() {
+      const {imei_error_code,data:{orderSendId}} = await api.sendCreate({
+        query:{
+          sendType: 1,
+          orderCourseCardId: this.checkedProject.orderCourseCardId,//this.checkedProject.orderCourseCardId,
+          sendServiceNum: this.number
+        }
+      });
+
+      if (imei_error_code == 0) {
+        /*this.getUsableProjectList();
+         this.isShowPresent = false;*/
+        this.checkedProject.orderSendId = orderSendId;
+      }
+    }
+    async sendConfirm() {
+      const {imei_error_code} = await api.sendConfirm({
+        query:{
+          orderSendId: this.checkedProject.orderSendId,
+          sendServiceNum: this.number
+        }
+      });
+
+      if (imei_error_code == 0) {
+        this.getAbleList();
+        this.isShowPresent = false;
+      }
+    }
+
+    async onLoad() {
+      // 获取系统信息
+      // 获取高度
+      wx.getSystemInfo({
+        success: function (res) {
+          this.winWidth = res.windowWidth;
+          var winHeight = res.windowHeight;
+          var rpxR = 750 / this.winWidth;
+//          this.winHeight = winHeight * rpxR;
+          //下面swiper的高度
+          this.winHeight = winHeight * rpxR - 90;
+        }.bind(this)
+      });
+      this.getAbleList();//获取我的服务-待使用
+      this.getDoneList(false); //获取我的服务-已完成接口
+    }
+  }
+</script>

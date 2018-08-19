@@ -1,0 +1,186 @@
+<style lang="less">
+    page {
+        min-height: 100vh;
+        max-height: 100vh;
+        overflow: hidden;
+    }
+    .bg-wrap {
+        position: fixed;
+        min-height: 100vh;
+        max-height: 100vh;
+        overflow: hidden;
+        top: 0;
+        right: 0;
+        left: 0;
+        .bg-img {
+            display: block;
+            height: 100vh;
+            width: 100vw;
+        }
+        .btn {
+            position: absolute;
+            width: 690rpx;
+            bottom: 130rpx;
+            left: 50%;
+            margin-left: -345rpx;
+            height: 90rpx;
+            line-height: 90rpx;
+            background-color: #F5A4BC;
+            color: #fff;
+            font-size: 40rpx;
+            text-align: center;
+            border-radius: 36rpx;
+            letter-spacing: 6px;
+        }
+        .input {
+            position: absolute;
+            width: 690rpx;
+            bottom: 250rpx;
+            left: 50%;
+            margin-left: -345rpx;
+            height: 90rpx;
+            line-height: 90rpx;
+            background-color: #fff;
+            color: #F5A4BC;
+            font-size: 40rpx;
+            text-align: center;
+            border-radius: 36rpx;
+            letter-spacing: 6px;
+            border: 1px solid #F5A4BC;
+        }
+    }
+    .placeholder {
+        color: #F5A4BC;
+    }
+</style>
+<template>
+    <view class="bg-wrap">
+        <image class="bg-img" src="/pages/activity/images/s_bg.png"></image>
+        <input class="input" type="number" maxlength="11" @input="setVal" placeholder-class="placeholder" placeholder="请输入手机号码"/>
+        <view class="btn" @tap="submit">领取免费美肤体验</view>
+    </view>
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+
+	export default class Share extends wepy.page {
+		config = {
+			navigationBarTitleText: 'witness关注好礼',
+			backgroundColor: '#ffffff'
+		};
+
+		data = {
+			imageUrl: '/activity/images/',//wepy.$appConfig.imageUrl
+			mobile: '',
+			marketId: '',
+			pushMemberId: '',
+			canUse: '',
+			tips: '',
+			isActivityStart: ''
+		};
+
+		onLoad(options) {
+			wx.setStorageSync("isLoadMyA", true);
+			let sessionInterval = setInterval(function () {
+				let session = wx.getStorageSync('session') || false;
+				if (options.scene) {
+					session && this.getSceneParams(options.scene);
+				} else {
+				 	session && this.getHomeFriendPushDetail(options.marketId);
+					this.pushMemberId = options.pushMemberId || '';
+					this.marketId = options.marketId || '';
+				}
+				session && clearInterval(wx.getStorageSync('sessionInterval'));
+			}.bind(this),500);
+			wx.setStorageSync('sessionInterval',sessionInterval);
+		}
+		onReady() {
+
+		}
+		methods = {
+			setVal(e) {
+                this.mobile = e.detail.value;
+			},
+			submit() {
+                if (/^1\d{10}$/.test(this.mobile)) {
+                    this.getFriendPushGift();
+                } else {
+	                wx.showModal({
+		                title: '',
+		                content: '请输入正确的手机号码，确保可以领到礼品',
+		                showCancel: false,
+		                confirmColor: '#F5A4BC',
+		                success: function(res) {
+
+		                }
+	                })
+                }
+            },
+        }
+        //获取活动参数
+        async getSceneParams() {
+	        const {data} = await api.getSceneParams({
+		        query: {
+			        scene:this.scene,
+		        }
+	        });
+	        this.marketId = data.marketId;
+	        this.getHomeFriendPushDetail(data.marketId);
+        }
+        //首页活动详情
+		async getHomeFriendPushDetail(marketId) {
+			const {data:{isJionActivity=false,isOpen,canUse,isActivityStart,tips}} = await api.getHomeFriendPushDetail({
+				query: {
+					marketId
+				}
+			});
+
+			if (!canUse) {
+				wx.showModal({
+					title: '',
+					content: isActivityStart == 1 ? '活动已结束' : '活动未开始',
+					confirmText: isActivityStart == 1 ? '查看礼物' : '去逛逛',
+					showCancel: false,
+					confirmColor: '#F5A4BC',
+					complete: function(res) {
+						if (isActivityStart == 1) {
+							this.$redirect('/pages/order/order');
+						} else {
+							this.$redirect('/pages/index/index');
+						}
+					}.bind(this)
+				})
+				return
+            }
+
+			if (isOpen == 0) {
+				await api.recordUserOpenActivity({
+					query: {
+						marketId
+					}
+				});
+            }
+
+			if (isJionActivity) {
+				this.$redirect('/pages/activity/friends_help',{marketId:this.marketId,isJionActivity:true});
+			}
+		}
+		//领取礼物
+		async getFriendPushGift() {
+
+			const {imei_error_code} = await api.getFriendPushGift({
+				query: {
+					marketId: this.marketId,
+					pushMemberId: this.pushMemberId,
+					mobile: this.mobile
+				}
+			});
+			if (imei_error_code == 0) {
+				this.$redirect('/pages/activity/friends_help',{marketId:this.marketId});
+			}
+		}
+
+	}
+</script>
+

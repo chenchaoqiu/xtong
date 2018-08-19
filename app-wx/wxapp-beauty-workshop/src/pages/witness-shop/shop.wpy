@@ -1,0 +1,184 @@
+<style lang="less">
+  page {
+    background-color: #ebf0ef;
+    border-top:1px solid #ddd;
+  }
+  page > view{
+    background: #fff;
+  }
+  .curetr{
+    padding:30rpx 30rpx;
+    overflow: hidden;
+    border-bottom: 1rpx solid #ddd;
+    > view{
+      width:615rpx;
+      view{
+        width:100%;
+        font-size: 36rpx;
+        color: #333;
+        height:52rpx;
+        line-height:52rpx;
+      }
+      view:first-child{
+        margin-bottom: 12rpx;
+      }
+      view:nth-child(2){
+        image{
+          display: inline-block;
+          width:21rpx;
+          height:28rpx;
+          margin-right: 14rpx;
+          margin-top: 10rpx;
+        }
+        text{
+          font-size: 26rpx;
+          color: #666;
+        }
+        text:nth-child(2){
+          position: relative;
+          padding-right: 20rpx;
+        }
+        text:nth-child(3){
+          width:400rpx;
+        }
+        text:nth-child(2):before{
+          content: '';
+          position: absolute;
+          width:1rpx;
+          height:28rpx;
+          right: 9.5rpx;
+          top:10rpx;
+          background: #ddd;
+        }
+      }
+    }
+  }
+</style>
+<template>
+  <!--定位-->
+  <view wx:for="{{dat.recentlyDistanceShop}}" wx:key="index" class="curetr">
+    <view @tap="navei('{{item.shopId}}')" class="pull-left">
+      <view class="ellipsis-1">{{item.shopName}}</view>
+      <view>
+        <image class="pull-left" src="/images/location.png"></image>
+        <text class="pull-left" wx:if="{{item.distance > 1000}}">{{filter.toFixed(item.distance / 1000)}}km</text>
+        <text class="pull-left" wx:else>{{item.distance}}m</text>
+        <text class="pull-left ellipsis-1">{{item.address}}</text>
+      </view>
+    </view>
+    <image @tap="phone('{{item.telephone}}')" style="width: 48rpx;height: 48rpx;float:right;margin-top:30rpx; " src="/images/tel.png"></image>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import api from '../../api/api'
+  import filter from '../../wxs/toFix.wxs'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '分店列表',
+      backgroundColor: '#f4f4f4'
+    };
+    components = {
+    }
+
+    data = {
+      dat:[],
+      imageUrl: wepy.$appConfig.imageUrl,
+    }
+
+    onShareAppMessage(res){
+      if (res.from === 'button') {
+        // 来自页面内转发按钮
+//        console.log(res.target)
+      }else{
+        return {
+          title: '亲爱的 推荐你一个女生必备的小程序 要关注哦！',
+          imageUrl: this.imageUrl + 'share_img.png',
+          path: '/pages/index/index?shareMemberCompanyId='+wx.getStorageSync('session').memberCompanyId
+        }
+      }
+    }
+
+    wxs = {
+      filter: filter
+    }
+    async getposi(e){
+      /*获取门店*/
+      const json = await api.tabShop({
+        query: {
+          longitude:e.lo,
+          latitude:e.la,
+          keyword:e.keyword || ''
+        }
+      });
+      this.dat = json.data;
+      this.$apply();
+    }
+
+    placeho(e){
+      /*搜索门店*/
+      var That=this;
+      wx.getLocation({
+        type: 'gcj02',
+        success: function(res) {
+          var latitude = res.latitude
+          var longitude = res.longitude
+          That.getposi({keyword:e.detail.value,lo:longitude,la:latitude});
+        }
+      })
+    }
+
+    methods = {
+      phone(e){
+        wx.makePhoneCall({
+          phoneNumber: e //仅为示例，并非真实的电话号码
+        })
+      },
+      navei(e){
+        wx.navigateTo({
+          url: '/pages/witness-shop/shop-det?id='+e
+        })
+      }
+    }
+    poSition(){
+      var That=this;
+      wx.getLocation({
+        type: 'gcj02',
+        success: function(res) {
+          var latitude = res.latitude
+          var longitude = res.longitude
+          console.log(455)
+          That.getposi({lo:longitude,la:latitude})
+        },
+        fail:function () {
+          wx.openSetting({
+            complete: res => {
+              const {authSetting:{'scope.userLocation':l,'scope.userInfo':u}} = res;
+              if(!l || !u) {
+                wx.showModal({
+                  title: '提示',
+                  content: '请开启地理位置和用户信息',
+                  showCancel:false,
+                  success: function(res) {
+                    That.poSition();
+                  },
+                  fail:function () {
+                    That.poSition();
+                  }
+                })
+              }else{
+                That.poSition();
+              }
+            }
+          })
+        }
+      })
+    }
+
+    onLoad() {
+      this.poSition();
+    }
+  }
+</script>

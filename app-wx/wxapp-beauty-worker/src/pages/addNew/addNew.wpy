@@ -1,0 +1,401 @@
+<style lang="less">
+    page{background: #f4f4f4;padding-bottom: 120rpx;}
+    .hat{
+        font-size: 30rpx;
+        height: 70rpx;
+        line-height: 35rpx;
+        overflow: hidden;
+        display:-webkit-box;
+        -webkit-box-orient:vertical;
+        -webkit-line-clamp:2;
+    }
+    .size-30{font-size: 30rpx;}
+    button:after{border: none}
+    button[disabled]{background: none}
+    .ensure{border-radius:10rpx;margin-right:30rpx;text-align:center;display:inline-block;width: 180rpx;height: 70rpx;
+        margin-top: 13rpx;line-height: 70rpx;background: #dddddd!important;font-size: 32rpx;color: #fff!important;}
+    .ensure-on{background: #26cad3!important;color: #ffffff}
+    .weui-cell{
+        padding:30rpx;
+    }
+    .weui-cell:before,.weui-cells:before,.weui-cells:after{
+        border:none;
+    }
+    .gjr-bot{
+        border-top:1rpx solid #ddd;
+    }
+    .gjr-bot text{
+        display: inline-block;
+        width:50%;
+        text-align: center;
+        font-size: 30rpx;
+        color: #999;
+        height: 98rpx;
+        line-height: 98rpx;
+        position: relative;
+    }
+    .gjr-bot text:first-child:before{
+        content:'';
+        position: absolute;
+        height:100%;
+        width: 1px;
+        right: -0.5rpx;
+        background: #ddd;
+    }
+    .gkimg{
+        margin-top:21rpx;
+        display:inline-block;
+        width: 64rpx;
+        height: 64rpx;
+        border-radius: 50%;
+        position: absolute;
+    }
+</style>
+<template>
+    <!--顾客信息-->
+    <text style="display: block;font-size: 30rpx;color:#333;margin: 20rpx 0 10rpx;padding-left: 30rpx;">顾客信息</text>
+    <view style="margin: 20rpx 30rpx;background: #fff;border-radius: 10rpx;">
+        <view style="padding: 20rpx;position: relative">
+            <view style="font-size: 30rpx;margin: 10rpx 0;width: 80%" class="ellipsis-1">
+                <text style="color: #999;">顾客名称：</text>
+                <text style="color: #333;">{{list.memberName}}</text>
+                <navigator url="/pages/cart/billing" hover-class="none" style="position: absolute;right: 24rpx;top:28rpx;font-size: 32rpx;color: #f82954">
+                    <text>购买</text>
+                    <image src="../../images/icon-next-red.png" style="width: 14rpx;height: 24rpx;padding-left: 12rpx;"></image>
+                </navigator>
+            </view>
+            <view style="font-size: 30rpx;margin: 10rpx 0;" class="ellipsis-1">
+                <text style="color: #999;">手机号码：</text>
+                <text style="color: #333;">{{list.mobile}}</text>
+            </view>
+            <view style="font-size: 30rpx;margin: 10rpx 0;" class="ellipsis-1">
+                <text style="color: #999;margin: 10rpx 0;">开户时间：</text>
+                <text style="color: #333;">{{list.openAccountTime}}</text>
+            </view>
+            <view style="font-size: 30rpx;margin: 10rpx 0;" class="ellipsis-1">
+                <text style="color: #999;">上次到店时间：</text>
+                <text style="color: #333;">{{list.lastArriveTime}}</text>
+            </view>
+            <view style="font-size: 30rpx;margin: 10rpx 0;" class="ellipsis-1">
+                <text style="color: #999;">上次消费门店：</text>
+                <text style="color: #333;">{{list.lastArriveShop}}</text>
+            </view>
+        </view>
+    </view>
+    <!--预约信息-->
+    <text style="display: block;font-size: 30rpx;color:#333;margin: 20rpx 0 10rpx;padding-left: 30rpx;">预约信息</text>
+    <view style="margin: 20rpx 30rpx;background: #fff;border-radius: 10rpx;">
+        <view style="padding: 20rpx;">
+            <!--<view style="font-size: 30rpx;margin: 10rpx 0;" wx:if="{{selDay}}">-->
+                <!--<text style="color: #999;">客户空闲时长：</text>-->
+                <!--<block>-->
+                    <!--<text style="color: #333;" wx:if="{{selType == 1}}">1小时</text>-->
+                    <!--<text style="color: #333;" wx:if="{{selType == 2}}">2小时</text>-->
+                    <!--<text style="color: #333;" wx:if="{{selType == 3}}">3小时</text>-->
+                    <!--<text style="color: #333;" wx:if="{{selType == 0}}">无要求</text>-->
+                <!--</block>-->
+            <!--</view>-->
+            <view style="font-size: 30rpx;margin: 10rpx 0;position: relative"  @tap="yytime">
+                <text style="color: #999;">服务时间：</text>
+                <text style="color: #333;float: right;padding-right:36rpx;" wx:if="{{fwsj}}">{{fwsj}}</text>
+                <image src="../../images/icon-next.png" style="display: block;position: absolute;top:10rpx;right: 0;width: 17rpx;height: 30rpx;"></image>
+            </view>
+            <view style="font-size: 30rpx;margin: 10rpx 0;position: relative" @tap="gjgw">
+                <text style="color: #999;">跟进人：</text>
+                <view style="float: right;padding-right:36rpx;max-width: 60%;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;">
+                    <!--<image wx:for="{{imatx}}" wx:key="index" class="gkimg" src='{{item.followCounselorImage}}' style="right: {{index*42}}rpx;display: block;float: left"></image>-->
+                    <text style="color: #333;padding-left: 10rpx" wx:for="{{imatx}}">{{item.followCounselor}}</text>
+                </view>
+                <image src="../../images/icon-next.png" style="display: block;position: absolute;top:10rpx;right: 0;width: 17rpx;height: 30rpx;"></image>
+            </view>
+            <!--<view @tap="gjgw">-->
+                <!--<view class="pull-left">-->
+                    <!--<image src="/images/pronl.png"></image>-->
+                    <!--<text>跟进人</text>-->
+                <!--</view>-->
+                <!--<view style="color: #333;float: right;height: 100%;">-->
+                    <!--<view style="position: relative;height: 100%;width: 200rpx;float: left">-->
+                        <!--<image wx:for="{{imatx}}" wx:key="index" class="gkimg" src='{{item.followCounselorImage}}' style="right: {{index*42}}rpx;"></image>-->
+                    <!--</view>-->
+                    <!--<text wx:if="{{imatx.length==1}}" style="color: #333;float: left;margin-left: 10rpx;">{{imatx[0].followCounselor}}</text>-->
+                    <!--<image style="width:17rpx;height:30rpx;margin-left:20rpx;margin-top:38rpx;float:right;" src="/images/icon-in.png"></image>-->
+                <!--</view>-->
+            <!--</view>-->
+            <!--<view style="font-size: 26rpx;padding: 0 0 20rpx;color: #333;">-->
+
+            </view>
+        </view>
+    </view>
+    <view style="height: 96rpx;line-height:96rpx;background: #fff;text-align: right;position: fixed;bottom: 0;width: 100%;">
+        <button @tap="ensure" disabled="{{(fwsj == '') || (imatx == '')}}" class="ensure {{(fwsj && imatx != '') ? 'ensure-on' : ''}}" >确定</button>
+    </view>
+
+
+
+    <!--选择跟进顾客-->
+    <view wx:if="{{ckeout}}" style="position: fixed;top: 0px;left: 0;width: 100%;height: 100%;z-index: 2;">
+        <view @tap="nock" animation="{{animationData_yc}}" style="width: 100%;height: 100%;background: #000;opacity: .8;"></view>
+        <view class="gjr" animation="{{animationData}}" style="position: fixed;bottom: 0;left: 0;background: #fff;width: 100%;">
+            <view style="overflow: hidden;font-size: 30rpx;color: #333;padding:0 20rpx;line-height: 99rpx;">
+                <text style="float:left;">选择跟进人</text>
+            </view>
+            <view class="weui-cells pay-module weui-cells_after-title" style="max-height: 600rpx;overflow-y: auto;">
+                <checkbox-group bindchange="checkboxChange">
+                    <label class="weui-cell weui-check__label" style="margin:0 30rpx 30rpx;border: 1px solid {{item.checked?'#26cad3':'#ddd'}};" wx:for="{{checkboxItems}}" wx:key="value">
+                        <checkbox class="weui-check" value="{{item.followCounselorId}}" checked="{{item.checked}}"/>
+                        <image style="width:64rpx;height:64rpx;border-radius: 50%;margin-right: 20rpx;" class="pay-logo" src="{{item.followCounselorImage}}"></image>
+                        <view class="weui-cell__bd color-33">{{item.followCounselor}}<text style="font-size: 26rpx;color: #999;margin-left: 17rpx;">{{item.roleName}}</text></view>
+                        <view class="weui-cell__ft weui-cell__ft_in-radio">
+                            <image wx:if="{{item.checked}}" style="width: 37rpx;height: 31rpx;" src="/images/dui.png"></image>
+                        </view>
+                    </label>
+                </checkbox-group>
+            </view>
+            <!--确认-->
+            <view class="gjr-bot">
+                <text @tap="nock">取消</text>
+                <text @tap="nock('ok')" style="color: #26cad3;">确认</text>
+            </view>
+        </view>
+    </view>
+    <days :grouplist.sync="Grouplist"></days>
+</template>
+
+<script>
+	import wepy from 'wepy'
+    import api from '../../api/api'
+    import Days from '../../components/days'
+    import animo from '../../utils/animove'
+    import dom from '../../utils/dom'
+	export default class addNew extends wepy.page {
+		config = {
+			navigationBarTitleText: '新增预约',
+            enablePullDownRefresh: false,
+		}
+		components = {
+            days:Days,
+		}
+
+        data = {
+            cus: '/pages/customer/customeintion/cusdetails/cusdetails?order_t=eill&',
+            arrxm: [],
+            isShow: false,
+            isSelect: false,
+            selType: '',//预约选择时间-（1小时、2小时、3小时、无需求）
+            selDay: '',//预约选择时间-(年、月、日)
+            oldselBegin:'',
+            oldselEnd:'',
+            selBegin: '',//预约选择时间-开始时间
+            selEnd: '',//预约选择时间-结束时间
+            selWeek:'',//预约选择时间-星期几
+            memberId: '',
+            disabled:true,//确定按钮默认不可点击
+            list:[],//请求数据对象
+            bookBeginTime:'',//新增预约-开始时间（提交的时间日期+时间）
+            bookEndTime:'',//新增预约-结束时间（提交的时间日期+时间）
+            ckeout:false,
+            animationData:{},
+            animationData_yc:{},
+            imatx:[],
+            stutas:true,
+            checkboxItems: [
+                /*{name: '微信支付', value: '0', src: '../../../../images/logo.png'},
+                 {name: '现金支付', value: '1', checked: true, src: '../../../../images/logo.png'},
+                 {name: 'POS支付', value: '2', src: '../../../../images/logo.png'}*/
+            ],
+            Grouplist:[],
+            fwsj :false,
+
+        }
+//获取用户基本信息接口
+        eidk(e1,e2){
+
+            /*时间返回参数*/
+            this.fwsj=(e1+' '+this.Grouplist[e2[1]]);
+            this.disabled = false; //选择时候后，确定按钮为可点击状态
+            console.log(this.fwsj);
+            this.$apply();
+        }
+      async ajax(){
+          /*接口加载*/
+        const json = await api.memberBase({
+          query: {
+              memberCompanyId:this.memberId,
+          }
+        });
+        this.list = json.data;
+        this.$apply();
+      }
+        //新增预约
+        async postEnsure(){
+            /*接口加载*/
+            var employeeIds=[];
+            this.imatx.forEach(function (p, p1) {
+                employeeIds.push(p.followCounselorId)
+            });
+            const json = await api.addNewBook({
+                query: {
+                    bookBeginTime:this.fwsj, //开始时间
+                    memberCompanyId:this.memberId,//用户id
+                    id:employeeIds,
+                }
+            });
+            if(json.imei_error_code == 0){
+                wx.showToast({
+                    title: '预约成功',
+                    icon: 'none',
+                    duration: 1500
+                });
+                setTimeout(function () {
+                    wx.navigateTo({
+                        url: '/pages/order_ope/order_ope?num=1'
+                    });
+                },1000)
+            }
+            this.$apply();
+        }
+
+		computed = {
+
+		}
+		methods = {
+            selectTime(num) {
+                this.duration = num;
+            },
+            showEditModal() {
+                this.isSelect = true;
+            },
+//            点击确定按钮
+            ensure(){
+                this.postEnsure();//新增预约
+            },
+            checkboxChange: function (e) {
+                console.log('checkbox发生change事件，携带value值为：', e.detail.value);
+
+                var checkboxItems = this.checkboxItems, values = e.detail.value;
+                for (var i = 0, lenI = checkboxItems.length; i < lenI; ++i) {
+                    checkboxItems[i].checked = false;
+
+                    for (var j = 0, lenJ = values.length; j < lenJ; ++j) {
+                        if(checkboxItems[i].followCounselorId == values[j]){
+                            checkboxItems[i].checked = true;
+                            break;
+                        }
+                    }
+                }
+
+                this.setData({
+                    checkboxItems: checkboxItems
+                });
+            },
+            async gjgw(){
+                if(this.stutas){
+                    var This=this;
+                    const json = await api.employeeList();
+                    this.checkboxItems = json.data.list;
+
+                    this.imatx.forEach(function (p) {
+                        This.checkboxItems.forEach(function (p1,p2) {
+                            if(p1.followCounselorId==p.followCounselorId){
+                                This.checkboxItems[p2].checked = true;
+                            }
+                        })
+                    })
+
+                    this.stutas=false;
+                }
+                this.ckeout=true;
+                setTimeout(function () {
+                    animo.shwoIN(this)
+                    this.$apply();
+                }.bind(this),50)
+            },
+            async nock(e,e1,e2){
+                /*顾问列表隐藏*/
+                var This=this;
+                if(e=='ok'){
+                    This.imatx=[];
+                    this.checkboxItems.forEach(function (p) {
+                        if(p.checked){
+                            This.imatx.push(p);
+                        }
+                    })
+                }
+                /*if(e=='whey'){
+                 /!*取消预约，关闭弹框，获取到2个id*!/
+                 const json = await api.deleBook({
+                 query: {
+                 memberBookingId:e2,
+                 reasonId:e1
+                 }
+                 });
+                 wx.showToast({
+                 title: '取消成功',
+                 icon: 'success',
+                 duration: 2000,
+                 success:function () {
+                 setTimeout(function () {
+                 wx.navigateBack({
+                 delta:1
+                 })
+                 },500);
+                 }
+                 })
+                 }*/
+                dom.height('.gjr',function (e) {
+                    animo.yc({
+                        This:This,
+                        height:e
+                    })
+                })
+                setTimeout(function () {
+                    this.ckeout=false;
+                    this.endout=false;
+                    this.$apply();
+                }.bind(this),300)
+            },
+            yytime(){
+                for(var i =0;i<14 && this.Grouplist.length!=14;i++){
+                    this.Grouplist.push(((9+i)<10?'0'+(9+i):(9+i))+':'+'00');
+                    this.Grouplist.push(((9+i)<10?'0'+(9+i):(9+i))+':'+'15');
+                    this.Grouplist.push(((9+i)<10?'0'+(9+i):(9+i))+':'+'30');
+                    this.Grouplist.push(((9+i)<10?'0'+(9+i):(9+i))+':'+'45');
+                }
+
+                this.$invoke('days','shwoIN',14);
+            },
+
+		}
+
+        events = {
+            'hide': (e) => {
+                this.isSelect = false;
+            },
+            'hideServiceDialog': (e) => {
+                this.showService = false;
+            },
+            'confirm': (t,d,s,e) => {
+//                this.updateAppointment(t,d,s,e);
+                this.selType = t;
+                this.selDay = d;
+                this.oldselBegin = s;
+                this.oldselEnd = e;
+                this.selBegin = this.oldselBegin.substr(0,5);
+                this.selEnd = this.oldselEnd.substr(0,5);
+                this.isSelect = false;
+                var a = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
+                var week = new Date(d).getDay();
+                this.selWeek = a[week];
+                this.disabled = false; //选择时候后，确定按钮为可点击状态
+                this.bookBeginTime = this.selDay + ' ' +this.selBegin;
+                this.bookEndTime = this.selDay + ' ' +this.selEnd;
+            }
+        };
+
+		onLoad(options) {
+            this.memberId = options.id;
+            this.$broadcast('menId', options.id); //向子组件-预约时间弹出框 传递memberId
+            this.ajax();//获取用户基本信息接口
+		}
+	}
+</script>

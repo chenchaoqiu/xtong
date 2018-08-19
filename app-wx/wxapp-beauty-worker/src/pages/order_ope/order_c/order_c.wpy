@@ -1,0 +1,146 @@
+<style lang="less">
+    page{background: #f4f4f4;padding-bottom: 120rpx;}
+    .hat{
+        font-size: 30rpx;
+        height: 70rpx;
+        line-height: 35rpx;
+        overflow: hidden;
+        display:-webkit-box;
+        -webkit-box-orient:vertical;
+        -webkit-line-clamp:2;
+    }
+</style>
+<template>
+    <!--顾客信息-->
+    <text style="display: block;font-size: 30rpx;color:#333;margin: 20rpx 0 10rpx;padding-left: 30rpx;">顾客信息</text>
+    <view style="margin: 20rpx 30rpx;background: #fff;border-radius: 10rpx;">
+        <view style="padding: 20rpx;">
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;">顾客名称：</text>
+                <text style="color: #333;">{{arrxm[0].userName}}</text>
+            </view>
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;">手机号码：</text>
+                <text style="color: #333;">{{arrxm[0].mobile}}</text>
+            </view>
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;margin: 10rpx 0;">上次到店时间：</text>
+                <text style="color: #333;">{{arrxm[0].lastArriveTime}}</text>
+            </view>
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;">上次到店门店：</text>
+                <text style="color: #333;">{{arrxm[0].lastArriveShop}}</text>
+            </view>
+        </view>
+    </view>
+    <!--预约信息-->
+    <text style="display: block;font-size: 30rpx;color:#333;margin: 20rpx 0 10rpx;padding-left: 30rpx;">预约信息</text>
+    <view style="margin: 20rpx 30rpx;background: #fff;border-radius: 10rpx;">
+        <view style="padding: 20rpx;">
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;">预约单号：</text>
+                <text style="color: #333;">{{arrxm[0].serviceWorkNo}}</text>
+            </view>
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;">预约时间：</text>
+                <text style="color: #333;">{{arrxm[0].bookEndTime+' '+arrxm[0].bookBeginHour+'-'+arrxm[0].bookEndHour}}</text>
+            </view>
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;">服务开始时间：</text>
+                <text style="color: #333;">{{arrxm[0].bookEndTime+' '+arrxm[0].bookBeginHour}}</text>
+            </view>
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;">预计完成时间：</text>
+                <text style="color: #333;">{{arrxm[0].bookEndTime+' '+arrxm[0].bookEndHour}}</text>
+            </view>
+            <view style="font-size: 30rpx;margin: 10rpx 0;">
+                <text style="color: #999;margin: 10rpx 0;">跟进顾问：</text>
+                <text wx:for="{{arrxm[0].counselorList}}" style="color: #333;">{{index==0?'':','}}{{item.followCounselor}}</text>
+            </view>
+            <view style="font-size: 26rpx;padding: 0 0 20rpx;color: #333;">
+                <!--预约项目-->
+                <view wx:for="{{arrxm[0].projects}}" style="overflow: hidden;margin-top: 20rpx;">
+                    <image style="width: 200rpx;height: 138rpx;float:left;border:1px solid #e5e5e5;border-radius:5px;" src="{{item.coverImageUrl}}"></image>
+                    <view style="float: right;width: 430rpx;height: 140rpx;overflow: hidden;">
+                        <view class="hat">{{item.projectName}}</view>
+                        <view style="overflow: hidden;height: 40rpx;">
+                            <text style="float: left;">{{item.xm}}</text>
+                            <navigator url="{{item.isNeedPay==0?'':cus+'id='+item.orderSn}}" style="color: #ff6d7b;float: right;text-decoration: underline;" hover-class="navigator-hover">{{item.isNeedPay==0?'':'有欠款'}}</navigator>
+                        </view>
+                        <view style="font-size: 22rpx;color: #666;">
+                            操作师：<text>{{item.operator}}</text>
+                            <!--操作师：<text wx:for="{{item.arr}}">{{index==0?'':'、'}}{{item}}</text>-->
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+    <view style="height: 96rpx;line-height:96rpx;background: #fff;text-align: right;position: fixed;bottom: 0;width: 100%;">
+        <view  @tap="addNew()" style="border-radius:10rpx;margin-right:30rpx;text-align:center;display:inline-block;width: 180rpx;height: 70rpx;line-height: 70rpx;background: #26cad3;font-size: 32rpx;color: #fff;" hover-class="navigator-hover">加单</view>
+        <navigator open-type="redirect" url="/pages/finish/finish?id={{arrxm[0].serviceWorkNo}}" style="border-radius:10rpx;margin-right:30rpx;text-align:center;display:inline-block;width: 180rpx;height: 70rpx;line-height: 70rpx;background: #26cad3;font-size: 32rpx;color: #fff;" hover-class="navigator-hover">结单</navigator>
+    </view>
+    <yycode></yycode>
+</template>
+
+<script>
+	import wepy from 'wepy'
+	import api from '../../../api/api'
+	import yycode from '../../../components/yyCode'
+
+	export default class Customer extends wepy.page {
+		config = {
+			navigationBarTitleText: '操作中'
+		}
+		components = {
+			yycode
+		}
+
+		data = {
+			id: '',
+			cus:'/pages/customer/customeintion/cusdetails/cusdetails?order_t=eill&',
+			arrxm:[]
+		}
+		async ajxa(e){
+			/*接口加载*/
+			const json = await api.orderd({
+				query: {
+					serviceWorkNo:e,
+				}
+			});
+
+			this.arrxm = [json.data];
+			console.log(json.data)
+			this.$apply();
+		}
+		computed = {
+
+		}
+		methods = {
+			addNew(){
+				this.$invoke('yycode','abc');
+//                wx.navigateTo({
+//                    url: '/pages/addNew/customerList'
+//                })
+			}
+		}
+		xds(){
+			wx.navigateTo({
+				url: "/pages/select_project/select_project?id="+this.arrxm[0].serviceWorkNo+"&bid="+this.arrxm[0].memberBookingId+"&mobile="+this.arrxm[0].mobile+"&name="+this.arrxm[0].userName+"&img="+this.arrxm[0].memberAvatar
+			});
+			this.$apply();
+		}
+		events = {
+
+		}
+        onShow() {
+			if (wx.getStorageSync('arr')) {
+				this.ajxa(this.id);
+            }
+        }
+		onLoad(e) {
+			this.id = e.id;
+			this.ajxa(e.id)
+		}
+	}
+</script>

@@ -1,0 +1,301 @@
+<style lang="less">
+    .module-title {
+        margin: 30rpx 0 20rpx 0;
+        font-size: 30rpx;
+    }
+    .container {
+        padding: 0 30rpx;
+    }
+    page {
+        background-color: #f4f4f4;
+    }
+    .page-top {
+        margin-top: 1rpx;
+    }
+    .module-conten {
+        background-color: #ffffff;
+        padding: 30rpx;
+    }
+    .page-body {
+        margin-top: 20rpx;
+        margin-bottom: 20rpx;
+    }
+    .sp-mt-14 {
+        margin-top: 14rpx;
+    }
+    .sp-ml-10 {
+        margin-left: 10rpx;
+    }
+    .sp-mt-30 {
+        margin-top: 30rpx;
+    }
+    .sp-ml-40 {
+        margin-left: 40rpx;
+    }
+    .sp-mt-20 {
+        margin-top: 20rpx;
+    }
+    .module-conten .flex-right {
+        font-size: 30rpx;
+    }
+    .label {
+        font-size: 30rpx;
+    }
+    .flex-center-box {
+        padding-top: 40rpx;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #ffffff;
+        flex-direction:column;
+    }
+    .code-text {
+        margin-top: 30rpx;
+        margin-bottom: 30rpx;
+        font-size: 30rpx;
+    }
+    .page-footer {
+
+    }
+    .pay-module {
+        &:after {
+            border: 0;
+        }
+        &:before {
+            border: 0;
+        }
+        .weui-cell {
+            &:before {
+                border-top: 1rpx solid #E5E5E5;
+            }
+        }
+        .weui-cell__bd {
+            font-size: 32rpx;
+        }
+    }
+    .pay-title {
+        font-size: 30rpx;
+        border-bottom: 1rpx solid #E5E5E5;
+        background-color: #ffffff;
+    }
+    .pay-logo {
+        width: 45rpx;
+        height: 45rpx;
+        margin-right: 20rpx;
+    }
+    .page-footer {
+        margin-bottom: 40rpx;
+    }
+    .mask{
+        position: fixed;top: 0;
+        left: 0;
+        z-index: 3;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+    }
+    .canvas-box{
+        position: fixed;
+        top:999999rpx;
+        left: 0
+    }
+    .code-img {
+        width: 440rpx;
+        height: 440rpx;
+        background-color: #fff;
+        border: 1rpx solid #E5E5E5;
+        border-radius: 5px;
+    }
+    .debt {
+        font-size: 30rpx;
+    }
+</style>
+<template>
+    <view class="page-top">
+        <view class="module-conten">
+            <view class="flex-box">
+                <view class="flex-lable-left label color-99">订单编号：</view>
+                <view class="flex-right">{{res.parentSn}}</view>
+            </view>
+            <view class="flex-box sp-mt-14">
+                <view class="flex-lable-left label color-99">订单总额：</view>
+                <view class="flex-right color-red">{{res.totalOrderAmount}}元</view>
+            </view>
+            <view class="flex-box sp-mt-14" wx:if="{{page == 2}}">
+                <view class="flex-lable-left label color-99">已付金额：</view>
+                <view class="flex-right color-red">{{paid}}元</view>
+            </view>
+            <view class="flex-box sp-mt-14">
+                <view class="flex-lable-left label color-99">实付金额：</view>
+                <view class="flex-right color-red">{{res.payOrderAmount}}元</view>
+                <!--<view class="debt color-66" >欠款金额：<text class="sp-ml-10">{{res.needPayOrderAmount}}</text>元</view>-->
+            </view>
+            <view class="flex-box sp-mt-14" wx:if="{{page == 1}}">
+                <view class="flex-lable-left label color-99">欠款金额：</view>
+                <view class="flex-right color-red">{{paid}}元</view>
+            </view>
+        </view>
+    </view>
+
+    <!--结算二维码-->
+    <view class="page-body">
+        <view class="flex-center-box">
+            <image @tap="previewImg" class="code-img" mode="scaleToFill" src="{{imagePath}}"></image>
+            <text class="code-text color-green">{{hitn}}</text>
+        </view>
+    </view>
+
+    <!--支付方式-->
+    <view class="page-footer">
+        <view class="pay-title color-66 weui-cell">支付方式</view>
+        <view class="weui-cells pay-module weui-cells_after-title">
+            <radio-group bindchange="radioChange">
+                <label class="weui-cell weui-check__label" wx:for="{{radioItems}}" wx:key="value">
+                    <radio class="weui-check" value="{{item.value}}" checked="{{item.checked}}"/>
+
+                    <image class="pay-logo" src="{{item.src}}"></image>
+                    <view class="weui-cell__bd color-33">{{item.name}}</view>
+                    <view class="weui-cell__ft weui-cell__ft_in-radio">
+                        <icon class="weui-icon-checkbox_circle" type="circle" size="23" wx:if="{{!item.checked}}"></icon>
+                        <icon class="weui-icon-checkbox_success" type="success" size="23" color="#27CAD3" wx:if="{{item.checked}}"></icon>
+                    </view>
+                </label>
+            </radio-group>
+        </view>
+    </view>
+
+    <!--二维码-->
+    <view class="canvas-box">
+        <canvas  hidden="{{canvasHidden}}" style="width: 480rpx;height: 480rpx;" canvas-id="mycanvas"/>
+    </view>
+</template>
+<script>
+	import wepy from 'wepy'
+	/*import QR from '../../utils/qrcode'*/
+	import api from '../../api/api'
+    import {floatSub} from '../../utils/util'
+
+	export default class settleAccountsCode extends wepy.page {
+		config = {
+			navigationBarTitleText: '结算',
+			backgroundColor: '#f4f4f4',
+			enablePullDownRefresh: false
+		};
+		async onLoad(o) {
+			this.size = this.setCanvasSize();//动态设置画布大小
+            this.page = o.page;
+			/*var initUrl = this.data.placeholder;*/
+			const {data} = await api.getOrderPayInfo({
+				query:{
+					moneySn: o.id
+				}
+			})
+
+			if (data) {
+				this.res = data;
+				this.paid = floatSub(data.totalOrderAmount, data.payOrderAmount);
+				this.imagePath = data.wechatQrcodeUrl;
+				this.$apply();
+			}
+
+			/*this.createQrCode(initUrl, "mycanvas", size.w, size.h);*/
+		}
+		onReady() {
+
+		}
+		data = {
+			res: {
+				cashQrcodeUrl: "",
+				totalOrderAmount: "",
+				needPayOrderAmount: "",
+				payOrderAmount: "",
+				posQrcodeUrl: "",
+				parentSn: "",
+				wechatQrcodeUrl: ""
+			},
+			radioItems: [
+				{name: '微信支付', value: 'wechatQrcodeUrl', checked: true, src: '../../images/wx.png'},
+				{name: '现金支付', value: 'cashQrcodeUrl',  src: '../../images/mo.png'},
+				{name: 'POS支付', value: 'posQrcodeUrl', src: '../../images/pos.png'}
+			],
+			canvasHidden:false,
+			maskHidden:true,
+			imagePath:'',
+			placeholder:'http://www.baidu.com',//默认二维码生成文本
+			size: '',
+			paid: '',
+			page: 0,
+            hitn: '请扫码支付'
+		};
+		watch = {
+
+		};
+		methods = {
+			radioChange(e) {
+				var radioItems = this.radioItems;
+				/*this.createQrCode(this.res[e.detail.value], "mycanvas", this.size.w, this.size.h);*/
+				for (var i = 0, len = radioItems.length; i < len; ++i) {
+					radioItems[i].checked = radioItems[i].value == e.detail.value;
+				}
+
+                if (e.detail.value == 'wechatQrcodeUrl') {
+                    this.hitn = '请扫码支付';
+                } else {
+	                this.hitn = '请扫码确认订单已支付';
+                }
+
+				this.imagePath = this.res[e.detail.value];
+                console.log(this.imagePath);
+				this.$apply();
+			},
+			previewImg(e) {
+				var img = this.imagePath;
+
+				wx.previewImage({
+					current: img, // 当前显示图片的http链接
+					urls: [img] // 需要预览的图片http链接列表
+				})
+			}
+		}
+		//适配不同屏幕大小的canvas
+		setCanvasSize() {
+			var size={};
+			try {
+				var res = wx.getSystemInfoSync();
+				var scale = 750/480;//不同屏幕下canvas的适配比例；设计稿是750宽
+				var width = res.windowWidth/scale;
+				var height = width;//canvas画布为正方形
+				size.w = width;
+				size.h = height;
+			} catch (e) {
+				// Do something when catch error
+				console.log("获取设备信息失败"+e);
+			}
+			return size;
+		};
+		createQrCode(url,canvasId,cavW,cavH) {
+			//调用插件中的draw方法，绘制二维码图片
+			QR.api.draw(url,canvasId,cavW,cavH);
+			setTimeout(() => { this.canvasToTempImage();},1000);
+
+		};
+		//获取临时缓存照片路径，存入data中
+		canvasToTempImage() {
+			var that = this;
+			wx.canvasToTempFilePath({
+				canvasId: 'mycanvas',
+				success: function (res) {
+					var tempFilePath = res.tempFilePath;
+					that.imagePath = tempFilePath;
+
+					that.setData({
+						imagePath:tempFilePath,
+					});
+				},
+				fail: function (res) {
+					console.log(res);
+				}
+			});
+		};
+	}
+</script>

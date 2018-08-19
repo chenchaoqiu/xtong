@@ -1,0 +1,91 @@
+<style lang="less">
+    page {
+        background-color: #fff;
+        border-top:1px solid #ddd;
+    }
+    .cher navigator{
+      width:335rpx;
+      height:90rpx;
+      line-height:90rpx;
+      border:2rpx solid #999;
+      display: inline-block;
+      border-radius: 10rpx;
+      font-size: 30rpx;
+      color: #333;
+    }
+    .cher navigator:first-child{
+      border-color: #26cad3;
+      margin-right: 23rpx;
+      color: #26cad3;
+    }
+</style>
+<template>
+  <image style="height: 305rpx;margin: 60rpx auto 42rpx;display: block;" mode="aspectFit" src="/images/payOk.png"></image>
+  <view style="text-align: center;font-size: 36rpx;color: #666;">实付金额：<text style="font-size: 40rpx;color: #333;"><text style="font-size: 30rpx;">￥</text>{{mory}}</text></view>
+  <view class="cher" style="text-align: center;margin-top: 41rpx;">
+    <navigator url="/pages/order/details/details?orderid={{orderSn}}">查看订单</navigator>
+    <navigator url="/pages/index/index" open-type="reLaunch">返回首页</navigator>
+  </view>
+  <image @tap="el" style="width: 92%;margin: 0 auto;display: block;" src="/images/gzgzh.png" mode="aspectFit"></image>
+</template>
+
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+
+	export default class Index extends wepy.page {
+		config = {
+			navigationBarTitleText: '购买成功',
+			backgroundColor: '#f4f4f4'
+		};
+		components = {
+		}
+
+		data = {
+      orderSn:'',
+      mory:'',
+      imageUrl: wepy.$appConfig.imageUrl,
+		}
+
+    onShareAppMessage(res){
+      if (res.from === 'button') {
+        // 来自页面内转发按钮
+//        console.log(res.target)
+      }else{
+        return {
+          title: '亲爱的 推荐你一个女生必备的小程序 要关注哦！',
+          imageUrl: this.imageUrl + 'share_img.png',
+          path: '/pages/index/index'
+        }
+      }
+    }
+
+		async getposi(e){
+			/*获取门店*/
+			const json = await api.tabShop({
+				query: {
+					longitude:e.lo,
+					latitude:e.la,
+          keyword:e.keyword || ''
+				}
+			});
+			this.dat = json.data;
+			this.$apply();
+		}
+
+		methods = {
+      el(){
+        wx.previewImage({
+          current: 'http://image.ivymei.com/wxapp/workshop/qrcode2.png', // 当前显示图片的http链接
+          urls: ['http://image.ivymei.com/wxapp/workshop/qrcode2.png'] // 需要预览的图片http链接列表
+        })
+      }
+    }
+
+
+		onLoad(e) {
+      this.orderSn=e.id;
+      this.mory=e.mory;
+		}
+	}
+</script>

@@ -1,0 +1,115 @@
+<!--promShow set {title}-->
+
+<style lang="less">
+  .prompt,.pro-mb{
+    position: fixed;
+    top:0px;
+    left:0;
+    width: 100%;
+    height:100%;
+    transition: .3s;
+    background: 0;
+  }
+  .pro-mb{
+    background: #000;
+    opacity:.7;
+  }
+  .pro-te{
+    position: fixed;
+    width:90%;
+    background: #fff;
+    left:50%;
+    margin-left:-45%;
+    top:20%;
+    border-radius: 10rpx;
+    overflow: hidden;
+  }
+  .pro-te-title{
+    height:190rpx;
+    text-align: center;
+    line-height: 190rpx;
+    font-size: 36rpx;
+    color: #333;
+  }
+  .pro-te-button{
+    height:100rpx;
+    line-height:100rpx;
+  }
+  .pro-te-button text{
+    text-align: center;
+    height:100%;
+    width:50%;
+    float: left;
+    border:none;
+    outline: none;
+  }
+  .pro-te-button text:nth-child(1){
+    background: #ddd;
+    color: #666;
+  }
+  .pro-te-button text:nth-child(2){
+    background: #e4393c;
+    color: #fff;
+  }
+</style>
+<template>
+  <view class="prompt" style="{{ov?'display: block;':'display: none;'}}{{op?'opacity: 1;':'opacity: 0;'}}">
+    <view @tap="noIn" class="pro-mb" style="{{op?'opacity: .7;':'opacity: 0;'}}"></view>
+    <view class="pro-te">
+      <view class="pro-te-title">{{title}}</view>
+      <view class="pro-te-button">
+        <text @tap="noIn">取消</text>
+        <text @tap="yesIn">确定</text>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+
+
+
+  export default class Prompt extends wepy.component {
+    data={
+      ov:false,
+      op:false,
+      title:'是否要将该商品删除',
+      size:0,
+    }
+
+    props = {
+    }
+
+    promShow(e){
+      if(e.title!=undefined){this.title=e.title};
+      if(e.size!=undefined){this.size=e.size};
+      this.ov=true;
+      setTimeout(function () {
+        this.op=true;
+        this.$apply()
+      }.bind(this),30)
+      this.$apply()
+    }
+
+    prompt(){
+      /*提示框效果*/
+      this.op=false;
+      setTimeout(function () {
+        this.ov=false;
+        this.$apply()
+      }.bind(this),200)
+    }
+    onLoad() {
+    }
+
+    methods = {
+      noIn(){
+        this.prompt();
+      },
+      yesIn(){
+        this.$parent.promOk(this.size);
+        this.prompt();
+      }
+    }
+  }
+</script>

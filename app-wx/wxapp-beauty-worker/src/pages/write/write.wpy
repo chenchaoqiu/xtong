@@ -1,0 +1,251 @@
+<style lang="scss">
+    .write-wrap {
+        display:-webkit-box;
+        display:-webkit-flex;
+        display: flex;
+    }
+    .write-left {
+        width: 100rpx;
+        height: 100vh;
+    }
+    .write-right {
+        -webkit-box-flex:1;
+        -webkit-flex:1;
+        flex:1;
+    }
+    .hint {
+        height: 30%;
+        background-color: #9b9b9b;
+    }
+    .reset {
+        height: 20%;
+        background-color: #FF5867;
+    }
+    .save {
+        height: 50%;
+        background-color: #27CAD3;
+    }
+    .flex-wrap {
+        display:-webkit-box;
+        display:-webkit-flex;
+        display: flex;
+        -webkit-flex-direction:column;
+        flex-direction:column;
+        height: 100%;
+    }
+    .flex-wrap>view {
+        display:-webkit-box;
+        display:-webkit-flex;
+        display: flex;
+        align-items: center;
+        -webkit-align-items: center;
+        justify-content:center;
+        -webkit-justify-content: center;
+        box-sizing: content-box;
+        text-align: center;
+    }
+    .flex-wrap .text-box {
+        display: inline-block;
+        max-width: 32rpx;
+        font-size: 32rpx;
+        color: #fff;
+        line-height: 18px;
+    }
+    .logo {
+        width: 48rpx;
+        height: 48rpx;
+        position: relative;
+        margin-left: -10rpx;
+        margin-bottom: 10rpx;
+
+    }
+</style>
+<template>
+    <view disable-scroll="true" class="write-wrap">
+        <view class="write-left">
+            <view class="flex-wrap">
+                <view class="hint"><view class="text-box">请在空白处签名确认</view></view>
+                <view class="reset" @tap="reset"> <view class="text-box"><image class="logo" src="../../images/reset.png"/>重写</view></view>
+                <view class="save" @tap="save"><view class="text-box">完成并保存</view></view>
+            </view>
+        </view>
+        <view class="write-right" id="canvasWarp">
+            <canvas  disable-scroll="true" id="myCanvasId" canvas-id="myCanvas" style="width: 100%; height: 100vh;" bindtouchstart="start" bindtouchmove="move" bindtouchend="end" ></canvas>
+            <!--<image class="pay-logo" src="{{filePath}}"></image>-->
+        </view>
+    </view>
+
+</template>
+<script>
+	import wepy from 'wepy'
+    import api from '../../api/api'
+    let backArr = [];
+
+	export default class Write extends wepy.page {
+		config = {
+			navigationBarTitleText: '签名确认',
+			disableScroll: true,
+			enablePullDownRefresh: false
+		}
+
+		onLoad(options) {
+			this.memberBookingId = options.memberBookingId;
+		}
+
+		onReady() {
+			this.ctx = wx.createCanvasContext("myCanvas");
+			let query = wepy.createSelectorQuery();
+			query.select('#canvasWarp').boundingClientRect().exec((res) => {
+				this.canvas = res[0];
+				this.ctx.setFillStyle('#ffffff');
+				this.ctx.fillRect(0, 0, res[0].width, res[0].height);
+				this.ctx.draw();
+			});
+		}
+
+		data = {
+			memberBookingId: '',
+			touchStartObj: {x: 0, y: 0},
+			touchEnd: {x: 0, y: 0},
+			canvas: {},
+			filePath: ''
+		};
+		watch = {};
+		methods = {
+			start(e) {
+				this.startX = e.touches[0].x;
+				this.startY = e.touches[0].y;
+			},
+			move(e) {
+				this.endX = e.touches[0].x;
+				this.endY = e.touches[0].y;
+				this.ctx.setLineWidth(5);
+				this.ctx.moveTo(this.startX, this.startY);
+				this.ctx.lineTo(this.endX, this.endY);
+				this.ctx.stroke();
+				this.ctx.draw(true);
+				this.startX = this.endX;
+				this.startY = this.endY;
+			},
+			end(e) {
+				/*wx.canvasGetImageData({
+					canvasId: 'myCanvas',
+					x: 0,
+					y: 0,
+					width: this.canvas.width,
+					height: this.canvas.height,
+					success: res=> {
+						backArr.push(res);
+					}
+				})*/
+			},
+			reset() {
+				wx.showModal({
+					title: '清除确认',
+					content: '重写将清空写字板是否执行？',
+					confirmText: '是',
+					cancelText: '否',
+					success: res => {
+						if (res.confirm) {
+							this.ctx.setFillStyle('#ffffff');
+							this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+							this.ctx.draw();
+						} else if (res.cancel) {
+
+						}
+					}
+				})
+
+			},
+			save() {
+				let ajaxData = {};
+
+				try {
+					var value = wx.getStorageSync('session');
+					if (value) {
+						ajaxData.shopId = value.shopId;
+						ajaxData.employeeId = value.employeeId;
+						ajaxData.token = value.token;
+						ajaxData.memberBookingId = this.memberBookingId;
+					}
+				} catch (e) {
+					// Do something when catch error
+				}
+				let _this = this;
+				wx.showModal({
+					title: '提交确认',
+					content: '是否提交您的签名',
+					success: function (res) {
+						if (res.confirm) {
+							wx.canvasToTempFilePath({
+								x: 0,
+								y: 0,
+								canvasId: 'myCanvas',
+								fileType: 'jpg',
+								success: function (res) {
+									_this.filePath = res.tempFilePath;
+									wx.uploadFile({
+										url: api.signatureSave, //仅为示例，非真实的接口地址
+										filePath: res.tempFilePath,
+										name: 'image_url',
+										formData:ajaxData,
+										success: function(data) {
+											var res = JSON.parse(data.data);
+											if (res.imei_error_code == 0) {
+
+												if (res.data.data == 1) {
+													wx.showToast({
+														title: '保存成功',
+														icon : 'none',
+														duration : 1000
+													});
+													wx.redirectTo({
+														url: '/pages/signature_close/signature_close?id='+res.data.serviceWorkNo
+													})
+												}
+											} else {
+												wx.showToast({
+													title: res.imei_error_msg,
+													icon : 'none',
+													duration : 1500
+												});
+											}
+										},
+										fail: function(e) {
+											wx.showToast({
+												title: "服务器繁忙",
+												icon : 'none',
+												duration : 1500
+											});
+										}
+									})
+								}
+							})
+
+						} else if (res.cancel) {
+
+						}
+					}
+				})
+
+			},
+			back() {
+				const length = this.backArr.length;
+				if (!length) {
+					return false;
+				}
+				wx.canvasPutImageData({
+					canvasId: 'myCanvas',
+					x: 0,
+					y: 0,
+					width: this.canvas.width,
+					height: this.canvas.height,
+					data: backArr[length - 1],
+					success(res) {
+						this.backArr.pop();
+					}
+				})
+			}
+		}
+	}
+</script>

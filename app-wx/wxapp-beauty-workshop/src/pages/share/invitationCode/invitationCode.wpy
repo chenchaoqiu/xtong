@@ -1,0 +1,421 @@
+<style lang="less">
+  page{
+    width:100%;
+  }
+  .invita{
+    position: relative;
+    > view{
+      position: absolute;
+      bottom: 0px;
+      left:0px;
+      height:190rpx;
+      width:100%;
+      text-align: center;
+      >view:first-child{
+        font-size: 30rpx;
+        color: #333;
+        width:256rpx;
+        height:56rpx;
+        line-height: 56rpx;
+        margin:0 auto 18rpx;
+        background: #fff;
+        border-radius:35rpx;
+      }
+      >view:nth-child(2){
+        font-size: 26rpx;
+        color: #fff;
+      }
+      view.viit{
+        position: relative;
+        width: 320rpx;
+        height: 68rpx;
+        line-height:68rpx;
+        background: #f78dbb;
+        font-size: 30rpx;
+        color: #fff;
+        margin: 0 auto 25rpx;
+        border-radius: 35rpx;
+        button{
+          position: absolute;
+          top:0;
+          left:0;
+          opacity: 0;
+          height:100%;
+          width:100%;
+        }
+      }
+      view.quilt_invita{
+        width:560rpx;
+        height:100%;
+        margin:0 auto;
+        line-height: normal;
+        text-align: left;
+        background: 0;
+      }
+      view.invi_pro{
+        overflow: hidden;
+        margin-top: 40rpx;
+        image{
+          width:90rpx;
+          height:90rpx;
+          float: left;
+          border-radius: 50%;
+        }
+        > view{
+          float: left;
+          margin-left: 20rpx;
+          view{
+            height:45rpx;
+            line-height:45rpx;
+          }
+          view:first-child{
+            font-size: 28rpx;
+            color: #333;
+          }
+          view:nth-child(2){
+            font-size: 22rpx;
+            color: #666;
+          }
+        }
+      }
+      view.invi_bot{
+        width:526rpx;
+        height:64rpx;
+        line-height:64rpx;
+        text-align: center;
+        background: #c4b16f;
+        font-size: 30rpx;
+        color: #fff;
+        border-radius: 10rpx;
+        margin: 40rpx auto 38rpx;
+      }
+      view.invi_code{
+        margin:0 auto;
+        line-height:28rpx;
+        display: table;
+        table-layout: fixed;
+        image{
+          width:28rpx;
+          height:28rpx;
+          display: table-cell;
+          vertical-align: middle;
+        }
+        text{
+          display: table-cell;
+          vertical-align: middle;
+          font-size: 22rpx;
+          color: #666;
+          text-indent: 10rpx;
+        }
+      }
+    }
+  }
+  .invi_tk{
+    position: fixed;
+    width:100%;
+    height:100%;
+    top:0px;
+    left:0px;
+    z-index: 3;
+    .invi_mb{
+      width:100%;
+      height:100%;
+      background: rgba(0,0,0,0.5);
+    }
+    .invi_xt{
+      border-radius: 10rpx;
+      position: fixed;
+      background: #fff;
+      top:30vh;
+      width:520rpx;
+      left:50%;
+      margin-left: -280rpx;
+      padding: 38rpx 20rpx;
+      text-align: center;
+      view:first-child{
+        font-size: 36rpx;
+        color: #333;
+        margin-bottom: 20rpx;
+        position: relative;
+        image{
+          position: absolute;
+          right:-26rpx;
+          top:-45rpx;
+          width:34rpx;
+          height:34rpx;
+        }
+      }
+      view:nth-child(2){
+        font-size: 24rpx;
+        color: #666;
+        text-align: left;
+      }
+    }
+  }
+</style>
+<template>
+  <view class="invita">
+    <image style="width: 100%;height: 100%;" mode="widthFix" src="{{Imgurl[nav_status]}}"></image>
+    <view style="height: {{nav_status=='y'?'190rpx':(nav_status=='f'?'296rpx':'718rpx')}};">
+      <!--邀请好友-->
+        <view @tap="invita" wx:if="{{nav_status=='y'}}">邀请好友</view>
+        <view wx:if="{{nav_status=='y'}}" @tap="invi_hide('ok')">收益规则</view>
+      <!--分享给好友-->
+        <view @tap="fx" wx:if="{{nav_status=='f'}}" class="viit">
+          <button open-type='share'>分享链接给好友</button>
+          分享链接给好友
+        </view>
+        <view @tap="save" wx:if="{{nav_status=='f'}}" class="viit">保存到系统相册</view>
+      <!--接受邀请-->
+        <view wx:if="{{nav_status=='b'}}" class="quilt_invita">
+          <view>你的好友 {{name}} 正在邀请你...</view>
+          <!--输入手机号-->
+          <view style="border-bottom: 1rpx solid #ddd;padding-bottom: 20rpx;margin-top: 40rpx;">
+            <input bindinput="bindReplaceInput" maxlength="11" type="number" placeholder="点击输入手机号" />
+          </view>
+          <!--输入验证码-->
+          <view style="border-bottom: 1rpx solid #ddd;padding-bottom: 20rpx;margin-top: 20rpx;overflow:hidden;">
+            <input bindinput="bindcode" style="float: left;" maxlength="4" type="number" placeholder="点击输入验证码" />
+            <text @tap="VerinfyCode" style="border-radius:10rpx;float:right;width: 144rpx;height: 52rpx;line-height: 52rpx;text-align: center;background: #c4b16f;font-size: 22rpx;color: #fff;">获取验证码</text>
+          </view>
+          <!--加入我的美丽圈-->
+          <view class="invi_pro">
+            <image src="{{headimgurl}}"></image>
+            <view>
+              <view>快来加入我的美丽圈</view>
+              <view>加入之后，即可随时查看我的美丽经哦！</view>
+            </view>
+          </view>
+          <!--应邀-->
+          <view @tap="invi_click" class="invi_bot">应邀</view>
+          <!--协议-->
+          <view class="invi_code">
+            <image src="../images/gldh.png"></image>
+            <text>我已同意用户协议</text>
+          </view>
+        </view>
+    </view>
+  </view>
+  <view wx:if="{{status}}" class="invi_tk">
+    <view class="invi_mb" @tap="invi_hide"></view>
+    <view class="invi_xt">
+      <view>收益规则<image @tap="invi_hide" src="../images/xh.png"></image></view>
+      <view>
+        1、邀请好友后，好友完成注册并下单成功，您将会获得由好友订单一定比例的分享金。邀请越多回报也越丰厚哦！
+      </view>
+    </view>
+  </view>
+  <zanDialog></zanDialog>
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../../api/api'
+  import zanDialog from '../../../components/zan-dialog'
+
+	export default class InvitationCode extends wepy.page {
+		config = {
+			navigationBarTitleText: '我的邀请码',
+			backgroundColor: '#ebf0ef',
+			disableScroll: true
+		};
+    components = {
+      zanDialog
+    }
+
+		data = {
+      status:false,/*弹框是否弹出*/
+      nav_status:'y',/*y：邀请好友,f：分享链接,b：被邀请*/
+      Imgurl:{'b':'../images/quilt_invita.png','f':'','y':'../images/invitation.png'},/*背景图*/
+      val:['','',''],/*存储手机号，验证码，shareMemberCompanyId*/
+      name:'',/*邀请人名字*/
+      y_status:false,/*限制应邀按钮重复点击提交*/
+      headimgurl:'',/*头像*/
+      imageUrl: wepy.$appConfig.imageUrl,
+		};
+
+    onShareAppMessage(res){
+      if (res.from === 'button') {
+        // 来自页面内转发按钮
+//        console.log(res.target)
+      }
+      return {
+        title: '与好友一起变美哦！',
+        imageUrl: this.imageUrl + 'share_img.png',
+        path: '/pages/share/invitationCode/invitationCode?scene=1&shareMemberCompanyId='+wx.getStorageSync('session').memberCompanyId+'&memberName='+
+        wx.getStorageSync('session').nickName+'&headimgurl='+wx.getStorageSync('session').headImgUrl
+      }
+    }
+
+    showAccreditDialog() {
+      this.$invoke('zanDialog', 'showZanDialog', {
+        title: '是否授权',
+        content: '系统检测你还未授权, 打开授权【用户信息】开启更多功能',
+        showCancel: false,
+        buttons:[],
+        openType: 'getUserInfo'
+      })
+        .then(() => {
+        })
+        .catch(() => {
+
+        })
+    }
+
+    async acceptInvite(){
+      const json=await api.acceptInvite({
+        query:{
+          shareMemberCompanyId:this.val[2],
+          mobilePhone:this.val[0],
+          verifyCode:this.val[1],
+        }
+      });
+      if(json.imei_error_code==0){
+          if(json.data.resultStatus>1){
+            wx.showModal({
+              title: '小仙女',
+              content: '你已经是我们的会员了咯！去看看更多了解美肤介绍',
+              showCancel:false,
+              success: function(res) {
+                wx.reLaunch({
+                  url: '/pages/index/index'
+                })
+              }
+            })
+            return;
+          }
+        wx.showToast({
+          title: '应邀成功',
+          icon: 'success',
+          duration: 2000,
+          success:function () {
+            setTimeout(function () {
+              wx.reLaunch({
+                url: '/pages/index/index'
+              })
+            },2000)
+          }
+        })
+      }else{
+          this.y_status=false;
+      }
+      this.$apply();
+    }
+    async verifyCode(){
+      const json=await api.verifyCode({
+        query:{
+          mobilePhone:this.val[0]
+        }
+      });
+      this.$apply();
+    }
+
+
+
+		methods = {
+      invi_hide(e){
+          /*收益规则*/
+          if(e=='ok'){
+            this.status=true;
+          }else{
+            this.status=false;
+          }
+      },
+      async invita(){
+          /*邀请好友*/
+        if(!wx.getStorageSync('USER_DATA')){
+          this.$parent.verifyAccredit(getCurrentPages().length-1)
+        }
+        this.nav_status='f';
+        wx.setNavigationBarTitle({
+          title: '分享邀请码'
+        })
+        const json=await api.inviteQrCode({});/*获取分享二维码海报图*/
+        this.Imgurl['f']=json.data.url;
+        this.$apply();
+      },
+      bindReplaceInput(e){
+          /*输入手机号*/
+        var phoeif=((/^1[234567890]/.test(Number(e.detail.value))) || Number(e.detail.value)==1) && (Number(e.detail.value) > 0);
+        if(!phoeif){
+          return this.val[0];
+        }
+        this.val[0]=e.detail.value;
+      },
+      bindcode(e){
+          /*输入验证码*/
+        this.val[1]=e.detail.value;
+      },
+      VerinfyCode(){
+          /*获取验证码*/
+          if(this.val[0].length==11){
+            this.verifyCode();
+          }else{
+            wx.showToast({
+              title: '请输入手机号码！',
+              icon: 'none',
+              duration: 2000
+            })
+          }
+      },
+      invi_click(){
+          /*应邀*/
+        if(!wx.getStorageSync('USER_DATA')){
+          this.$parent.verifyAccredit(getCurrentPages().length-1)
+        }
+          if(this.y_status)return;
+          if(this.val[0].length==11 && this.val[1].length==4){
+            this.y_status=true;
+            this.acceptInvite();
+          }else{
+            wx.showToast({
+              title: '请核对手机号码或者验证码是否正确！',
+              icon: 'none',
+              duration: 2000
+            })
+          }
+      },
+      save(){
+          /*保存图片*/
+        wx.previewImage({
+          current: this.Imgurl['f'], // 当前显示图片的http链接
+          urls: [this.Imgurl['f']] // 需要预览的图片http链接列表
+        })
+      }
+		};
+
+    async scene(e) {
+      const json = await api.scene({
+        query: {
+          scene: e
+        }
+      });
+      /*判断是否为应邀人*/
+      this.name=json.data.memberName || '游客';
+      this.headimgurl=json.data.headimgurl || '../images/mrtx.png';
+      this.val[2]=json.data.shareMemberCompanyId;
+      this.$apply();
+    }
+
+    async onLoad(e) {
+        /**/
+      this.$parent.verifyAccredit(getCurrentPages().length-1)
+      wx.setStorageSync("isLoadMyA", true);
+        if(e.scene){
+          wx.setNavigationBarTitle({
+            title: '与好友一起变美'
+          })
+          this.nav_status='b';
+            if(e.scene!=1){
+              this.scene(e.scene);
+              return;
+            }
+            /*判断是否为应邀人*/
+          this.name=e.memberName || '游客';
+          this.headimgurl=e.headimgurl || '../images/mrtx.png';
+          this.val[2]=e.shareMemberCompanyId;
+          return;
+        }
+      this.$apply();
+    }
+	}
+</script>

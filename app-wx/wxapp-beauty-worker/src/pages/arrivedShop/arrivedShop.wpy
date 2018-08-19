@@ -1,0 +1,251 @@
+<style lang="scss">
+    page{background: #f4f4f4;padding-bottom: 120rpx;}
+    .bigtitle{display: block;font-size: 36rpx;color:#333;margin: 50rpx 0 50rpx;padding-left: 30rpx;}
+    .cart{margin: 0 30rpx;background: #fff;border-radius: 10rpx;}
+    .cart-con{padding: 30rpx;}
+    .yuyue-list{height: 104rpx;line-height: 104rpx;box-sizing: border-box;margin: 0 30rpx;border-bottom: 1rpx solid #ddd;font-size: 30rpx;}
+    .icon{display: block;float: left;width: 36rpx;height: 36rpx;margin: 34rpx 24rpx 0 0;}
+    /*底部*/
+    .bottom{height: 96rpx;line-height:96rpx;border-top:1px solid #e5e5e5;background: #fff;text-align: right;position: fixed;bottom: 0;width: 100%;}
+    .bottom .edit{padding:0 30rpx;border-radius:10rpx;margin-right:30rpx;text-align:center;display:inline-block;height: 70rpx;line-height: 70rpx;
+        background: #26cad3;font-size: 32rpx;color: #fff;}
+    .bottom .cancelYuyue{padding:0 30rpx;border-radius:10rpx;margin-right:30rpx;text-align:center;display:inline-block;height: 70rpx;line-height: 70rpx;
+        background: #26cad3;font-size: 32rpx;color: #fff;}
+    .bottom .billing{padding:0 30rpx;border-radius:10rpx;margin-right:30rpx;text-align:center;display:inline-block;height: 70rpx;line-height: 70rpx;
+        background: #26cad3;font-size: 32rpx;color: #fff;}
+    button:after{border:0;}
+    .header{width: 100%}
+    .header .logo{width: 100rpx;height: 100rpx;float: left;border-radius: 50%;overflow: hidden;}
+    .header .name{max-width: 64%;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;display: block;float: left;font-size: 30rpx;
+        line-height: 36rpx;margin: 32rpx 0 0 22rpx;}
+    .header .phone{display: block;float: left;width: 47rpx;height: 48rpx;margin: 26rpx 0 0 30rpx;}
+</style>
+<template>
+    <!--顾客信息-->
+    <text class="bigtitle">顾客信息</text>
+    <view class="cart">
+        <view class="cart-con" >
+            <view class="header">
+                <view class="logo">
+                    <block wx:if="{{Details.memberAvatar}}">
+                        <image src="{{Details.memberAvatar}}"  style="width:100rpx;height: 100rpx;"></image>
+                    </block>
+                    <block wx:else>
+                        <image src="../../images/memberAvatar-no.png"  style="width:100rpx;height: 100rpx;"></image>
+                    </block>
+                </view>
+                <block wx:if="{{Details.userName}}">
+                    <text class="name">{{Details.userName}}</text>
+                </block>
+                <block wx:else>
+                    <text class="name">{{Details.mobile}}</text>
+                </block>
+                <image src="../../images/icon-ph.png" @tap="dial({{Details.mobile}})" class="phone"></image>
+            </view>
+            <view style="clear: both"></view>
+            <view style="border-top:1rpx solid #ddd;margin-top: 30rpx;" wx:if="{{Details.lastArriveTime}}">
+                <view style="font-size: 30rpx;line-height: 30rpx;margin: 30rpx 0 0;">
+                    <text style="color: #999;margin: 10rpx 0;">上次到店时间：</text>
+                    <text style="color: #333;float: right">{{Details.lastArriveTime}}</text>
+                </view>
+                <view style="font-size: 30rpx;line-height: 30rpx;margin: 30rpx 0 0;">
+                    <text style="color: #999;">上次到店门店：</text>
+                    <text class="ellipsis-1" style="max-width: 60%;color: #333;float: right">{{Details.lastArriveShop}}</text>
+                </view>
+            </view>
+        </view>
+    </view>
+    <!--预约信息-->
+    <text class="bigtitle">预约信息</text>
+    <view class="cart">
+        <view class="yuyue-list">
+            <view>
+                <image src="../../images/icon-time.png" class="icon"></image>
+                <text style="color: #666;display: block;float: left">预约时间：</text>
+            </view>
+            <text style="float: right;color: #333">{{Details.bookBeginTime}} {{Details.bookBeginHour}}</text>
+        </view>
+        <view class="yuyue-list">
+            <view>
+                <image src="../../images/icon-bed.png" class="icon"></image>
+                <text style="color: #666;display: block;float: left">安排床位：</text>
+            </view>
+            <view  style="float: right;color: #26cad3" wx:if="{{Details.bedNum}}">
+                <text style="font-size: 30rpx;">V</text>
+                <text style="font-size: 24rpx;">{{Details.bedNum}}</text>
+            </view>
+        </view>
+        <view style="clear: both"></view>
+        <view  style="height: 104rpx;line-height: 104rpx;margin: 0 30rpx;font-size: 30rpx;">
+            <view>
+                <image src="../../images/icon-user.png" class="icon"></image>
+                <text style="color: #666;display: block;float: left">跟进人：</text>
+            </view>
+            <view style="float: right;color: #333;max-width: 70%;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;" >
+                <block wx:for="{{Details.follwerList}}" wx:key="{{item.follwerId}}">
+                    <text  wx:if="{{index < 3}}">{{item.followerName}}{{index+1 != (index+1 == 3 ? 3 : Details.follwerList.length) ? '、': ''}}</text>
+                    <text wx:else>
+                        <block wx:if="{{index == 3}}">...</block>
+                    </text>
+                </block>
+            </view>
+        </view>
+    </view>
+
+    <view class="bottom">
+        <blcok wx:if="{{Details.isConsume == 0}}">
+            <text @tap="edit" class="edit">编辑</text>
+            <text @tap="cancelYuyue" class="cancelYuyue" >取消预约</text>
+            <text @tap="billing" class="billing" >开消耗单</text>
+        </blcok>
+        <block wx:else>
+            <navigator url="/pages/finish/finish?id={{Details.serviceWorkNo}}" class="billing" hover-class="none">待签名消耗单</navigator>
+        </block>
+    </view>
+    <yyCode></yyCode>
+    <tips :title.sync="title" :name.sync="name" :time.sync="time" :type.sync="type"></tips>
+</template>
+
+<script>
+	import wepy from 'wepy'
+    import api from '../../api/api'
+    import yyCode from '../../components/yyCode' // alias example
+    import tips from '../../components/tips' // alias example
+	export default class arrivedShop extends wepy.page {
+		config = {
+			navigationBarTitleText: '已到店',
+            enablePullDownRefresh: false,
+		}
+		components = {
+            yyCode:yyCode,
+            tips:tips,
+		}
+
+		data = {
+            title:'',//传过组件的title
+            name:'',//传过组件的name
+            time:'',//传过组件的time
+            type:'',//传过组件的type,判断是取消预约还是开消耗单操作，yy是取消预约，
+            serviceWorkNo:'',//跳转传过来的serviceWorkNo
+            Details:[],//接口返回的数据
+            operate:'',//操作，编辑是，取消预约是2
+		}
+
+        async ajxa(e) {
+            /*接口加载*/
+            const AppointmentDetails = await api.getAppointmentDetails({
+                query: {
+                    serviceWorkNo: this.serviceWorkNo,
+                }
+            });
+            this.Details = AppointmentDetails.data;
+            console.log(this.Details);
+            this.$apply();
+        }
+
+        computed = {
+
+        }
+		methods = {
+//		    编辑
+            edit(){
+                this.$invoke('yyCode','abc');//弹出授权框
+                this.operate = 1;
+                this.$apply();
+            },
+//            取消预约
+            cancelYuyue(){
+                this.title = "取消预约？"; //弹出框title赋值
+                this.name = '客户：' + this.Details.userName;  //弹出框名字赋值
+                this.time = '预约到店时间：'+this.Details.bookBeginTime; //弹出框名字赋值
+//                this.isShow = true;
+                this.type = 'yy';   //弹出框参数，判断是取消预约操作
+                this.operate = 2;
+                this.$invoke('tips','abc');//触发组件abc方法，
+                this.$apply();
+            },
+//            开消耗单
+            billing(){
+                this.title = "开消耗单？";//弹出框title赋值
+                this.name = '客户：' + this.Details.userName;  //弹出框名字赋值
+                this.time = '预约到店时间：'+this.Details.bookBeginTime; //弹出框名字赋值
+                this.type = 'billing';//弹出框参数，判断是开消耗单操作
+                this.$invoke('tips','abc');//触发组件abc方法，
+                this.$apply();
+            },
+            //    拨打电话
+            dial(e1){
+                wx.makePhoneCall({
+                    phoneNumber: e1,//仅为示例，并非真实的电话号码
+                    success:function(){
+                        console.log("拨打电话成功！")
+                    },
+                    fail:function(){
+                        console.log("拨打电话失败！")
+                    }
+                })
+            },
+		}
+		events = {
+		}
+        //授权码正确返回
+        async xds() {
+            if (this.operate == 1) {
+                wx.navigateTo({
+                    url: '/pages/revise-bespoke/revise_bespoke?id=' + this.serviceWorkNo + '&type=' + '2',
+                });
+            } else if (this.operate == 2) {
+                const del = await api.deleBook({
+                    query: {
+                        memberBookingId: this.Details.memberBookingId, //预约详情返回的
+                    }
+                });
+                if (del.data.data == 1) {
+                    //跳转到预约查询-已到店
+//                    wx.redirectTo({
+//                        url: '/pages/order_ope/order_ope?num=2'
+//                    });
+                    wx.navigateBack({
+                        delta: 1
+                    });
+                    this.$apply();
+                }
+            }
+            this.$apply();
+        }
+        //取消预约授权框点击确定返回
+        async yySure(){
+            this.$invoke('tips','ensureClose');//弹出框点击确定后请求接口成功后关闭弹出框方法
+            this.$invoke('yyCode','abc');//弹出授权框
+//            const del = await api.deleBook({
+//                query: {
+//                    memberBookingId : this.Details.memberBookingId, //预约详情返回的
+//                }
+//            });
+//            if (del.data.data == 1) {
+//                this.$invoke('tips','ensureClose');//弹出框点击确定后请求接口成功后关闭弹出框方法
+//                //跳转到预约查询-已到店
+//                wx.redirectTo({
+//                    url: '/pages/order_ope/order_ope?num=2'
+//                });
+//                this.$apply();
+//            }
+        }
+        //开消耗单授权框点击确定返回
+        async billingSure(){
+            this.$invoke('tips','ensureClose');//弹出框点击确定后请求接口成功后关闭弹出框方法
+            wx.redirectTo({
+                url: '/pages/consume/consume?data=' + JSON.stringify(this.Details)
+            });
+            this.$apply();
+        }
+        onShow(){
+            this.ajxa();//请求预约详情接口
+        }
+		onLoad(options) {
+            this.serviceWorkNo = options.id;
+//            this.serviceWorkNo = 685967;
+
+		}
+	}
+</script>

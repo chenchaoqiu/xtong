@@ -1,0 +1,49 @@
+<style lang="scss">
+
+</style>
+<template>
+  <web-view src="{{id}}"></web-view>
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+	import dialog from '../../components/dialog'
+
+	export default class hpage extends wepy.page {
+		config = {
+			navigationBarTitleText: '',
+			backgroundColor: '#ebf0ef',
+		};
+
+		components = {
+			dialog
+		}
+    data = {
+      id:"",
+    };
+		async onLoad(options) {
+      this.id = options.id;
+
+			/*this.showDialog = !wx.getStorageSync('session').mobilePhone;*/
+		}
+
+
+
+
+		watch = {
+
+		};
+
+		methods = {
+
+		};
+
+
+    onShow() {
+
+    };
+		events = {
+
+		};
+	}
+</script>

@@ -1,0 +1,614 @@
+<style lang="less">
+    page{background: #f4f4f4;font-family: PingFang-SC-Regular; }
+    /** 修改默认的navigator点击态 **/
+    .navigator-hover {
+        color:blue;
+    }
+    /** 自定义其他点击态样式类 **/
+    .other-navigator-hover {
+        color:red;
+    }
+    /*button{margin-left: 0!important;margin-right: 0!important;padding: 0!important;}*/
+    .bar{width: 100%;height: 90rpx;line-height: 90rpx;display: flex;background: #ffffff}
+    .bar-item{flex: 1;text-align: center;font-size: 30rpx;color:#666666}
+    .item-active{border-bottom: 2rpx solid #26cad3}
+    .kaidan-list{width:100%;height: auto;background: #ffffff}
+    .list-top{padding: 20rpx 30rpx;display: flex;display: -webkit-flex;flex-direction: row;-webkit-flex-direction: row;border-bottom: 1rpx solid #f4f4f4;}
+    .list-top-l{width: 200rpx;height: 140rpx;border:1rpx solid #f4f4f4;border-radius: 10rpx;overflow: hidden}
+    .list-top-r{flex: 1;display: flex;display: -webkit-flex;flex-direction: column;-webkit-flex-direction: column;justify-content: space-between;-webkit-justify-content: space-between;padding-left: 16rpx;overflow: hidden}
+    .r-title{font-size: 30rpx;line-height: 40rpx;color:#333333;}
+    .r-des{font-size: 24rpx;color:#666666;display: block;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;  }
+    .list-bottom{height: 90rpx;line-height: 90rpx;padding: 0 30rpx;display: flex;display: -webkit-flex;
+        justify-content: space-between;-webkit-justify-content: space-between;border-bottom: 1rpx solid #eee}
+    .list-bottom-r{}
+    .icon{display: inline-block;width: 42rpx;height: 42rpx;margin-top: 26rpx;}
+    .footer-btn{width: 100%;height: 100rpx;line-height: 100rpx;position: fixed;left: 0;bottom: 0;background: #26cad3;color:#ffffff;border-radius: 0}
+    .hui-btn{background: #eee;color:#999!important;}
+    .cart-num{display: block;width: 26rpx;height: 26rpx;line-height:26rpx;border: 2rpx solid #ffffff;border-radius: 50%;background: #ff5767;color:#ffffff;font-size: 20rpx; }
+    /*二维码弹出框*/
+    .erweima{position:fixed;top:0rpx;left: 0rpx;width: 100%;height: 100%;border:1rpx solid #fff;background: rgba(0,0,0,0.8);z-index: 999}
+    .erweima-con{width: 440rpx;display: block;position: absolute;top:230rpx;left: 50%;margin-left: -220rpx;text-align: center}
+    .code_hide{font-size:30rpx;line-height:70rpx;color:#fef;display: block;width: 70rpx;height: 70rpx;border: 1rpx solid #fef;border-radius: 50%;margin-top:110rpx;margin-left: 185rpx}
+    .add_cart{position:fixed;bottom:0;left: 0rpx;width: 100%;height: 100vh;border:1rpx solid #fff;background: rgba(0,0,0,0.8);z-index: 998}
+    .add_cart_con{width: 100%;height:482rpx;background: #fff;position: absolute;bottom: 98rpx;left: 0;}
+    .add_cart_con_title{height: 80rpx;line-height: 80rpx;border-bottom: 1rpx solid #f4f4f4;}
+    .guige_btn{float: left;margin: 30rpx 0 0 30rpx;padding:0!important;width: 180rpx;height: 70rpx;line-height: 70rpx;font-size: 30rpx;}
+    .btn_active{background: #26cad3;color: #ffffff}
+    .tip{width: 100%;overflow: hidden;height: 90rpx;line-height: 90rpx;background: #ffffff;color:#666666;font-size: 30rpx;}
+    .guige-xianshi{width:100%;height: auto;margin: 0 auto;background: #fff9f9;overflow: hidden}
+    /*.cart-bottom{width: 100%;height: 100rpx;line-height: 100rpx;}*/
+    .total{flex: 1;-webkit-flex: 1;background: #ffffff;color: #ff5767;padding-left: 30rpx;}
+    .jiesuan{width: 260rpx;background: #26cad3;color:#ffffff;line-height: 98rpx;font-size: 30rpx;}
+    .cart-bottom{width: 100%;height: 98rpx;line-height: 100rpx;position: fixed;left: 0;bottom: 0;display: flex;display: -webkit-flex;font-size: 30rpx;;border-radius: 0!important;}
+    .quankuan{display: flex;display: -webkit-flex;justify-content: space-between;-webkit-justify-content:space-between;padding: 0 30rpx;font-size: 30rpx;color:#333333;height: 40rpx;line-height:40rpx;margin-top: 20rpx;}
+    .counter {
+        width: 150rpx;
+        height: 50rpx;line-height: 50rpx;
+        text-align: left;
+        font-size: 30rpx;
+        border:2rpx solid #f4f4f4!important;border-radius: 10rpx;margin-top: 20rpx;
+    }
+    .count {
+        font-size: 30rpx;
+        color:#666666;
+        display: block;
+        width: 50rpx;height: 50rpx;
+        float: left;
+        text-align: center;
+    }
+    .minus{display:block;float:left;width: 50rpx;height: 50rpx;line-height: 50rpx;font-size: 30rpx;text-align: center;color:#26cad3}
+    .plus{display:block;float:left;width: 50rpx;height: 50rpx;line-height: 50rpx;font-size: 30rpx;text-align: center;color:#26cad3}
+    button::after{border: none}
+    .ellipsis-2 {
+        display: -webkit-box;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+        word-break: break-all;
+        white-space: normal !important;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+    .refresh{text-align: center;color: #999999;font-size: 30rpx;}
+    .loadmore{text-align: center;color: #999999;font-size: 30rpx;padding-bottom: 80rpx;padding-top: 50rpx;}
+    .projects-item{font-size: 26rpx;color: #666666;width: 100%;display: flex;display: -webkit-flex;background: #fff9f9}
+    .projects-item-l{width: 120rpx;margin-left: 30rpx;text-align: left}
+    .projects-item-c{flex: 1;-webkit-flex: 1;margin-left: 22rpx;margin-right: 30rpx;}
+    .projects-item-r{width: 120rpx;margin-right: 30rpx;text-align: right}
+
+    .pro-item{padding: 0 30rpx;}
+    .pro-item-sel{height: 80rpx;line-height: 80rpx;color:#333;}
+    .pro-item-sel .more{width: 24rpx;height: 24rpx;margin-top: 28rpx;float: right}
+    .pro-item-con{padding: 30rpx 0;border-top: 1rpx solid #eee}
+    .pro-item-con-list{color: #666;font-size: 26rpx;line-height: 26rpx;margin-bottom: 24rpx;}
+    .pro-item-con-list:last-child{margin-bottom: 0}
+</style>
+<template>
+    <view style="height: 1px;width: 100%;background: #f4f4f4; "></view>
+    <view class="tip">
+        <text style="display: block;float: left;padding-left: 30rpx;">本次共购买{{totalSize}}个服务</text>
+        <text style="display: block;float: right;padding-right: 30rpx;" @tap="clearCart">清空</text>
+    </view>
+    <!--cartlist-->
+    <view style="width: 100%;overflow: hidden;padding-bottom: 118rpx;">
+                <view wx:for="{{list}}" wx:key="list" index="index"  wx:if="{{list.length !== 0}}">
+                <view class="kaidan-list" style="margin-top:20rpx;" >
+                    <view class="list-top">
+                        <view class="list-top-l">
+                            <image src="{{item.defaultPic}}" style="width: 200rpx;height: 140rpx;"></image>
+                        </view>
+                        <view class="list-top-r">
+                            <text class="r-title ellipsis-2">{{item.name}}</text>
+                            <text class="r-des" >{{item.courseCardShortName}}</text>
+                        </view>
+                    </view>
+                    <view class="list-bottom" >
+                        <view class="list-bottom-l" >
+                            <text style="font-size: 30rpx;color:#ff5767">{{item.price}}元</text>
+                            <text style="font-size: 20rpx;color: #999999;padding-left: 20rpx;text-decoration: line-through">{{item.marketPrice}}元</text>
+                        </view>
+                        <view class="list-bottom-r">
+                            <view >
+                                <view class="counter" >
+                                    <text @tap="minus" data-index="{{index}}" data-num="{{item.num}}" class="minus"  >  -  </text>
+                                    <!--<text class="count" :class="{red: num > 55, green: num < 45}"> {{num}} </text>-->
+                                    <text class="count" > {{item.num}} </text>
+                                    <text @tap="plus" data-index="{{index}}" data-num="{{item.num}}" class="plus"  >  +  </text>
+                                </view>
+                            </view>
+                        </view>
+                    </view>
+                    <!--点击增加的商品-->
+                    <view class="pro-item">
+                        <view class="pro-item-sel" @tap.stop="more('{{index}}','{{!moreArr[index]}}')">
+                            <text style="font-size: 26rpx;">套餐包含项目：</text>
+                            <image class="more"  src="{{moreArr[index] ? '../../images/up-big.png' : '../../images/dow-big.png'}}"></image>
+                        </view>
+                        <view class="pro-item-con" wx:if="{{moreArr[index]}}">
+                            <block wx:for="{{item.projects}}" wx:for-item="itemb" wx:key="itemb">
+                                <view class="pro-item-con-list">
+                                    <block wx:if="{{item.isOpenSetting == 0}}">
+                                        <text style="display: inline-block;max-width: 70%;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;" >{{itemb.projectName}}</text>
+                                        <text style="text-align: right;float: right;"   wx:if="{{itemb.isNumLimit == 1}}">x {{itemb.projectNum}}</text>
+                                        <text style="text-align: right;float: right;"  wx:if="{{itemb.isNumLimit == 0}}">无限制</text>
+                                    </block>
+                                    <block wx:if="{{item.isOpenSetting == 1}}">
+                                        <text style="display: inline-block;max-width: 100%;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;" >{{itemb.projectName}}</text>
+                                        <text style="text-align: right;float: right;"></text>
+                                    </block>
+                                </view>
+                            </block>
+                        </view>
+                    </view>
+
+                    <view style="clear: both"></view>
+
+                </view>
+            </view>
+        </view>
+        <view wx:if="{{list.length == 0}}">
+            <image src="../../images/null-cart.png" style="display: block;width: 424rpx;height: 281rpx;margin: 196rpx auto 0"></image>
+        </view>
+
+    <!--底部按钮-->
+    <view class="cart-bottom">
+        <view class="total">合计：{{count}}元</view>
+        <button @tap="jsClick_show" class="jiesuan" style="border-radius: 0!important;-webkit-tap-highlight-color:color">去结算</button>
+    </view>
+
+    <!--结算模态框-->
+    <view class="add_cart" style="{{isFocus ? 'bottom: 25vh' : ''}}" wx:if="{{jsshow}}" >
+        <view @tap="jsClick_hide" style="width: 100%;height: 100%"></view>
+        <view class="add_cart_con" style="height: 316rpx;!important;">
+            <view class="add_cart_con_title" >
+                <text style="font-size: 30rpx;color:#333333;padding-left: 30rpx;float: left">支付金额：{{amountData.amountPrice}}元</text>
+                <text style="font-size: 30rpx;color:#333333;padding-right: 30rpx;float: right" @tap="jsClick_hide">X</text>
+            </view>
+            <!--全款-->
+            <view id="qk" wx:if="{{qkshow}}">
+                <view  class="quankuan">
+                    <text style="display: inline-block;float: left;color:#666666">全款:</text>
+                    <!--<text style="display: inline-block;float: right;color:#666666" @tap="qkClick_show" >切换>></text>-->
+                    <text style="display: inline-block;float: right;color:#666666" @tap="qkClick_show" wx:if="{{amountData.amountPrice != amountData.minPayPrice}}">切换>></text>
+                </view>
+                <view  class="quankuan">
+                    <view>
+                        <text style="display: inline-block;float: left;color: #ff5767;font-size: 30rpx;" data-paymoney="{{amountData.amountPrice}}">{{amountData.amountPrice}}元</text>
+                    </view>
+                </view>
+            </view>
+            <!--预付款 图标-->
+            <view id="yf"  wx:else >
+                <view  class="quankuan">
+                    <text style="display: inline-block;float: left;color:#666666">预付款:</text>
+                    <text style="display: inline-block;color:#666666;float: right" @tap="qkClick_hide">切换>></text>
+                </view>
+                <view  class="quankuan">
+                    <view class="edit-no"  wx:if="{{edit}}">
+                        <text style="display: inline-block;float: left;color: #ff5767;font-size: 30rpx;">{{amountData.minPayPrice}}元</text>
+                        <image @tap="editClick" src="../../images/icon-alter.png" style="width: 44rpx;height: 44rpx;margin-left: 40rpx;display: inline-block "></image>
+                    </view>
+                    <view class="edit" wx:else  >
+                        <view>
+                            <input value="{{val}}" type="digit" class="" bindblur="bindblur" bindfocus="test"  bindinput="chargiput"  style="display: block;float: left;width: 126rpx;height: 38rpx;min-height:38rpx;border:1rpx solid #999999;border-radius:5rpx;color:#ff5767;"/>
+                            <text style="display: block;;float:left;color: #ff5767;padding-left: 20rpx;padding-top: -10rpx;">元</text>
+                        </view>
+                        <view style="clear: both"></view>
+                        <text style="font-size: 24rpx;color:#666666">不能低于{{amountData.minPayPrice}}元！</text>
+                    </view>
+                    <text style="display: inline-block;float: right">欠款：{{debt}}元</text>
+                </view>
+            </view>
+        </view>
+        <button style="{{isFocus ? 'bottom: 25vh' : ''}}" type="botton" disabled="{{(qkshow?false : input_val < amountData.minPayPrice)}}" class="footer-btn {{(qkshow?false : input_val < amountData.minPayPrice) ? 'hui-btn':''}}" @tap="compare">下一步</button>
+        <sqcode></sqcode>
+    </view>
+
+</template>
+
+
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+    import sqCode from '../../components/sqCode' // alias example
+    import {accAdd,mul} from '../../utils/util'
+	export default class cart extends wepy.page {
+		config = {
+			navigationBarTitleText: '购物车',
+            "enablePullDownRefresh": false, //开启下拉刷新
+		}
+		components = {
+            sqcode:sqCode
+		}
+
+		data = {
+            "winWidth": "",
+            "winHeight": "",
+			isFocus: false,
+			all : "",
+			totalSize:"",
+			cartlist:[],
+			total: 1000,
+			id: "",
+			show : false,
+			add_show : false,
+			jsshow :false,
+			qkshow:true,
+			edit :true,
+			list:[],
+			count:"",
+			cartItemIds:'',
+			amountData:'',
+			debt:0,
+			val:'',
+            oVal:'20',
+			input_val:'',
+			payMoneyType:'1',
+			paymoney:'',
+            ztru:true,
+            page:1,
+            pageSize:0,
+            hideHeader: true,
+            loadmore:'加载更多',
+            amountPrice:'',
+            projectsList:'',//项目
+            moreArr:[],
+		}
+
+		computed = {}
+
+		async del(index){
+			const cartUpdate = await api.cartUpdate({
+				query: {
+//                    num:1,  //数量
+					type : "del",
+					cartItemId:this.list[index].cartItemId,
+					//                            shopId :this.list[index].shopId,
+				}
+			});
+			this.list.splice(index, 1);
+			this.getCartList();
+			this.$apply();
+		}
+		//提交接口
+		compare(){
+		    if(this.qkshow){
+                /*全款*/
+                this.paymoney = this.amountData.amountPrice;
+                this.payMoneyType =1;
+            }else{
+		        /*预付款*/
+                if(this.input_val > 0){
+                    this.paymoney =this.val;
+                    this.payMoneyType =2;
+                }
+            }
+			this.jsshow = false;
+			this.order();
+		}
+
+		async order(){
+			const orderadd = await api.orderadd({
+				query: {
+					cartItemIds:this.cartItemIds,
+					payMoney:this.paymoney,
+					payMoneyType:this.payMoneyType,
+
+				}
+			});
+            this.getCartList();//更新购物车，生成结算码下一步
+			wx.navigateTo({
+				url: '/pages/settle_accounts_code/settle_accounts_code?id='+orderadd.data.moneySn+(this.qkshow ? "": '&page=1')
+			})
+		}
+		async amountMinPay(){
+			const amount = await api.amountMinPay({
+				query: {
+					cartItemIds: this.cartItemIds,
+				}
+			});
+			this.amountData = amount.data;
+			this.amountPrice =  amount.data.amountPrice;
+//			this.debt = this.amountData.amountPrice-this.amountData.minPayPrice;
+
+
+			this.$apply();
+		}
+		chargiput(e){
+//            var This=this;
+			this.input_val =e.detail.value;
+//			console.log(typeof this.input_val)
+			this.$apply();
+		}
+		//授权码正确返回
+        xds(){
+            this.qkshow = false;
+            this.debt = this.amountData.amountPrice-this.amountData.minPayPrice;
+            this.paymoney = this.amountData.minPayPrice;
+            this.oVal=this.amountData.minPayPrice;
+            this.payMoneyType =2;
+            this.input_val = this.amountData.minPayPrice.toString();
+            this.$apply();
+        }
+        events = {
+        };
+
+		methods = {
+        //点击展示
+            more(index,b) {
+                this.list[index].more = b;
+                this.moreArr[index] = this.list[index].more; //把true和false存到数组
+                this.$apply();
+            },
+
+//            打开结算 -全款
+			async jsClick_show(){
+                if(this.list.length==0){
+                    return ;
+                }
+                this.ztru=false;
+                wx.navigateTo({
+                    url: '/pages/set_order/order'
+                })
+                return;
+				this.jsshow = true;
+                this.qkshow = true;
+				var itemList = this.list;
+				var cartItemIds='';
+				for(var i=0;i<itemList.length;i++){
+					cartItemIds +=((i==0?'':',')+itemList[i].cartItemId);
+				}
+				this.cartItemIds = cartItemIds;
+//        获取购物车最低预付款金额、购物车总额
+//				this.amountMinPay();
+                const amount = await api.amountMinPay({
+                    query: {
+                        cartItemIds: this.cartItemIds,
+                    }
+                });
+                this.amountData = amount.data;
+                this.amountPrice =  amount.data.amountPrice;
+//                this.debt = this.amountData.amountPrice-this.amountData.minPayPrice;
+                this.payMoneyType =1;
+//				console.log(this.payMoneyType);
+                this.paymoney = this.amountPrice ;
+				this.$apply();
+			},
+			test() {
+				this.isFocus = true;
+				this.$apply();
+			},
+            bindblur() {
+//			    console.log(111111);
+				this.isFocus = false;
+
+//                console.log(this.debt);
+				this.$apply();
+			},
+            //关闭弹框
+			jsClick_hide(){
+				this.jsshow = false;
+
+			},
+//          欠款显示
+			qkClick_show(e){
+				this.qkshow = true;
+                this.$invoke('sqcode','abc');
+				/*this.paymoney = e.currentTarget.dataset.paymoney;
+				console.log(e.currentTarget.dataset.paymoney)*/
+//				this.payMoneyType =2;
+//				console.log(this.payMoneyType);
+//                this.paymoney = this.amountData.minPayPrice;
+			},
+//            最低款
+			qkClick_hide(){
+				this.qkshow = true;
+//                console.log(this.payMoneyType);
+//                this.payMoneyType =1;
+                this.payMoneyType =2;
+//				console.log(this.payMoneyType);
+                this.paymoney = this.amountData.minPayPrice;
+//                console.log(this.amountData.minPayPrice);
+				/*this.paymoney = e.currentTarget.dataset.paymoney;*/
+//                this.debt = this.amountData.amountPrice-this.amountData.minPayPrice;
+				this.$apply();
+
+			},
+//            输入款
+			editClick(e){
+//                console.log(666)
+				this.edit = false;
+				this.paymoney = this.input_val;
+				this.payMoneyType =2;
+			},
+			async plus (e) {
+				//得到下标
+				var index = e.currentTarget.dataset.index;
+				//得到点击的值
+				var num = e.currentTarget.dataset.num;
+				num = num + 1;
+//                console.log(num);
+				//把新的值给新的数组
+				var newList = this.list;
+				newList[index].num =num;
+//                console.log(newList);
+				//把新的数组传给前台
+				this.list = newList;
+//                console.log(this.list);
+				this.ncount();
+				//修改购物车接口
+				const cartUpdate = await api.cartUpdate({
+					query: {
+						num:num,  //数量
+						type : "update",
+						cartItemId:this.list[index].cartItemId,
+						shopId :this.list[index].shopId,
+					}
+				});
+                this.getCartList();
+//				console.log(cartUpdate);
+//                this.count();
+
+			},
+
+			async minus (e) {
+				//得到下标
+				var index = e.currentTarget.dataset.index;
+				//得到点击的值
+				var num = e.currentTarget.dataset.num;
+				if(num > 1){
+					num = num -1;
+					//把新的值给新的数组
+					var newList = this.list;
+					newList[index].num =num;
+//                    console.log(newList);
+					//把新的数组传给前台
+					this.list = newList;
+					this.ncount();
+					//修改购物车接口
+					const cartUpdate = await api.cartUpdate({
+						query: {
+							num:num,  //数量
+							type : "update",
+							cartItemId:this.list[index].cartItemId,
+							shopId :this.list[index].shopId,
+						}
+					});
+					this.getCartList();
+//                    console.log(cartUpdate);
+					//修改购物车接口
+//                    this.count();
+				}else {
+					wx.showModal({
+						title: '提示',
+                        content: '是否取消购买该项目/套餐',
+						success: res => {
+							if (res.confirm) {
+//								console.log(index)
+								this.del(index);
+								this.totalSize = this.totalSize-1;
+								this.$apply();
+
+							} else if (res.cancel) {
+//								console.log('用户点击取消')
+							}
+						}
+					});
+
+
+					//删除购物车
+
+
+				}
+			},
+
+
+
+		}
+		//计算金额方法
+		ncount(){
+			var newList = this.list;
+			var newCount=0;
+			for(var i=0;i<newList.length;i++){
+//				newCount += (newList[i].num * newList[i].price* 100)/100;
+                newCount = accAdd(mul(newList[i].num,newList[i].price),newCount)
+			}
+//			console.log(newCount);
+			this.count = newCount;
+		}
+        computed= {
+		    val() {
+
+//		            let oVal;
+                    this.oVal = this.oVal.toString();
+                    this.oVal = this.input_val.replace(/^\./g, "") || this.oVal.replace(/^\./g, ""); //验证第一个字符是数字
+                    this.oVal = this.oVal.replace(/\.{2,}/g, "."); //只保留第一个, 清除多余的
+                    this.oVal = this.oVal.replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");
+                    this.oVal = this.oVal.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3'); //只能输入两个小数
+                    this.oVal = this.oVal.replace(/^0{2,}/, 0);
+//                    console.log(oVal,oVal*100 > this.amountData.minPayPrice*100,this.amountData.minPayPrice);
+                    if(this.oVal*100 > this.amountData.amountPrice*100){
+                        this.debt = 0;
+                    }else {
+                        this.debt = (this.amountData.amountPrice*100 - this.oVal*100)/100;
+                    }
+                    return this.oVal*100 > this.amountData.amountPrice*100 ?  this.amountData.amountPrice : this.oVal;
+
+            }
+        }
+
+		events = {
+		}
+
+        async onShow(){
+        if(this.ztru){
+          this.ztru=false;
+          return;
+        }
+          let cartItemIds='';
+          for(let i=0;i<this.list.length;i++){
+              cartItemIds +=((i==0?'':',')+this.list[i].cartItemId);
+          }
+          const updateOriginPrice = await api.updateOriginPrice({
+              query: {
+                  cartItemIds:cartItemIds,
+              }
+          });
+        this.onLoad();
+        this.$apply();
+      }
+//清空购物车
+        async clearCart(){
+            const clearCart = await api.cartUpdate({
+                query: {
+                    type : "clear",
+                    cartItemId:0,
+                }
+            });
+            this.getCartList();
+        }
+		async onLoad() {
+            // 获取系统信息
+            wx.getSystemInfo( {
+                success: function( res ) {
+                    this.winWidth=res.windowWidth;
+                    this.winHeight= res.windowHeight;
+                }.bind(this)
+            });
+//            获取购物车列表
+			this.getCartList();
+
+		}
+		async getCartList() {
+//            if(!e){
+//                this.page=1;
+//            }
+			const cartlist = await api.cartlist({
+				query: {
+//                    pageNo:this.page,
+//                    pageSize:8
+				}
+			});
+//            if(e){
+//                this.list = this.list.concat(cartlist.data.list);
+//            }else{
+//                this.list = cartlist.data.list;  //商品列表
+//                this.pageSize =  cartlist.data.totalSize;
+//                console.log(this.pageSize)
+//            }
+            this.list = cartlist.data.list;  //商品列表
+			this.all = cartlist.data;
+            for (var i in this.list) {
+                this.projectsList = this.list[i].projects; //销售包id
+            }
+//            console.log(this.projectsList);
+			this.totalSize = this.list.length;
+//			console.log(this.totalSize);
+//            console.log(this.all);
+//			this.list = cartlist.data.list;
+			this.count = cartlist.data.totalMoney;
+
+			this.$apply();
+		}
+	}
+</script>

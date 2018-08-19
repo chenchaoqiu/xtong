@@ -1,0 +1,563 @@
+<style lang="less">
+    page{background: #f4f4f4}
+    .ord{
+        padding: 0 30rpx;
+        font-size: 26rpx;
+        color: #333;
+    }
+    .ord > view{
+        text-align: center;
+        background: #fff;
+        border-radius: 10rpx;
+    }
+    .ord{
+        .ord-bk{
+            padding-bottom: 30rpx;
+            overflow: hidden;
+        }
+        .ord-le{
+            float: left;
+            overflow: hidden;
+            line-height: 100rpx;
+            image:first-child{
+                width:100rpx;
+                height:100rpx;
+                border-radius: 50%;
+                float: left;
+            }
+            > text{
+                float: left;
+                font-size: 30rpx;
+                color: #333;
+                margin:0 20rpx;
+            }
+            image:nth-child(3){
+                width: 43rpx;
+                height: 45rpx;
+                margin-top: 27.5rpx;
+                margin-left: 20rpx;
+                float:left;
+            }
+        }
+        .ord-ri{
+            float: right;
+            line-height:100rpx;
+            text{
+                font-size: 28rpx;
+                color: #999;
+            }
+            image{
+                width:16rpx;
+                height: 29rpx;
+                float: right;
+                margin-top: 35.5rpx;
+                margin-left: 20rpx;
+            }
+        }
+        .ord-bot{
+            border-top: 1rpx solid #ddd;
+            font-size: 28rpx;
+            color: #666;
+            padding: 30rpx 0;
+            view{
+                overflow: hidden;
+                margin-top: 13rpx;
+            }
+            view:first-child{
+                margin-top: 0px;
+            }
+        }
+    }
+    /*预约信息*/
+    .plan{
+        background: #fff;
+        border-radius: 10rpx;
+        font-size: 28rpx;
+        color: #666;
+        margin:0 30rpx;
+        padding: 0 30rpx;
+        > view{
+            overflow: hidden;
+            height:106rpx;
+            line-height: 106rpx;
+            border-top:1rpx solid #eee;
+        }
+        > view:first-child{
+            border:none;
+        }
+        .pull-left{
+            image{
+                width:36rpx;
+                height:36rpx;
+                margin-right: 25rpx;
+                float: left;
+                margin-top: 35rpx;
+            }
+        }
+        .pull-right{
+            image{
+                width:17rpx;
+                height:30rpx;
+                margin-left:20rpx;
+                margin-top: 38rpx;
+                float: right;
+            }
+        }
+    }
+    .weui-cell{
+        padding:30rpx;
+    }
+    .weui-cell:before,.weui-cells:before,.weui-cells:after{
+        border:none;
+    }
+    .gjr-bot{
+        border-top:1rpx solid #ddd;
+    }
+    .gjr-bot text{
+        display: inline-block;
+        width:50%;
+        text-align: center;
+        font-size: 30rpx;
+        color: #999;
+        height: 98rpx;
+        line-height: 98rpx;
+        position: relative;
+    }
+    .gjr-bot text:first-child:before{
+        content:'';
+        position: absolute;
+        height:100%;
+        width: 1px;
+        right: -0.5rpx;
+        background: #ddd;
+    }
+    .gkimg{
+        margin-top:21rpx;
+        display:inline-block;
+        width: 64rpx;
+        height: 64rpx;
+        border-radius: 50%;
+        position: absolute;
+    }
+    .button{
+        height:97rpx;
+        line-height:97rpx;
+        border: 1rpx solid #e5e5e5;
+        background: #fff;
+        position: fixed;
+        bottom:0;
+        width:100%;
+        text-align: right;
+       text{
+           width:160rpx;
+           height:70rpx;
+           line-height:70rpx;
+           background: #37ced7;
+           border-radius: 10rpx;
+           display: inline-block;
+           text-align: center;
+           font-size:32rpx;
+           color: #fff;
+           margin-right: 30rpx;
+       }
+    }
+
+</style>
+<template>
+    <!--顾客信息-->
+    <view style="height: 134rpx;line-height:134rpx;width: 100%;padding: 0 30rpx;font-size: 36rpx;color: #333;">顾客信息</view>
+    <view class="ord" wx:if="{{attr.length != 0}}">
+        <view  wx:for="{{attr}}" wx:key="index" style="overflow: hidden">
+            <view style="padding:30rpx 30rpx 0;">
+                <view class="ord-bk">
+                    <view class="ord-le">
+                        <image src="{{item.memberAvatar}}"></image>
+                        <text>{{item.userName}}</text>
+                        <image @tap="posnt({{item.mobile}})" src="/images/posnl.png"></image>
+                    </view>
+                </view>
+                <view wx:if="{{item.lastArriveTime || item.lastArriveShop}}" class="ord-bot">
+                    <view wx:if="{{item.lastArriveTime}}">
+                        <text class="pull-left">上次到店时间：</text>
+                        <text class="pull-right">{{item.lastArriveTime}}</text>
+                    </view>
+                    <view wx:if="{{item.lastArriveShop}}">
+                        <text class="pull-left">上次到店门店：</text>
+                        <text class="pull-right">{{item.lastArriveShop}}</text>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+    <!--预约信息-->
+    <view style="height: 134rpx;line-height:134rpx;width: 100%;padding: 0 30rpx;font-size: 36rpx;color: #333;">预约信息</view>
+    <view class="plan">
+        <view @tap="yytime">
+            <view class="pull-left">
+                <image src="/images/yy-time.png"></image>
+                <text>预约时间</text>
+            </view>
+            <view class="pull-right">
+                <text style="color: #333;">{{fwsj?fwsj:(attr[0].bookBeginTime+' '+attr[0].bookBeginHour)}}</text>
+                <image src="/images/icon-in.png"></image>
+            </view>
+        </view>
+        <view>
+            <view class="pull-left">
+                <image src="/images/yy-cw.png"></image>
+                <text>安排床位</text>
+            </view>
+            <view class="pull-right">
+                <text>随机安排</text>
+            </view>
+        </view>
+        <view @tap="gjgw">
+            <view class="pull-left">
+                <image src="/images/pronl.png"></image>
+                <text>跟进人</text>
+            </view>
+            <view style="color: #333;float: right;height: 100%;width: 60%;">
+                <!--<view style="position: relative;height: 100%;width: 200rpx;float: left">-->
+                    <!--<image wx:for="{{imatx}}" wx:key="index" class="gkimg" src='{{item.followCounselorImage}}' style="right: {{index*42}}rpx;"></image>-->
+                <!--</view>-->
+                <view class="ellipsis-1" style="width:90%;float:left;text-align: right">
+                    <text wx:for="{{imatx}}" style="color: #333;margin-left: 10rpx;">{{(index!=0?'，':'')+item.followCounselor}}</text>
+                </view>
+                <image style="width:17rpx;height:30rpx;margin-left:20rpx;margin-top:38rpx;float:right;" src="/images/icon-in.png"></image>
+            </view>
+        </view>
+    </view>
+    <view class="button">
+        <text @tap="bespoke">{{status?'取消预约':'取消'}}</text>
+        <text @tap="bespoke('ok')">{{status?'确认预约':'确定'}}</text>
+    </view>
+    <!--选择跟进顾客-->
+    <view wx:if="{{ckeout}}" style="position: fixed;top: 0px;left: 0;width: 100%;height: 100%;z-index: 2;">
+        <view @tap="nock" animation="{{animationData_yc}}" style="width: 100%;height: 100%;background: #000;opacity: .8;"></view>
+        <view class="gjr" animation="{{animationData}}" style="position: fixed;bottom: 0;left: 0;background: #fff;width: 100%;">
+            <view style="overflow: hidden;font-size: 30rpx;color: #333;padding:0 20rpx;line-height: 99rpx;">
+                <text style="float:left;">选择跟进人</text>
+            </view>
+            <view class="weui-cells pay-module weui-cells_after-title" style="max-height: 600rpx;overflow-y: auto;">
+                <checkbox-group bindchange="checkboxChange">
+                    <label class="weui-cell weui-check__label" style="margin:0 30rpx 30rpx;border: 1px solid {{item.checked?'#26cad3':'#ddd'}};" wx:for="{{checkboxItems}}" wx:key="value">
+                        <checkbox class="weui-check" value="{{item.followCounselorId}}" checked="{{item.checked}}"/>
+                        <image style="width:64rpx;height:64rpx;border-radius: 50%;margin-right: 20rpx;" class="pay-logo" src="{{item.followCounselorImage}}"></image>
+                        <view class="weui-cell__bd color-33">{{item.followCounselor}}<text style="font-size: 26rpx;color: #999;margin-left: 17rpx;">{{item.roleName}}</text></view>
+                        <view class="weui-cell__ft weui-cell__ft_in-radio">
+                            <image wx:if="{{item.checked}}" style="width: 37rpx;height: 31rpx;" src="/images/dui.png"></image>
+                        </view>
+                    </label>
+                </checkbox-group>
+            </view>
+            <!--确认-->
+            <view class="gjr-bot">
+                <text @tap="nock">取消</text>
+                <text @tap="nock('ok')" style="color: #26cad3;">确认</text>
+            </view>
+        </view>
+    </view>
+    <days :grouplist.sync="Grouplist"></days>
+    <dias></dias>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import api from '../../api/api'
+    import animo from '../../utils/animove'
+    import dom from '../../utils/dom'
+    import Days from '../../components/days'
+    import Dialog from '../../components/zan-dialog'
+
+    export default class Customer extends wepy.page {
+        config = {
+            navigationBarTitleText: '修改预约',
+            enablePullDownRefresh: false,
+        }
+        components = {
+            days:Days,
+            dias:Dialog,
+        }
+
+        data = {
+            imatx:[],
+            checkboxItems: [
+                /*{name: '微信支付', value: '0', src: '../../../../images/logo.png'},
+                 {name: '现金支付', value: '1', checked: true, src: '../../../../images/logo.png'},
+                 {name: 'POS支付', value: '2', src: '../../../../images/logo.png'}*/
+            ],
+            attr:[],
+            ckeout:false,
+            animationData:{},
+            animationData_yc:{},
+            stutas:true,
+            Grouplist:[],
+            fwsj:false,
+            status:false,/*判断是否为待确认页面*/
+            shopstu:true,
+        }
+        eidk(e1,e2){
+
+            /*时间返回参数*/
+            this.fwsj=(e1+' '+this.Grouplist[e2[1]]);
+            this.$apply();
+        }
+        computed = {
+
+        }
+        showAccreditDialog(e) {
+            this.$invoke('dias', 'showZanDialog', {
+                title: e.title,
+                content: '客户：'+this.attr[0].userName,
+                nextContent: '预约到店时间：'+e.time,
+                showCancel: true,
+                buttons:[{
+                    type: 'cancel',
+                    text: '取消',
+                },{
+                    type: 'confirm',
+                    text: '确定',
+                    color: '#26cad3'
+                }],
+            }).then(async (res) => {
+                if (res.type === 'confirm' && e.comit) {
+                    var employeeIds=[];
+                    this.imatx.forEach(function (p, p1) {
+                        employeeIds.push(p.followCounselorId)
+                    })
+                    if(this.status){
+                        /*确认预约*/
+                        if(employeeIds.length==0){
+                            wx.showToast({
+                                title: '请选择跟进人！',
+                                icon: 'none',
+                                duration: 1000
+                            });
+                            return;
+                        };
+                        var json = await api.acceptBook({
+                            query: {
+                                memberBookingId:this.attr[0].memberBookingId,
+                                employeeIds:employeeIds,
+                                bookBeginTime:e.time
+                            }
+                        });
+                    }else{
+                        /*修改预约*/
+                        var json = await api.SetEdit({
+                            query: {
+                                bookingId:this.attr[0].memberBookingId,
+                                employeeIds:employeeIds,
+                                bookBeginTime:e.time
+                            }
+                        });
+                    }
+                    if(json.imei_error_code==0){
+                        /*成功*/
+                        wx.showToast({
+                            title: '成功',
+                            icon: 'success',
+                            duration: 1000
+                        })
+                        setTimeout(function () {
+                            wx.navigateBack({
+                                delta: 1
+                            })
+                        },1000)
+                    }else{
+                        /*失败*/
+                        wx.showToast({
+                            title: json.imei_error_msg,
+                            icon: 'none',
+                            duration: 1000
+                        })
+                    }
+                }
+                if(res.type === 'confirm' && e.comitNo){
+                    if(this.status){
+                        /*取消预约*/
+                        var json = await api.deleBook({
+                            query: {
+                                memberBookingId:this.attr[0].memberBookingId,
+                            }
+                        });
+                        if(json.imei_error_code!=0){
+                            wx.showToast({
+                                title: json.imei_error_msg,
+                                icon: 'none',
+                                duration: 1000
+                            })
+                            return;
+                        }
+                    }
+                    /*取消操作，取消预约*/
+                    wx.showToast({
+                        title: '成功',
+                        icon: 'success',
+                        duration: 1000
+                    })
+                    setTimeout(function () {
+                        wx.navigateBack({
+                            delta: 1
+                        })
+                    },1000)
+                }
+            }).catch((e) => {
+                console.log(e)
+            })
+        }
+        async ajxa(e){
+            /*加载列表*/
+            const json = await api.orderd({
+                query: {
+                    serviceWorkNo:e
+                }
+            });
+            this.imatx=json.data.counselorList;
+            this.attr = [json.data];
+            this.$apply();
+        }
+        methods = {
+            checkboxChange: function (e) {
+                console.log('checkbox发生change事件，携带value值为：', e.detail.value);
+
+                var checkboxItems = this.checkboxItems, values = e.detail.value;
+                for (var i = 0, lenI = checkboxItems.length; i < lenI; ++i) {
+                    checkboxItems[i].checked = false;
+
+                    for (var j = 0, lenJ = values.length; j < lenJ; ++j) {
+                        if(checkboxItems[i].followCounselorId == values[j]){
+                            checkboxItems[i].checked = true;
+                            break;
+                        }
+                    }
+                }
+
+                this.setData({
+                    checkboxItems: checkboxItems
+                });
+            },
+            async gjgw(){
+                if(this.stutas){
+                    var This=this;
+                    const json = await api.employeeList();
+                    this.checkboxItems = json.data.list;
+
+                    this.imatx.forEach(function (p) {
+                        This.checkboxItems.forEach(function (p1,p2) {
+                            if(p1.followCounselorId==p.followCounselorId){
+                                This.checkboxItems[p2].checked = true;
+                            }
+                        })
+                    })
+
+                    this.stutas=false;
+                }
+                this.ckeout=true;
+                setTimeout(function () {
+                    animo.shwoIN(this)
+                    this.$apply();
+                }.bind(this),50)
+            },
+            async nock(e,e1,e2){
+                /*顾问列表隐藏*/
+                var This=this;
+                if(e=='ok'){
+                    This.imatx=[];
+                    this.checkboxItems.forEach(function (p) {
+                        if(p.checked){
+                            This.imatx.push(p);
+                        }
+                    })
+                }
+                /*if(e=='whey'){
+                    /!*取消预约，关闭弹框，获取到2个id*!/
+                    const json = await api.deleBook({
+                        query: {
+                            memberBookingId:e2,
+                            reasonId:e1
+                        }
+                    });
+                    wx.showToast({
+                        title: '取消成功',
+                        icon: 'success',
+                        duration: 2000,
+                        success:function () {
+                            setTimeout(function () {
+                                wx.navigateBack({
+                                    delta:1
+                                })
+                            },500);
+                        }
+                    })
+                }*/
+                dom.height('.gjr',function (e) {
+                    animo.yc({
+                        This:This,
+                        height:e
+                    })
+                })
+                setTimeout(function () {
+                    this.ckeout=false;
+                    this.endout=false;
+                    this.$apply();
+                }.bind(this),300)
+            },
+            yytime(){
+              if(!this.shopstu){return;}
+                for(var i =0;i<14 && this.Grouplist.length!=14;i++){
+                    this.Grouplist.push(((9+i)<10?'0'+(9+i):(9+i))+':'+'00');
+                    this.Grouplist.push(((9+i)<10?'0'+(9+i):(9+i))+':'+'15');
+                    this.Grouplist.push(((9+i)<10?'0'+(9+i):(9+i))+':'+'30');
+                    this.Grouplist.push(((9+i)<10?'0'+(9+i):(9+i))+':'+'45');
+                }
+
+                this.$invoke('days','shwoIN',14);
+            },
+            posnt(e){
+                wx.makePhoneCall({
+                    phoneNumber: e //仅为示例，并非真实的电话号码
+                })
+            },
+            bespoke(e){
+                if(e=='ok'){
+                    /*this.status通过为确定预约*/
+                    this.showAccreditDialog({
+                        title:this.status?'确认预约？':'确定保存？',
+                        time:this.fwsj?this.fwsj:(this.attr[0].bookBeginTime+' '+this.attr[0].bookBeginHour),
+                        comit:true
+                    });
+                }else{
+                    this.showAccreditDialog({
+                        title:this.status?'取消预约？':'确定不保存？',
+                        time:this.fwsj?this.fwsj:(this.attr[0].bookBeginTime+' '+this.attr[0].bookBeginHour),
+                        comitNo:true
+                    });
+                }
+            }
+        }
+
+        events = {
+
+        }
+
+
+        onShow(){
+
+        }
+
+        onLoad(e) {
+          if(e.type){
+            this.shopstu=false;
+          }
+            if(e.ym){
+                /*待确认页面*/
+                this.status=true;
+                wx.setNavigationBarTitle({
+                    title: '待确认'
+                })
+            }
+            this.ajxa(e.id);
+        }
+    }
+</script>

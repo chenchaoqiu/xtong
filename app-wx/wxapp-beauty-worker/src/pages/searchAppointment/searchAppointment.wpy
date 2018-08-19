@@ -1,0 +1,267 @@
+<style lang="less">
+    page{background: #f4f4f4;font-family: PingFang-SC-Regular;}
+    /** 修改默认的navigator点击态 **/
+    .navigator-hover {
+        color:blue;
+    }
+    /** 自定义其他点击态样式类 **/
+    .other-navigator-hover {
+        color:red;
+    }
+    .container{width: 100%;height: auto;position: fixed;top:20rpx;left: 30rpx;overflow: hidden;font-size: 30rpx;color: #666666;
+        box-sizing:border-box;border-left: 1rpx solid #dddddd;border-top: 1rpx solid #dddddd;border-right:1rpx solid #dddddd;-webkit-transform: translateZ(0);}
+    .top{width: 100%;overflow: hidden}
+    .title{float: left;width: 200rpx;height: 60rpx;line-height: 60rpx;text-align: center; box-sizing:border-box;
+        border-right: 1rpx solid #dddddd;border-bottom:1rpx solid #dddddd;background: #eee}
+    .bed{
+        height: 60rpx;line-height: 60rpx;width: 546rpx; overflow: hidden;background: #ffffff;
+        white-space: nowrap;
+    }
+    .bed-num{
+        display: inline-block;text-align: center;width: 80rpx;height: 60rpx;text-align: center; box-sizing:border-box;
+        border-right: 1rpx solid #dddddd;border-bottom:1rpx solid #dddddd;background: #eee;
+    }
+    /*.bed-num:last-child{margin-right: 20rpx;}*/
+    .time{width: 200rpx;height: 840rpx;overflow: hidden;float: left}
+    .time-num{width: 200rpx;height: 60rpx;line-height: 60rpx;display: block;text-align: center; box-sizing:border-box;
+        border-bottom: 1rpx solid #ddd;border-right: 1rpx solid #ddd;background: #eee}
+    .cell{width: 540rpx;height: 840rpx;overflow: hidden;float: left;background: #ffffff;
+        }
+    /*.cell-row{width: 600rpx;height: 62rpx;overflow: hidden;font-size: 30rpx;white-space: nowrap;display: block}*/
+    .cell-row{float: left;width:546rpx;white-space:nowrap}
+    .cell-row-col{ display: inline-block;text-align: center;width: 80rpx;height: 60rpx;line-height: 60rpx;text-align: center; box-sizing:border-box;
+        border-right: 1rpx solid #dddddd;border-bottom:1rpx solid #dddddd;white-space: nowrap}
+    .cell-row-col:last-child{margin-right: 20rpx;}
+    .mark{height: 26rpx;width:540rpx;font-size: 26rpx;position: fixed;bottom: 190rpx;left: 30rpx;}
+    .mark-item{float: left;width: 142rpx;height: 26rpx;margin-right: 24rpx;}
+    .color-block{display: block;width: 50rpx;height: 26rpx;float: left}
+    .color-des{height: 26rpx;line-height: 26rpx;display: block;float: left;margin-left: 15rpx;}
+    .yellow{background:#feb300;color: #feb300}
+    .green{background:#8bfc00;color:#8bfc00 }
+    .orange{background: #ff6803;color:#ff6803 }
+    .clickRight{position: fixed;bottom: 6rpx;right: 40rpx;z-index: 999}
+</style>
+<template>
+    <view class="workTable">
+        <view class="container">
+            <view class="top">
+                <view class="title">时间段</view>
+                <view scroll-x="true" class="bed" bindtouchstart="mytouchstart('Left')" bindtouchmove="mytouchmove" bindtouchend="mytouchend" >
+                    <view style="margin-left: {{left}}px;-webkit-overflow-scrolling: touch;">
+                    <block wx:for="{{bedList}}" wx:key="{{index}}">
+                        <view class="bed-num">{{index*1+1}}</view>
+                    </block>
+                    </view>
+                </view>
+            </view>
+            <view class="content">
+                <view scroll-y="true" class="time"  bindtouchstart="mytouchstart('Top')" bindtouchmove="mytouchmove" bindtouchend="mytouchend"  >
+                    <view style="margin-top: {{top}}px;-webkit-overflow-scrolling: touch;" >
+                        <view wx:for="{{leftTime}}" wx:key="{{index}}">
+                            <view id="{{index==0?'xds':''}}" class="time-num">{{item.rangeStartTime}}-{{item.rangeEndTime}}</view>
+                        </view>
+                    </view>
+                </view>
+                <view  class="cell"   bindtouchstart="mytouchstart('yy')" bindtouchmove="mytouchmove" bindtouchend="mytouchend">
+                    <block wx:for="{{leftTime}}" wx:key="{{index}}" wx:for-item="itema" wx:for-index="in">
+                        <view style="margin-top: {{top}}px;margin-left: {{left}}px;-webkit-overflow-scrolling: touch;">
+                            <view class="cell-row">
+                                <block wx:for="{{bedList}}" wx:key="{{index}}" wx:for-item="itemb">
+                                    <view wx:if="{{itemb[in].operateSubStatus ==0}}"  class="cell-row-col " style="color:#fff" >{{itemb[in].operateSubStatus}}</view>
+                                    <view wx:if="{{itemb[in].operateSubStatus ==1}}"  class="cell-row-col yellow" @tap="jump({{itemb[in].operateSubStatus}},{{itemb[in].serviceWorkNo}})">{{itemb[in].operateSubStatus}}</view>
+                                    <view wx:if="{{itemb[in].operateSubStatus ==2}}"  class="cell-row-col green" @tap="jump({{itemb[in].operateSubStatus}},{{itemb[in].serviceWorkNo}})">{{itemb[in].operateSubStatus}}</view>
+                                    <view wx:if="{{itemb[in].operateSubStatus ==3}}"  class="cell-row-col orange" @tap="jump({{itemb[in].operateSubStatus}},{{itemb[in].serviceWorkNo}})">{{itemb[in].operateSubStatus}}</view>
+                                </block>
+                            </view>
+                        </view>
+                    </block>
+                </view>
+
+            </view>
+        </view>
+        <view class="mark">
+            <view class="mark-item" wx:if="{{tableRoleType == 1}}">
+                <text class="color-block yellow" ></text>
+                <text class="color-des">待分配</text>
+            </view>
+            <view class="mark-item">
+                <text class="color-block green"></text>
+                <text class="color-des">待操作</text>
+            </view>
+            <view class="mark-item">
+                <text class="color-block orange"></text>
+                <text class="color-des">操作中</text>
+            </view>
+        </view>
+        <view class="clickRight">
+            <view class="icon-switch" style="margin-bottom: 20rpx;">
+                <image src="../../images/icon-switch.png" style="width: 106rpx;height: 106rpx;"></image>
+            </view>
+            <navigator class="icon-add" url="" >
+                <image src="../../images/icon-add.png" style="width: 106rpx;height: 106rpx;"></image>
+            </navigator>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import api from '../../api/api'
+    import dom from '../../utils/dom'
+    export default class searchAppointment extends wepy.page {
+        config = {
+            navigationBarTitleText: '预约查询',
+            enablePullDownRefresh: false,     //关闭系统刷新
+        }
+        components = {}
+
+        data = {
+            top:'',//滑动的top值
+            left:'',//滑动的left值
+            bedList:[],//床位
+            leftTime:[],//左侧时间段
+            tableRoleType:'',
+            startTop:'',/*记录触屏前个时间段的top坐标*/
+            startLeft:'',/*记录触屏前个时间段的left坐标*/
+            staticLeft:true,/*判断是否触屏床位标签*/
+            staticTop:true,/*判断是否触屏时间段标签*/
+            sorHeight:30,/*获取溢出的高度*/
+            sorWidth:40,/*获取溢出的宽度*/
+        }
+
+        computed = {}
+        methods = {
+            mytouchstart(e1,e){
+                if(e1=='Top'){
+                    this.staticLeft=false;
+                }else{
+                    this.staticLeft=true;
+                }
+
+                console.log('start')
+                this.startTop = e.touches[0].clientY;
+                this.startLeft = e.touches[0].clientX;
+//                console.log(e);
+//                console.log(this.startLeft);
+                this.$apply();
+            },
+            mytouchmove(e){
+                console.log('move')
+                let Top=this.top*1 + (e.touches[0].clientY -this.startTop);
+                let Left=this.left*1 + (e.touches[0].clientX - this.startLeft);
+                if(this.staticTop && this.sorHeight) {
+                    if (Top >= 0) {
+                        this.top = 0;
+                    } else if (Top <= -this.sorHeight) {
+                        this.top = -this.sorHeight;
+                    } else {
+                        this.top = Top;
+                    }
+                }
+                if(this.staticLeft && this.sorWidth){
+                    if(Left>=0){
+                        this.left=0;
+                    }else if(Left<=-this.sorWidth){
+                        this.left=-this.sorWidth;
+                    }else{
+                        this.left=Left;
+                    }
+                }
+                this.startTop = e.touches[0].clientY;
+                this.startLeft = e.touches[0].clientX;
+//                console.log(this.left);
+//                console.log(this.top);
+//                console.log(e)
+                this.$apply();
+            },
+            mytouchend(e){
+//                console.log('end')
+                this.$apply();
+            },
+//          内容滚动-横
+            scrollConH(e){
+//                this.top = e.detail.scrollTop;
+                this.left = e.detail.scrollLeft;
+                this.$apply();
+            },
+//          内容滚动-竖
+            scrollConS(e){
+                this.top = e.detail.scrollTop;
+//                this.left = e.detail.scrollLeft;
+                this.$apply();
+            },
+//          内容滚动-内容区域
+            scrollCon(e){
+                this.top = e.detail.scrollTop;
+                this.left = e.detail.scrollLeft;
+                this.$apply();
+            },
+//           点击-跳转到预约详情
+            jump(e1,e2){
+                if(e1 == 1){
+                    wx.navigateTo({
+                        url: '/pages/order_ope/order_f/order_f?id=' + e2
+                    })
+                }else if(e1 == 2){
+                    wx.navigateTo({
+                        url: '/pages/order_ope/order_d/order_d?id=' + e2
+                    })
+                }else if(e1 == 3){
+                    wx.navigateTo({
+                        url: '/pages/order_ope/order_c/order_c?id=' + e2
+                    })
+                }
+
+            }
+        }
+
+        events = {}
+//获取工作表信息接口
+        async getWorkTable(){
+            const json = await api.timeTable({
+                query: {
+                }
+            });
+            this.bedList = json.data;
+            this.leftTime = this.bedList[0];
+            for(var i in this.leftTime){
+                var oldrangeStartTime = this.leftTime[i].rangeStartTime; //获取开始时间
+                this.leftTime[i].rangeStartTime = oldrangeStartTime.substr(11, 5);
+                var oldrangeEndTime = this.leftTime[i].rangeEndTime; //获取开始时间
+                this.leftTime[i].rangeEndTime = oldrangeEndTime.substr(11, 5);
+            }
+            var This=this;
+            dom.height('.time',function (e1) {
+                setTimeout(function () {
+                    dom.height('#xds',function (e) {
+                        This.sorHeight = (e*This.leftTime.length-e1)<=0?false:(e*This.leftTime.length-e1);
+                        This.$apply();
+                    })
+                },40);
+            })
+            dom.width('.cell',function (e1) {
+                setTimeout(function () {
+                    dom.width('.cell-row-col',function (e) {
+                        var arr = Object.keys(This.bedList);
+                        var len = arr.length;
+                        This.sorWidth = (e*len-e1)<=0?false:(e*len-e1)+10;
+                        This.$apply();
+                    })
+                },40);
+            })
+//            for (let v in this.bedList) {
+//                for (let av of this.bedList[v]) {
+//                    this.dataList = av;
+//                    console.log(this.dataList)
+//                }
+//
+//            }
+            this.$apply();
+        }
+        async onLoad() {
+            var session= wx.getStorageSync('session');
+            this.tableRoleType = session.roleType;
+            this.getWorkTable(); //获取工作表接口数据
+        }
+    }
+</script>

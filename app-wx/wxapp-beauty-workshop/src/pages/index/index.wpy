@@ -1,0 +1,604 @@
+<style lang="less">
+    page {
+        background-color: #ffffff;
+    }
+    ::-webkit-scrollbar{
+        display: none;
+        width:0px;
+    }
+    .font-50{font-size: 50rpx;}
+    .font-30{font-size: 30rpx;}
+    .header {
+        margin-top: 10rpx;
+        overflow: hidden;
+    }
+    .main {
+        /*padding-bottom: 104rpx;*/
+    }
+    .main-title {
+        /*margin-top: 84rpx;*/
+        margin-bottom: 40rpx;
+        padding: 0 40rpx;
+        height: 50rpx;
+        line-height: 50rpx;
+    }
+    .header-title {
+        height: 136rpx;
+        margin: 0 40rpx;
+        margin-bottom: 50rpx;
+        /*border-bottom: 1rpx solid #eeeeee;*/
+    }
+    .logo-title{font-size: 50rpx;color: #26cad3;}
+    .sp-ml-25 {
+        margin-left: 25rpx;
+    }
+    .slide-item {
+        .item {
+            width: 690rpx;
+            height: 225rpx;
+            /*margin: 0 20rpx 0 0;*/
+
+        }
+        .myproject-item{
+            width: 480rpx;
+            height:475rpx;
+        }
+        .item-title {
+            font-size: 24rpx;
+            color: #e43937;
+            margin-bottom: 46rpx;
+        }
+        .time {
+            font-size: 40rpx;
+            margin-bottom: 40rpx;
+        }
+        .shop-name {
+            font-size: 40rpx;
+        }
+    }
+
+    .border {
+        border-top: 1px solid #ddd;
+        margin-top: 20rpx;
+    }
+    .footer {
+        position: fixed;
+        width: 100%;
+        height: 104rpx;
+        bottom: 0;
+        border-top: 1rpx solid #ddd;
+        background-color: #ffffff;
+        .nav-foot-wrap {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+            text-align: center;
+            .cell {
+                display: table-cell;
+                width: 20%;
+                text-align: center;
+                height: 104rpx;
+                vertical-align: middle;
+                line-height: 1;
+                .img-wrap {
+                    position: relative;
+                    height: 100%;
+                    .emphasis {
+                        position: absolute;
+                        left: 50%;
+                        margin-left: -70rpx;
+                        top: -50rpx;
+                    }
+                }
+                .nav-title {
+                    font-size: 20rpx;
+                    color: #666;
+                    margin-top: 14rpx;
+                }
+                .active {
+                    color: #26CAD3;
+                }
+                image {
+                    width: 40rpx;
+                    height: 40rpx;
+                }
+            }
+        }
+    }
+    .slide-item-c{background: #f0f4fc;height: 468rpx;}
+    .header swiper{height: 225rpx;display: block}
+    .main-con2 swiper{height: 480rpx;display: block;}
+    .main-con2 .item-c-title{margin-top: 20rpx;}
+    .main-con2 .item-c-des{display: block;color:#26cad3;font-size: 28rpx;padding-left: 14rpx;line-height: 28rpx;margin-top: 30rpx;}
+    .slide-item-bg{background: #666;z-index: 999;}
+    .slide-item2 {
+        .item {
+            width: 480 rpx;
+            height: 475 rpx;
+        }
+    }
+    .slide-item2 .item2{
+        width: 480rpx;
+        height: 475rpx;
+    }
+    /*.main2-list{display: flex;display: -webkit-flex;*/
+    /*justify-content: space-between;-webkit-justify-content:space-between;*/
+    /*flex-wrap: wrap;-webkit-flex-wrap: wrap;margin: 0 40rpx;}*/
+    /*.main2-list-item{margin-bottom: 30rpx;float: left}*/
+    .main2-list{margin: 0 23rpx;}
+    .main2-list-item{margin-bottom: 30rpx;float: left}
+    .oneline-overflow{overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+    /*文字1行溢出*/
+    .oneline-overflow1{display: -webkit-box;  -webkit-box-orient: vertical;  -webkit-line-clamp: 1;
+        overflow: hidden;}
+    .c-title{max-width: 400rpx;text-align:center;display: block;font-size: 40rpx;height: 40rpx;line-height: 40rpx;}
+    .pj-title{max-width: 180rpx;text-align:center;display: block;font-size: 26rpx;height: 26rpx;line-height: 26rpx;}
+    .y-main-list{margin: 0 40rpx 36rpx 40rpx;height: 235rpx;border: 1rpx solid #eee;border-left: 0;box-shadow: 2rpx 2rpx 6rpx #999;border-radius: 10rpx;}
+    .y-main-list-r{float: left;margin-left: 24rpx;overflow: hidden ;width: 60%}
+
+    .swiper-img{display: block;width:690rpx;height: 180rpx;border-radius: 10rpx;margin-top: 22rpx}
+    .swiper-img-active{display: block;width:690rpx;height: 225rpx;border-radius: 10rpx;}
+
+    .yycon{width: 688rpx;height: 280rpx;}
+    .yy-img{display: block;width:690rpx;height: 250rpx;border-radius: 10rpx;margin-top: 15rpx}
+    .yy-img-active{display: block;width:690rpx;height: 280rpx;border-radius: 10rpx;}
+    .tj-con{display: flex;display: -webkit-flex;padding: 40rpx 40rpx;
+        border-top: 1rpx solid #eee;border-bottom: 1rpx solid #eee;margin-bottom: 30rpx;
+        box-shadow: 2rpx 2rpx 2rpx #ddd;
+    }
+    .tj-con-img{display: block;width: 270rpx;height: 180rpx;}
+    .tj-con-content{flex: 1;-webkit-flex: 1;padding-left: 30rpx;}
+    .tj-con-title{font-size:30rpx;color: #333; }
+    .tj-con-des{font-size:24rpx;color: #666 }
+</style>
+<template>
+    <view class="container">
+        <view class="header">
+            <view class="header-title">
+                <view style="float: left">
+                    <text class="logo-title">{{APPNAME}}</text>
+                    <text style="display: block;color: #333;font-size: 36rpx;">{{shopName}}</text>
+                </view>
+                <navigator open-type="redirect" url="/pages/my_info/index" hover-class="none" style="float: right;width:120rpx;height: 120rpx;margin-top: 10rpx;margin-right: 26rpx;border-radius: 50% ;overflow: hidden">
+                    <open-data style="width:120rpx;height: 120rpx;" type="userAvatarUrl"></open-data>
+                </navigator>
+            </view>
+            <block wx:if="{{bannerList.length != 0}}">
+                <swiper indicator-dots="{{indicatorDots}}"
+                        autoplay="{{autoplay}}" duration="{{duration}}" bindchange="bChangeAutoplay" previous-margin="0"  next-margin="16rpx" style="height: 225rpx;padding-right: 2rpx;padding-left: 30rpx">
+                    <block wx:for="{{bannerList}}" wx:key="index" >
+                        <!--item.refer_type==1,跳转到疗程卡详情页面-->
+                        <swiper-item class="slide-item" style="border-radius: 10rpx;" wx:if="{{item.referType==1}}">
+                            <navigator url="/pages/productDetails/productDetails?salePackageId={{item.referValue}}" class="item" hover-class="none" >
+                                <image src="{{item.imageUrl}}" class=" {{(bCurrentTab) == index  ?'swiper-img-active':'swiper-img'}}"></image>
+                            </navigator>
+                        </swiper-item>
+                        <!--item.refer_type==2,跳转到疗程卡详情页面-->
+                        <swiper-item class="slide-item" style="border-radius: 10rpx;" wx:if="{{item.referType==2}}">
+                            <navigator url="" class="item" hover-class="none" >
+                                <image src="{{item.imageUrl}}" class=" {{(bCurrentTab ) == index   ?'swiper-img-active':'swiper-img'}}"></image>
+                            </navigator>
+                        </swiper-item>
+                        <swiper-item class="slide-item" style="border-radius: 10rpx;" wx:if="{{item.referType==3}}">
+                            <!--item.refer_type==3,跳转到H5-->
+                            <navigator url="/pages/index/hpage?id={{item.referValue}}" class="item" hover-class="none" >
+                                <image src="{{item.imageUrl}}" class=" {{(bCurrentTab ) == index   ?'swiper-img-active':'swiper-img'}}"></image>
+                            </navigator>
+                        </swiper-item>
+                    </block>
+                </swiper>
+            </block>
+        </view>
+        <!--美丽约-->
+        <view class="y-main" style="margin-top: 70rpx;">
+            <view class="main-title" >
+                <text class="font-50" style="display: inline-block;float: left;color: #333333">我的预约</text>
+                <!--<navigator url="/pages/appointment/my_appointment" hover-class="none" style="float: right">-->
+                <!--<text class="font-30" style="padding-right: 20rpx;color: #666666">我的预约</text>-->
+                <!--<image src="../../images/icon-next.png" style="width: 16rpx;height: 14rpx;margin-bottom: 5rpx;"></image>-->
+                <!--</navigator>-->
+            </view>
+            <view style="clear: both"></view>
+
+            <swiper indicator-dots="{{indicatorDots}}"
+                    duration="{{duration}}" bindchange="yChangeAutoplay" previous-margin="0"  next-margin="16rpx" style="height: 280rpx;padding-right: 2rpx;padding-left: 30rpx">
+                <block wx:for="{{appointmentList}}"  wx:key="{{index}}">
+                    <!--item.refer_type==1,跳转到疗程卡详情页面-->
+                    <swiper-item class="slide-item" style="border-radius: 10rpx;" >
+                        <navigator url="/pages/appointment/appointment_details?serviceWorkNo={{item.serviceWorkNo}}&isGo=true" class="yycon" hover-class="none" >
+                            <!--<image src="{{item.imageUrl}}" class=" {{(bCurrentTab) == index  ?'swiper-img-active':'swiper-img'}}"></image>-->
+                            <image src="../../images/y-{{index % 3}}.png" class="{{(yCurrentTab) == index  ?'yy-img-active':'yy-img'}}" style="position: relative"></image>
+                            <view style="position: absolute;top:40rpx;left: 40rpx;color: #fff;font-size: 28rpx;">{{item.status}}</view>
+                            <view style="position: absolute;top:120rpx;left: 40rpx;font-size: 36rpx;color: #734542">
+                                <text>{{item.beginMonth}}月{{item.beginday}}日</text>
+                                <text style="padding-left: 60rpx;">{{item.selWeek}}</text>
+                                <text style="padding-left: 60rpx;">{{item.begintime}}</text>
+                            </view>
+                            <view style="position: absolute;top:200rpx;left: 40rpx;font-size: 28rpx;color: #fff">
+                                <image src="../../images/icon-y.png"  style="width: 27rpx;height: 32rpx;display: block;float: left;margin-top: 6rpx;"></image>
+                                <text style="padding-left:15rpx; ">{{item.shopName}}</text>
+                            </view>
+                        </navigator>
+                    </swiper-item>
+                </block>
+                <!--马上去预约-->
+                <swiper-item class="slide-item" style="border-radius: 10rpx;" >
+                    <navigator url="/pages/appointment/add_appointment" class="yycon" hover-class="none" >
+                        <!--<image src="{{item.imageUrl}}" class=" {{(bCurrentTab) == index  ?'swiper-img-active':'swiper-img'}}"></image>-->
+                        <image src="../../images/y-yy.png" class=" {{(yCurrentTab) == appointmentList.length  ?'yy-img-active':'yy-img'}}"></image>
+                    </navigator>
+                </swiper-item>
+            </swiper>
+            <!--<block wx:for="{{appointmentList}}"  >-->
+            <!--<navigator url="/pages/appointment/appointment_details?serviceWorkNo={{item.serviceWorkNo}}" class="y-main-list">-->
+            <!--<block >-->
+            <!--<image src="../../images/{{index}}.png" style="display: inline-block;float: left;width: 235rpx;height: 236rpx;"></image>-->
+            <!--</block>-->
+            <!--<view class="y-main-list-r ">-->
+            <!--<view class="oneline-overflow" style="max-width: 100%;display: block;height: 40rpx;line-height: 40rpx;font-size: 40rpx;color: #333333;margin-top: 35rpx;">{{item.shopName}}</view>-->
+            <!--<view clsss="y-main-list-r-time" style="height: 28rpx;line-height: 28rpx;margin-top: 26rpx;font-size: 28rpx;color: #999;">-->
+            <!--<text>{{item.beginMonth}}月{{item.beginday}}日</text>-->
+            <!--<text style="padding-left:20rpx; ">{{item.begintime}}-{{item.endtime}}</text>-->
+            <!--</view>-->
+            <!--<text class="font-30" style="display: block;height: 30rpx;line-height: 30rpx;margin-top: 56rpx;color: #26cad3">{{item.status}}</text>-->
+            <!--</view>-->
+            <!--</navigator>-->
+
+            <!--</block>-->
+        </view>
+        <view style="clear: both"></view>
+        <!--我的项目-->
+        <view class="c-main" style="margin-top: 70rpx;">
+            <view class="main-title" >
+                <text class="font-50" style="display: inline-block;float: left;color: #333333">我的项目</text>
+                <!--<navigator url="/pages/myServices/myServices" style="float: right">-->
+                <!--<text class="font-30" style="padding-right: 20rpx;color: #666666">我的项目</text>-->
+                <!--<image src="../../images/icon-next.png" style="width: 16rpx;height: 14rpx;margin-bottom: 5rpx;"></image>-->
+                <!--</navigator>-->
+            </view>
+            <view style="clear: both"></view>
+            <view class="main-con main-con2" style="height: 475rpx;">
+                <swiper indicator-dots="{{indicatorDots}}" style="height: 475rpx"
+                        duration="{{duration}}"  previous-margin="0" next-margin="200rpx" style="padding-right: 2rpx;padding-left: 30rpx;" >
+                    <block wx:for="{{ableList}}" wx:key="index">
+                        <swiper-item class="slide-item" style="padding-right: 0;">
+                            <view style="width: 480rpx;height:475rpx;background: #f0f4fc;">
+                                <navigator url="/pages/myServices/servicesDetail?orderSn={{item.orderSn}}&courseCardId={{item.courseCardId}}&specId={{item.specId}}" hover-class="none" class="myproject-item" >
+                                    <image src="{{item.logo}}" style="display: block;width:480rpx;height: 320rpx;"></image>
+                                    <view style="height:153rpx;display: table">
+                                        <view style="display:table-cell;vertical-align:middle;">
+                                            <text class="ellipsis-2" style="color:#666;font-size: 30rpx;padding-left: 14rpx;">{{item.courseCardName}}</text>
+                                        </view>
+                                    </view>
+                                    <!--<text class="item-c-des oneline-overflow"  style="max-width: 90%">含{{item.childProjectList.length}}个项目</text>-->
+                                </navigator>
+                            </view>
+                        </swiper-item>
+                    </block>
+                    <!--当顾客有项目的时候-->
+                    <swiper-item class="slide-item slide-item2" wx:if="{{ableList.length != 0}}">
+                        <navigator url="/pages/myServices/myServices" hover-class="none" class="item2" style="position: relative">
+                            <view style="position: absolute;width: 100%;height: 100%;background: rgba(102,102,102,0.6);top:0;left: 0"></view>
+                            <image class="bg-img" src="../../images/index-c-two.png" style="width:480rpx;height: 475rpx;"></image>
+                            <view style="position: absolute;color: #ffffff;top:50%;left: 50%;transform: translate(-50%,-50%); -webkit-translate: translate(-50%,-50%);-webkit-transform: translate(-50%,-50%); ">
+                                <!--<text class="oneline-overflow c-title" >+</text>-->
+                                <text class=" c-title" style="">查看全部</text>
+                            </view>
+                        </navigator>
+                    </swiper-item>
+                    <!--当顾客没购买项目的时候-->
+                    <swiper-item class="slide-item slide-item2" style="padding-right: 0;" wx:if="{{ableList.length == 0}}">
+                        <navigator url="/pages/selectAuto/selectAuto" hover-class="none" class="item2" style="position: relative">
+                            <view style="position: absolute;width: 100%;height: 100%;background: rgba(102,102,102,0.6);top:0;left: 0"></view>
+                            <image class="bg-img" src="../../images/index-c-two.png" style="width:480rpx;height: 475rpx;"></image>
+                            <view style="position: absolute;color: #ffffff;top:50%;left: 50%;transform: translate(-50%,-50%); -webkit-translate: translate(-50%,-50%);-webkit-transform: translate(-50%,-50%); ">
+                                <text class="oneline-overflow c-title" >+</text>
+                                <text class="oneline-overflow c-title" style="padding-top: 20rpx">添加新购买</text>
+                            </view>
+                        </navigator>
+                    </swiper-item>
+                </swiper>
+            </view>
+        </view>
+        <!--小美推荐-->
+        <view class="pj-main main2" style="margin-top: 70rpx;">
+            <view class="main-title ">
+                <text class="font-50" style="display: inline-block;float: left;color: #333333">小美推荐</text>
+            </view>
+            <view style="clear: both"></view>
+            <block wx:for="{{RecommendList}}" wx:key="{{item.salePackageId}}">
+                <navigator url="/pages/productDetails/productDetails?salePackageId={{item.salePackageId}}" class="tj-con">
+                    <image src="{{item.coverImageUrl}}" class=" tj-con-img"></image>
+                    <view class="tj-con-content" style="position: relative">
+                        <text class="tj-con-title ellipsis-2" style="position: absolute;top:10rpx;left: 30rpx;line-height: 36rpx; ">{{item.courseCardName}}</text>
+                        <text class="tj-con-des ellipsis-1" style="position: absolute;bottom:10rpx;left: 30rpx;">{{item.courseCardShortName}}</text>
+                    </view>
+                </navigator>
+            </block>
+            <view style="clear: both"></view>
+        </view>
+        <!--底图-->
+        <navigator url="/pages/witness-shop/shop" style="padding-top: 30rpx;padding-bottom: 144rpx;" hover-class="none" >
+            <image src="../../images/index-des.png"  style="display: block;width: 750rpx;height:190rpx ;"></image>
+        </navigator>
+        <!--美丽项目-->
+        <!--<view class="pj-main main2" style="padding-bottom:200rpx;margin-top: 100rpx;">-->
+        <!--<view class="main-title " >-->
+        <!--<text class="font-50" style="display: inline-block;float: left;color: #333333">美丽项目</text>-->
+        <!--<navigator url="/pages/selectAuto/selectAuto" hover-class="none" style="float: right">-->
+        <!--<text class="font-30" style="padding-right: 20rpx;color: #666666">全部分类</text>-->
+        <!--<image src="../../images/icon-next.png" style="width: 16rpx;height: 14rpx;margin-bottom: 5rpx;"></image>-->
+        <!--</navigator>-->
+        <!--</view>-->
+        <!--<view style="clear: both"></view>-->
+        <!--<view class="main2-list" wx:for="{{categoryList}}">-->
+        <!--<navigator url="/pages/selectAuto/selectAuto?currentTab={{index}}" class="main2-list-item" hover-class="none" style="position: relative;height: 200rpx;margin: 0 14rpx 30rpx 20rpx" >-->
+        <!--<view style="position: absolute;width: 100%;height: 100%;border-radius: 10rpx;background: rgba(102,102,102,0.6);top:0;left: 0"></view>-->
+        <!--<view style="position: absolute;color: #ffffff;top:50%;left: 50%;transform: translate(-50%,-50%); -webkit-translate: translate(-50%,-50%);-webkit-transform: translate(-50%,-50%);">-->
+        <!--<text class="oneline-overflow pj-title" >{{item.categoryName}}</text>-->
+        <!--</view>-->
+        <!--<image src="{{item.coverImageUrl}}" style="width:200rpx;height: 200rpx;border-radius: 10rpx"></image>-->
+        <!--</navigator>-->
+        <!--</view>-->
+        <!--<view style="clear: both"></view>-->
+        <!--</view>-->
+    </view>
+    <view class="footer">
+        <view class="nav-foot-wrap">
+            <view class="cell">
+                <image src="../../images/home_a.png"></image>
+                <view class="nav-title active">首页</view>
+            </view>
+            <!--<view class="cell" @tap="scancode">-->
+            <!--<view class="img-wrap">-->
+            <!--<image class="emphasis" style="width: 140rpx; height: 140rpx" src="../../images/richScan.png"></image>-->
+            <!--</view>-->
+            <!--</view>-->
+            <navigator class="cell" url="/pages/appointment/my_appointment" open-type="redirect" hover-class="none">
+                <image src="../../images/time.png"></image>
+                <view class="nav-title">预约</view>
+            </navigator>
+            <navigator class="cell" url="/pages/selectAuto/selectAuto" open-type="redirect" hover-class="none" >
+                <image src="../../images/optimization.png"></image>
+                <view class="nav-title">美购</view>
+            </navigator>
+            <navigator class="cell" url="/pages/my_info/index" open-type="redirect" hover-class="none">
+                <image src="../../images/my.png"></image>
+                <view class="nav-title">我的</view>
+            </navigator>
+        </view>
+    </view>
+    <!--<dialog :isShow.sync="showDialog" :key="key"></dialog>-->
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+
+	export default class index extends wepy.page {
+		config = {
+			navigationBarTitleText: '',
+			backgroundColor: '#ebf0ef',
+			"enablePullDownRefresh": true, //开启下拉刷新
+		};
+
+		components = {
+
+		}
+//    上拉刷新
+		onPullDownRefresh()
+		{
+			wx.showNavigationBarLoading(); //在标题栏中显示加载
+			//模拟加载
+			this.reset();
+			setTimeout(function()
+			{
+				wx.hideNavigationBarLoading(); //完成停止加载
+				wx.stopPullDownRefresh() //停止下拉刷新
+			},1500);
+		}
+
+
+
+		data = {
+			APPNAME: api.APPNAME,
+      imageUrl: wepy.$appConfig.imageUrl,
+			yimageUrl: wepy.$appConfig.imageUrl,
+			headerImg:"",//头像
+			showDialog: false,
+			bannerList:[],//首页banner
+			appointmentList:[],//美丽约
+			beginMonth:[],//美丽约-预约月
+			beginday:[],//美丽约-预约日期
+			begintime:[],//美丽约-开始时间
+			endtime:[],//美丽约-结束时间
+			ableList:[],//我的服务
+			ableListnum:'',//我的服务-总数量
+			categoryList:[],//美丽项目全部分类
+			RecommendList:[],//为我推荐
+			indicatorDots: false,
+			autoplay: true,
+			interval: 5000,
+			duration: 500,
+			scene:'',
+			path:'',
+			canshu:'',
+			key: '',
+			bCurrentTab: 0, //banner轮播初始值为0
+			yCurrentTab: 0, //预约切换初始值为0
+			selWeek:'',//预约选择时间-星期几
+			shopName:'',//用户上次到店的门店（其中包含消费和消耗）
+      status_index:false,
+		};
+    onShareAppMessage(res){
+      if (res.from === 'button') {
+        // 来自页面内转发按钮
+//        console.log(res.target)
+      }else{
+        return {
+          title: '亲爱的 推荐你一个女生必备的小程序 要关注哦！',
+          path: '/pages/index/index?shareMemberCompanyId='+wx.getStorageSync('session').memberCompanyId,
+          imageUrl: this.imageUrl + 'share_img.png'
+        }
+      }
+    }
+
+
+		watch = {
+			showDialog (curVal, oldVal) {
+				console.log(`旧值：${oldVal}，新值：${curVal}`)
+			}
+		};
+
+		methods = {
+			//banner 滑动触发
+			bChangeAutoplay(e){
+				this.bCurrentTab = e.detail.current;
+				this.$apply();
+			},
+			//预约 滑动触发
+			yChangeAutoplay(e){
+				this.yCurrentTab = e.detail.current;
+				this.$apply();
+			},
+		};
+//		获取banner
+		//    按服务包id获取服务包详情接口
+		async getBannerList(){
+			const getBannerList = await api.getBannerList({
+				query: {
+				}
+			});
+			this.bannerList = getBannerList.data.list;      //banner-list
+//      console.log(this.bannerList);
+			this.$apply();
+		}
+		//美丽约
+		async getAppointmentList() {
+			const getAppointmentList = await api.getAppointmentList({
+				query: {}
+			});
+			this.appointmentList = getAppointmentList.data.list;      //门店的信息列表
+			for(var i in this.appointmentList){
+				var beginTime = this.appointmentList[i].bookBeginTime; //获取开始时间
+				var endTime = this.appointmentList[i].bookEndTime; //获取结束时间
+				this.appointmentList[i].beginMonth = beginTime.substr(5, 2); //月
+				this.appointmentList[i].beginday = beginTime.substr(8, 2); //日
+				this.appointmentList[i].begintime = beginTime.substr(11, 5); //开始时间
+				this.appointmentList[i].endtime = endTime.substr(11, 5); //结束时间
+				var a = ["周日", "周一", "周二", "周三", "周四", "周五", "周六"];
+				var week = new Date(beginTime).getDay();
+				this.appointmentList[i].selWeek = a[week];
+				console.log(this.selWeek);
+			}
+
+			this.$apply();
+		}
+		//我的服务
+		async getAbleList(){
+			const getAbleList = await api.getAbleList({
+				query: {
+				}
+			});
+			this.ableList = getAbleList.data.list;      //门店的信息列表
+			for(var i in this.ableList){
+				this.ableListnum = this.ableList[i].childProjectList.length; //待约数量
+//        console.log(this.ableListnum);
+			}
+			this.$apply();
+		}
+		//为我推荐
+		async recommend(){
+			const getRecommendList = await api.recommend({
+				query: {
+				}
+			});
+			this.RecommendList = getRecommendList.data.data;
+			this.$apply();
+		}
+		//        美丽项目-获取分类列表
+		async getCategoryList(){
+			const getCategoryList = await api.getCategoryList({
+				query: {
+//          shopId: 1, //门店id
+				}
+			});
+			var oldcategoryList = getCategoryList.data.list;      //列表list
+			this.categoryList = oldcategoryList;
+			this.$apply();
+		}
+
+		isShowDialog() {
+			this.showDialog = !wx.getStorageSync('session').mobilePhone;
+			this.$apply();
+		}
+
+		scancode(){
+			/*扫面二维码*/
+			wx.scanCode({
+				success: (res) => {
+//          console.log(res);
+					var path =res.path;
+//					console.log(path);
+					wx.navigateTo({
+						url: '/'+path ,
+					});
+				}
+			})
+		}
+		async onLoad(o) {
+			this.key = o.scene || '';
+      wx.setStorageSync('KEY', o.scene);
+			this.$parent.checkSession();
+//			if (o.reset) {
+//				this.reset();
+//			}
+			/*this.showDialog = !wx.getStorageSync('session').mobilePhone;*/
+			this.$apply();
+		}
+    async onShow() {
+      let inShop =  wx.getStorageSync('KEY').indexOf('SHOP'); //判断key是否是门店码扫码进来的
+      if(inShop == -1){
+        this.$parent.globalData.key = wx.getStorageSync('KEY'); //调用app里面的addMq
+      }else{
+        //扫码进来首页，保存门店信息
+        const {data} = await api.scene({
+          query: {
+            scene: wx.getStorageSync('KEY'),
+          }
+        });
+        wx.setStorageSync('shop', data);
+        wx.setStorageSync('shopEdit', data);
+        this.shopName = wx.getStorageSync('shop').shopName ||　'';
+      }
+        this.reset();
+//      this.status_index=true;
+//			let isLoadMyA = wx.getStorageSync("isLoadMyA") || false;
+//			if (isLoadMyA) {
+//				this.reset();
+//				wx.setStorageSync("isLoadMyA",false);
+//			}
+		}
+		reset() {
+			/*this.$parent.getLoginCode(this.key);*/
+			/*this.headerImg = wx.getStorageSync('userInfo').userInfo.avatarUrl;*/
+			this.getBannerList();//banner接口
+			this.getAppointmentList();//美丽约
+			this.getAbleList();//我的服务接口
+//			this.getCategoryList();//美丽项目
+			this.recommend();//为我推荐
+			if(wx.getStorageSync('shop')){
+				this.shopName = wx.getStorageSync('shop').shopName ||　'';
+			}else{
+				this.shopName = wx.getStorageSync('session').shopName ||　'';
+			}
+
+			this.$apply();
+		}
+		events = {
+			'bindMobile': () => {
+				this.showDialog = false;
+				this.reset();
+			}
+		};
+	}
+</script>

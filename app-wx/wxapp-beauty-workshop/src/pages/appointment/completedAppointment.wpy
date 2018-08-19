@@ -1,0 +1,136 @@
+<style lang="scss">
+  page {background-color: #ebf0ef;font-family: PingFang-SC-Regular; }
+  .color-mian{color:#26cad3}
+  .color-fuzhu{color:#e4393c}
+  .color-333{color:#333333}
+  .color-666{color:#666666}
+  .color-999{color:#999999}
+  .font-30{font-size: 30rpx;}
+  .font-28{font-size: 28rpx;}
+  .font-24{font-size: 24rpx;}
+  .top{width: 100%;height: 100rpx;background: #ffffff;line-height: 100rpx;font-size: 28rpx;border-bottom: 1rpx solid #eeeeee}
+  .section{margin-top: 20rpx;width: 100%;background: #ffffff;height: 490rpx;}
+  .con{margin-left: 24rpx;margin-right: 24rpx;}
+  .item{position: relative;height: 120rpx;}
+  .con:last-child{height: 90rpx!important;}
+  .con:first-child{padding-top: 43rpx;}
+  .item::before{
+    content:"";
+    display: block;
+    position: absolute;
+    top:-76rpx;
+    left: 20rpx;
+    width:1rpx;
+    height: 76rpx;
+    background-color: #dbdbdb;
+    z-index: 1
+  }
+  .item-active::before{
+    background-color: #ff5767;
+  }
+  .item:first-child::before{
+    content:"";
+    display: block;
+    position: absolute;
+    top:0;
+    left: 0;
+    width:0;
+    height: 0;
+    background-color: #dbdbdb;
+    z-index: 1
+  }
+  .item-img{height: 44rpx;width: 44rpx;}
+  .item-des{position: absolute;top:0 ;left:77rpx;;line-height: 40rpx;}
+</style>
+<template>
+  <view style="height: 1rpx;width: 100%;background: #dddddd; "></view>
+  <!--top-->
+  <view class="top"><img src="../productDetails/icon-tel.png" height="33" width="42"/>
+    <text class="color-333" style="padding-left: 24rpx;" >预约单号：</text>
+    <text class="color-666">{{serviceWorkNo}}</text>
+  </view>
+  <view class="section" wx:if="{{logList.length != 0}}">
+    <view class="con" >
+      <!--完成-->
+      <block wx:for="{{logList}}" >
+        <view class="item {{item.isBeing == 1?'item-active':''}} ">
+          <view class="item-img">
+            <image src="../../images/tick-compeleted.png" style="width: 44rpx;height: 44rpx;display: block" wx:if="{{item.isBeing == 1}}"></image>
+            <image src="../../images/tick.png" style="width: 40rpx;height: 40rpx;display: block;padding-top: 2rpx;" wx:else></image>
+          </view>
+          <view class="item-des">
+            <text class="font-28 color-333" style="padding-left:16rpx;">{{item.operateName}}</text>
+            <text class="font-24 color-999" style="padding-left:16rpx; " wx:if="{{item.addTime != 0}}">{{item.day}}</text>
+            <text class="font-24 color-999" style="padding-left: 20rpx;" wx:if="{{item.addTime != 0}}">{{item.time}}</text>
+          </view>
+        </view>
+      </block>
+
+    </view>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import api from '../../api/api'
+  import {dateFormat} from '../../utils/util'
+  export default class completedAppointment extends wepy.page {
+    config = {
+      navigationBarTitleText: '预约详情'
+    }
+
+
+
+    data = {
+      winWidth:"",
+      winHeight:"",
+      logList:[],
+      day:"",
+      time:"",
+      serviceWorkNo:"",
+      imageUrl: wepy.$appConfig.imageUrl,
+    }
+    onShareAppMessage(res){
+      if (res.from === 'button') {
+        // 来自页面内转发按钮
+//        console.log(res.target)
+      }else{
+        return {
+          title: '亲爱的 推荐你一个女生必备的小程序 要关注哦！',
+          path: '/pages/index/index?shareMemberCompanyId='+wx.getStorageSync('session').memberCompanyId,
+          imageUrl: this.imageUrl + 'share_img.png'
+        }
+      }
+    }
+    watch = { }
+
+    methods = {}
+    //预约操作日志接口
+    async getLogList(){
+      const getLogList = await api.getLogList({
+        query: {
+          serviceWorkNo:this.serviceWorkNo,
+        }
+      });
+      this.logList = getLogList.data.list;      //门店的信息列表
+      if(this.logList.length == 0){
+        wx.showToast({
+          title: '暂无数据',
+          icon: 'none',
+          duration: 1500
+        })
+      }
+      for(var i in this.logList){
+        var oldtime = dateFormat(new Date(this.logList[i].addTime * 1000), "YYYY-MM-DD hh:mm") ; //获取时间
+        this.logList[i].day = oldtime.substr(0, 10);
+        this.logList[i].time = oldtime.substr(11, 5);
+        console.log(oldtime);
+      }
+      console.log(this.logList);
+      this.$apply();
+    }
+    async onLoad(options) {
+      this.serviceWorkNo = options.serviceWorkNo;  //页面跳转传过来的serviceWorkNo
+      this.getLogList();
+    }
+  }
+</script>

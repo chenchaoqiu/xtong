@@ -1,0 +1,135 @@
+<style lang="less">
+  page {
+    background-color: #f2f2f4;
+    border-top:1px solid #ddd;
+  }
+  page > view{
+    background: #fff;
+  }
+  .curter{
+    padding: 40rpx 30rpx;
+    margin-bottom: 20rpx;
+    view{
+      font-size: 24rpx;
+      color: #666;
+    }
+    view:first-child{
+      font-size: 30rpx;
+      color: #333;
+      padding-bottom: 14rpx;
+    }
+  }
+  .shop-pric{
+    view:first-child{
+      height:114rpx;
+      line-height: 114rpx;
+      text-indent: 30rpx;
+      font-size: 26rpx;
+      color: #333;
+    }
+    view+view{
+      padding: 0 30rpx 45rpx;
+    }
+    image{
+      width:220rpx;
+      height:220rpx;
+      margin-left: 15rpx;
+      border-radius: 15rpx;
+    }
+    image:first-child{
+      margin:0px;
+    }
+  }
+  .shoed{
+    width: 100%;
+    height: 96rpx;
+    line-height: 96rpx;
+    display: block;
+    background: #26cad3;
+    text-align: center;
+    font-size: 36rpx;
+    color: #fff;
+    position: fixed;
+    bottom:0;
+  }
+</style>
+<template>
+  <view class="curter">
+    <view>{{dat.shopName}}</view>
+    <view>营业时间：{{dat.businessStartTime}}-{{dat.businessEndTime}}</view>
+    <view style="margin-top: 6rpx;">门店地址：{{dat.address}}</view>
+  </view>
+  <view class="shop-pric">
+    <view>门店照片</view>
+    <view>
+      <image wx:for="{{dat.images}}" @tap="imgesurl({{item}})" wx:key="index" src="{{item}}"></image>
+    </view>
+  </view>
+  <view class="shoed" @tap="shoed({{dat.address}},{{dat.description}},{{dat.shopId}},{{dat.shopName}},{{dat.telephone}},{{dat.shopLogo}},{{dat}})">去约一下</view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import api from '../../api/api'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: '门店详情',
+      backgroundColor: '#f4f4f4'
+    };
+    components = {
+    }
+
+    data = {
+      dat:[],
+      imageUrl: wepy.$appConfig.imageUrl,
+    }
+
+    onShareAppMessage(res){
+      if (res.from === 'button') {
+        // 来自页面内转发按钮
+//        console.log(res.target)
+      }else{
+        return {
+          title: '亲爱的 推荐你一个女生必备的小程序 要关注哦！',
+          imageUrl: this.imageUrl + 'share_img.png',
+          path: '/pages/index/index?shareMemberCompanyId='+wx.getStorageSync('session').memberCompanyId
+        }
+      }
+    }
+
+    async getposi(e){
+      /*获取门店*/
+      const json = await api.shop_detail({
+        query: {
+          shopId:e
+        }
+      });
+      this.dat = json.data;
+      console.log(this.dat)
+      this.$apply();
+    }
+
+
+
+    methods = {
+      shoed(e,e1,e2,e3,e4,e5,e6){
+        wx.setStorageSync('posi', [e,e1,e2,e3,e4,e5,e6])
+        wx.navigateTo({
+          url: '/pages/appointment/add_appointment?stutas=true'
+        })
+      },
+      imgesurl(e){
+        wx.previewImage({
+          current: e, // 当前显示图片的http链接
+          urls: this.dat.images // 需要预览的图片http链接列表
+        })
+      }
+    }
+
+    onLoad(e) {
+        console.log(e)
+      this.getposi(e.id)
+    }
+  }
+</script>

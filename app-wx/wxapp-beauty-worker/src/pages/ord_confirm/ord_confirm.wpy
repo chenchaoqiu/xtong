@@ -1,0 +1,331 @@
+<style lang="less">
+    page{
+        border-top: 1rpx solid #ddd;
+    }
+    page > view{
+        background: #fff;
+    }
+    .uers{
+        padding: 30rpx;
+        overflow: hidden;
+        margin-bottom: 20rpx;
+        > view.pull-left{
+            image{
+                width:118rpx;
+                height:118rpx;
+                border-radius: 50%;
+                border:1rpx solid #f0f0f0;
+                margin-right: 30rpx;
+            }
+            view{
+                font-size: 30rpx;
+                color: #333;
+                margin-top:3rpx;
+            }
+            view:nth-child(2){
+                margin-top: 11rpx;
+                font-size: 26rpx;
+                color: #666;
+
+            }
+
+        }
+        > image.pull-right{
+            height:29rpx;
+            width:16rpx;
+            margin-top: 45.5rpx;
+        }
+    }
+    .ord_confirm_moy{
+        height:110rpx;
+        line-height:110rpx;
+        text-align: center;
+        font-size: 30rpx;
+        color: #333;
+        text{
+            font-size: 40rpx;
+            font-weight: bold;
+        }
+    }
+    .ord_deta_title{
+        height:60rpx;
+        line-height: 30rpx;
+        padding:0 30rpx;
+        font-size: 30rpx;
+        color: #666;
+        border-bottom: 1rpx solid #eee;
+    }
+    .ord_deta_test{
+        border-bottom: 1rpx solid #eee;
+        padding:0 30rpx;
+        .ord_deta_bk{
+            border-top: 1rpx solid #eee;
+            overflow: hidden;
+            font-size: 30rpx;
+            padding:30rpx 0;
+            color: #333;
+            image{
+                width:270rpx;
+                height:180rpx;
+            }
+            text:first-child{
+                color: #e4393c;
+                float: left;
+            }
+            text:nth-child(2){
+                font-size: 24rpx;
+                color: #666;
+                float: right;
+            }
+        }
+        .ord_deta_bk:first-child{
+            border:none;
+        }
+    }
+    .ord_js{
+        padding: 35rpx 30rpx;
+        font-size: 26rpx;
+        color: #333;
+        border-bottom: 1rpx solid #eee;
+        view{
+            overflow: hidden;
+        }
+        text:first-child{
+            color: #666;
+        }
+    }
+    .ord_out_moy{
+        height:98rpx;
+        line-height:98rpx;
+        /*border-bottom: 1rpx solid #eee;*/
+        margin-top: 20rpx;
+        padding: 0 30rpx;
+        font-size: 30rpx;
+        text:first-child{
+            color: #333;
+        }
+        text:nth-child(2){
+            color: #e4393c;
+        }
+    }
+    .weui-cell{
+        padding:30rpx;
+    }
+    .weui-cell:before,.weui-cells:before,.weui-cells:after{
+        border:none;
+    }
+    .ord_ok{
+        height:90rpx;
+        line-height:90rpx;
+        text-align: center;
+        font-size: 36rpx;
+        color: #fff;
+        background: #26cad3;
+        margin-top: 40rpx;
+    }
+</style>
+<template>
+    <!--用户信息-->
+    <view wx:if="{{attr.type!=1}}" @tap="navigators" class="uers" style="height: 118rpx;">
+        <view class="pull-left">
+            <image class="pull-left" src="{{member.headImgUrl || imgs}}"></image>
+            <view wx:if="{{!member}}" style="line-height: 118rpx;float: left;margin-top: 0px;">请选择用户</view>
+            <view wx:if="{{member}}" class="pull-left">
+                <view>{{member.memberName}}</view>
+                <view>{{member.mobilePhone}}</view>
+            </view>
+        </view>
+        <image class="pull-right" src="/images/arrows.png"></image>
+    </view>
+    <!--付款金额-->
+    <view class="ord_confirm_moy">应付金额<text>￥{{attr.realPayPrice}}</text></view>
+    <!--商品信息-->
+    <view class="ord_deta_title">商品信息</view>
+    <view class="ord_deta_test">
+        <view wx:for="{{attr.items}}" wx:key="index" class="ord_deta_bk">
+            <image class="pull-left" src="{{item.imageUrl}}"></image>
+            <view class="pull-right" style="position: relative;height:180rpx;width: 408rpx;">
+                <view class="ellipsis-1" style="width: 100%;">{{item.name}}</view>
+                <view style="position: absolute;bottom: 0;width: 100%;height: 50rpx;line-height: 50rpx;">
+                    <text>{{item.subtotalPrice}}元</text>
+                    <text>×{{item.buyNum}}</text>
+                </view>
+            </view>
+        </view>
+    </view>
+    <!--合计，预付款-->
+    <view class="ord_js">
+        <view>
+            <text class="pull-left">合计</text>
+            <text class="pull-right">{{attr.orderAmount}}</text>
+        </view>
+        <view style="margin-top: 9rpx;">
+            <text class="pull-left">{{attr.type==1?'已付金额':'预付款'}}</text>
+            <text class="pull-right">{{attr.type!=1?attr.realPayPrice:attr.unpaidPrice}}</text>
+        </view>
+    </view>
+    <!--还需支付-->
+    <view class="ord_out_moy">
+        <text class="pull-left">还需支付</text>
+        <text class="pull-right">{{attr.type==1?attr.realPayPrice:attr.unpaidPrice}}</text>
+    </view>
+
+    <view class="weui-cells pay-module weui-cells_after-title" style="max-height: 600rpx;overflow-y: auto;">
+        <checkbox-group bindchange="checkboxChange">
+            <label class="weui-cell weui-check__label" style="border-top: 1px solid #eee;" wx:for="{{checkboxItems}}" wx:key="value">
+                <checkbox class="weui-check" value="{{item.value}}" checked="{{item.checked}}"/>
+               <!-- <view class="weui-cell__ft weui-cell__ft_in-radio">
+                    <image wx:if="{{item.checked}}" style="width: 37rpx;height: 31rpx;" src="/images/dui.png"></image>
+                </view>-->
+                <view class="group">
+                    <block>
+                        <icon class="weui-icon-checkbox_circle" type="circle" size="23" wx:if="{{!item.checked}}"></icon>
+                        <icon class="weui-icon-checkbox_success" type="success" size="23" color="#27CAD3" wx:if="{{item.checked}}"></icon>
+                    </block>
+                </view>
+                <view class="weui-cell__bd color-33"><text style="font-size: 26rpx;color: {{!item.checked?'#666':'#333'}};margin-left: 17rpx;">{{item.name}}</text></view>
+            </label>
+        </checkbox-group>
+    </view>
+    <view class="ord_ok" @tap="ord_ok">确认订单</view>
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+
+	export default class Close extends wepy.page {
+		config = {
+			navigationBarTitleText: '确认订单',
+			backgroundColor: '#f4f4f4',
+			enablePullDownRefresh: false
+		}
+
+		data = {
+		    imgs:'/images/mrtx.png',
+            checkboxItems: [
+                {type: 1, name: '微信支付', value: '0', checked: true, src: '../../../../images/logo.png'},
+                {type: 2, name: '现金支付', value: '1', src: '../../../../images/logo.png'},
+                {type: 3, name: 'POS支付', value: '2', src: '../../../../images/logo.png'},
+                {type: 5, name: '门店收款码', value: '3', src: '../../../../images/logo.png'}
+            ],
+            attr:[],
+            member:'',
+            sny:'',
+            change:1,
+		}
+		watch = {
+
+		}
+        async confirmPay(){
+            /*提交订单*/
+            let That=this;
+            if(!That.member.memberCompanyId && That.attr.type!=1){
+                wx.showToast({
+                    title:'请选择用户',
+                    icon: 'none',
+                    mask:true,
+                    duration: 2000
+                })
+                return;
+            }
+            const json = await api.confirmPay({
+                query: {
+                    moneySn:That.sny.moneySn,
+                    qRCodePayType:That.change,
+                    memberCompanyId:That.member.memberCompanyId || ''
+                }
+            });
+            if(json.imei_error_code==0){
+                wx.showToast({
+                    title:'确认订单成功',
+                    icon: 'success',
+                    mask:true,
+                    duration: 2000,
+                    success:function () {
+                        setTimeout(function () {
+                            wx.reLaunch({
+                                url: '/pages/home/home'
+                            })
+                        },2000)
+                    }
+                })
+            }
+            this.$apply();
+        }
+        async payDetail(e){
+            /*获取详情*/
+            const json = await api.payDetail({
+                query: {
+                    moneySn:e
+                }
+            });
+            this.attr=json.data;
+            this.$apply();
+        }
+        async scenel(e){
+            /*获取流水号与支付方式*/
+            const json = await api.sceneParams({
+                query: {
+                    scene:e
+                }
+            });
+            if(json.data){
+                this.sny=json.data;
+                this.payDetail(this.sny.moneySn)
+                this.$apply();
+            }else{
+                wx.reLaunch({
+                    url: '/pages/home/home'
+                })
+            }
+        }
+
+		methods = {
+            checkboxChange: function (e) {
+//                console.log('checkbox发生change事件，携带value值为：', e.detail.value);
+                if(e.detail.value.length==0)return;
+                this.change=this.checkboxItems[e.detail.value[e.detail.value.length-1]].type;
+                var checkboxItems = this.checkboxItems, values = e.detail.value;
+                for (var i = 0, lenI = checkboxItems.length; i < lenI; ++i) {
+                    checkboxItems[i].checked = false;
+
+                    for (var j = 0, lenJ = values.length; j < lenJ; ++j) {
+                        if(checkboxItems[i].value == values[j]){
+                            checkboxItems[i].checked = true;
+//                            break;
+                        }else{
+                            /*为了单选*/
+                            checkboxItems[i].checked = false;
+//                            break;
+                        }
+
+                    }
+                }
+
+                this.setData({
+                    checkboxItems: checkboxItems
+                });
+            },
+            navigators(){
+                wx.navigateTo({
+                    url: '/pages/addNew_order_confirm/customerList'
+                })
+            },
+            ord_ok(){
+                /*确认订单*/
+                wx.removeStorageSync('members');
+                this.confirmPay();
+            }
+		}
+
+
+        onShow(){
+            if(!wx.getStorageSync('members'))return;
+            this.member=wx.getStorageSync('members');
+        }
+
+        onLoad(e) {
+            this.scenel(e.scene);
+        }
+	}
+</script>

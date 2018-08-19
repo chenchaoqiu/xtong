@@ -1,0 +1,163 @@
+<style lang="less">
+  page{background: #f4f4f4}
+  .group{
+    background: #f4f4f4;
+    border-radius: 20px;
+    text-align: center;
+    padding: 5px 0;
+    width:85%;
+    float: left;
+  }
+  .group text{
+    color: #666;
+    font-size: 26rpx;
+    margin-left: 5px;
+  }
+  .ov-hi{
+    overflow: hidden;
+  }
+</style>
+<template>
+  <view style="height: 1px;width: 100%;background: #f4f4f4;"></view>
+  <view style="padding:15rpx 30rpx;overflow: hidden;background: #fff;">
+    <view class="group">
+      <!--<block wx:for="{{iconType}}">
+        <icon type="{{item}}" size="20"/>
+      </block>-->
+      <input type="text" focus="{{focu}}" style="font-size: 26rpx;color: #666" bindinput="bindKeyInput" placeholder="输入顾客手机号/姓名"/>
+    </view>
+      <text @tap="sear" style="font-size: 32rpx;color: #26cad3;float: right;height:80rpx;line-height: 76rpx;">{{isshow?"搜索":"取消"}}</text>
+  </view>
+  <!--搜索结果-->
+    <view wx:if="{{!isshow}}" style="background: #fff;font-size: 26rpx;color: #666;">
+        <view wx:for="{{arr}}" class="ov-hi" style="padding:25rpx 30rpx;border-top: 2rpx solid #e5e5e5;">
+            <navigator url="/pages/customer/customeintion/customeintion?id={{item.memberCompanyId}}" hover-class="navigator-hover">
+                <text style="color: #26cad3">{{item.mobilePhone}}</text>
+                <text style="float: right;width: 60%;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;text-align: right;">{{item.memberName}}</text>
+            </navigator>
+        </view>
+    </view>
+  <!--搜索记录-->
+  <!--<view wx:if="{{isshow}}" style="background: #fff;margin-top: 10rpx;padding: 0 30rpx;font-size: 26rpx;color: #666;">
+    <view class="ov-hi" style="padding:25rpx 0;font-size: 26rpx;color: #999;">
+      <text>搜索记录</text>
+      <image @tap="sea_del" style="float: right;width: 48rpx;height: 48rpx;" src="{{src}}"></image>
+    </view>
+    <view wx:for="{{array}}" class="ov-hi" style="padding:25rpx 0;border-top: 2rpx solid #e5e5e5;">
+      <navigator url="/pages/customer/customeintion/customeintion?id={{item.phone}}" hover-class="navigator-hover">
+      <text>{{item.phone}}</text>
+      <text style="float: right">{{item.name}}</text>
+      </navigator>
+    </view>
+  </view>-->
+</template>
+
+<script>
+	import wepy from 'wepy'
+    import api from '../../../api/api'
+
+	export default class Customer extends wepy.page {
+		config = {
+			navigationBarTitleText: '搜索',
+            enablePullDownRefresh: false
+		}
+		components = {
+
+		}
+
+		data = {
+          focu:true,
+            isshow:true,
+            iconType: [
+              'search'
+            ],
+            src:'../sc.png',
+            focus: false,
+            inputValue: '',
+            /*array:[{/!*搜索记录*!/
+                phone:'110120119',
+                name:'陈伟皆'
+            },{
+              phone:'110120119',
+              name:'陈伟皆'
+            },{
+              phone:'110120119',
+              name:'陈伟皆'
+            },{
+              phone:'110120119',
+              name:'陈伟皆'
+            },{
+              phone:'110120119',
+              name:'陈伟皆'
+            }],*/
+            arr:[{/*搜索结果*/
+
+            }]
+		}
+
+          async ajxa(e){
+              /*加载列表*/
+            const json = await api.search({
+              query: {
+                shopId: wx.getStorageSync('session').shopId,
+                memberName:e.name,
+                mobilePhone:e.phone,
+                pageNo:e.page,
+                pageSize:15,
+              }
+            });
+            this.arr = json.data.list;
+            this.$apply();
+          }
+
+        bindKeyInput(e) {
+            this.inputValue=e.detail.value;
+            if(this.inputValue==''){
+                this.isshow=true;
+            }else{
+              this.isshow=false;
+              var phoeif=((/^1[345678]/.test(Number(e.detail.value))) || Number(e.detail.value)==1) && (Number(e.detail.value) > 0);
+              if(phoeif){
+                /*电话通过*/
+                this.ajxa({
+                  name:'',
+                  phone:e.detail.value,
+                  page:1
+                })
+              }else{
+                /*名称通过*/
+                this.ajxa({
+                  name:e.detail.value,
+                  phone:'',
+                  page:1
+                })
+              }
+            }
+        }
+		computed = {
+
+		}
+		methods = {
+          sear(){
+//            this.isshow=false;
+            if(!this.isshow){
+              wx.navigateTo({
+                url: '/pages/customer/customerList'
+              })
+            }
+//              console.log(this.inputValue)
+          },
+          sea_del(){
+//              console.log('enin')
+          }
+		}
+
+		events = {
+
+		}
+
+		onLoad() {
+
+		}
+	}
+</script>

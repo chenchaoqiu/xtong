@@ -1,0 +1,373 @@
+<style lang="less">
+  page {
+    background-color: #ebf0ef;
+    border-top:1px solid #ddd;
+  }
+  page > view{
+    background:0;
+  }
+  image{
+    width:100%;
+    display: block;
+    position: fixed;
+    top:0;
+  }
+  .packet{
+    position: fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+  }
+  .packet-bk{
+    width:100%;
+    height:100%;
+    background: #000;
+    opacity: .8;
+    transition: .3s;
+  }
+  .packet-view{
+    width:87.6%;
+    position: fixed;
+    top:94rpx;
+    left:50%;
+    margin-left: -43.8%;
+    > view{
+      width:100%;
+      position: relative;
+      image:first-child{
+        position: absolute;
+        top:347rpx;
+        left:0rpx;
+        width: 100%;
+        transition: 1s;
+      }
+      image:nth-child(2){
+        position: absolute;
+        width: 100%;
+        transition: 1s;
+      }
+      image:nth-child(3){
+        position: absolute;
+        width:100rpx;
+        left:50%;
+        top:35rpx;
+        margin-left: -50rpx;
+        transition:top 1s;
+      }
+      > view{
+        position: absolute;
+        width:100%;
+        text-align: center;
+        font-size: 36rpx;
+        color: #ffcfa7;
+        top:162rpx;
+        font-family: 'Microsoft YaHei';
+        transition: 1s;
+      }
+      @-webkit-keyframes rotation{
+        from {transform: rotateY(0deg)}
+        to {transform: rotateY(360deg)}
+      }
+      image:nth-child(5){
+        position: absolute;
+        width:240rpx;
+        height:240rpx;
+        left:50%;
+        margin-left: -120rpx;
+        top:305rpx;
+      }
+      image.rad{
+        animation: rotation 1s linear infinite;
+      }
+
+    }
+  }
+  .packOk{
+    position: fixed;
+    top:36rpx;
+    width:650rpx;
+    left:50%;
+    margin-left: -325rpx;
+    overflow: hidden;
+    >view:first-child{
+      font-size: 28rpx;
+      color: #666;
+      height:80rpx;
+      line-height:80rpx;
+      padding: 0 10rpx;
+    }
+  }
+</style>
+<template>
+  <!--领取后-->
+  <image wx:if="{{xsta}}" mode="widthFix" src="{{htt}}lqhb.png"></image>
+  <view wx:if="{{xsta}}" class="packOk">
+    <view><text @tap="deta" class="pull-left">关闭</text></view>
+    <image mode="widthFix" style="position: inherit;top: auto;left:50%;margin-left:-37rpx;width: 100rpx;display: inline-block;" src="{{htt}}mdt.png"></image>
+    <view style="text-align: center;font-size: 30rpx;color: #baa77b;margin-top:120rpx;">witness的红包</view>
+    <view style="font-size: 90rpx;color: #d95045;text-align: center;height: 80rpx;line-height:80rpx;margin-top: 64rpx;">{{hbdat.redpacketAmount}}<text style="font-size: 22rpx;margin-left: 30rpx;">元</text></view>
+    <view style="font-size: 24rpx;color: #d95045;text-align: center;margin-top: 20rpx;">已存入零钱，可直接消费</view>
+    <view style="font-size: 24rpx;color: #e2ccae;border-bottom: 1rpx solid #ede6d3;line-height: 60rpx;margin: 60rpx 30rpx;">1个红包共{{hbdat.redpacketAmount}}元</view>
+  </view>
+
+  <image @tap="chlbsl" style="opacity: {{opaci==false?opaci:1}};transition:opacity .3s;" wx:if="{{status}}" mode="widthFix" src="{{htt}}hb.png"></image>
+  <view wx:if="{{status && hob}}" class="packet">
+    <view style="opacity: {{opaci==false?opaci:0.8}}" class="packet-bk"></view>
+    <view class="packet-view">
+      <view>
+        <image style="top:{{hx_top}}rpx" mode="widthFix" src="{{htt}}hx.png"></image>
+        <image style="top:{{hs_top}}rpx" mode="widthFix" src="{{htt}}hs.png"></image>
+        <image style="top:{{hxmdt_top}}rpx" mode="widthFix" src="{{htt}}mdt.png"></image>
+        <view style="top:{{txt_top}}rpx">
+          <view wx:if="{{sta}}">注册成功</view>
+          <view wx:if="{{sta}}">恭喜你获得一个现金红包</view>
+          <!--活动结束，余额-->
+          <view wx:if="{{!sta}}">来迟咯，红包派完了。</view>
+          <view wx:if="{{!sta}}">下次来早一点哦！</view>
+        </view>
+        <image wx:if="{{sta}}" class="{{rota}}" @tap="rabi" mode="widthFix" src="{{htt}}hg.png"></image>
+        <image @tap="chout" style="width: 22rpx;position: absolute;right: 36rpx;top: 30rpx;left:auto;" mode="widthFix" src="/images/xx.png"></image>
+        <view style="top: auto;bottom: -782rpx;">
+          <navigator wx:if="{{!sta}}" style="background: url('/images/xz.png') center right no-repeat;padding-right: 35rpx;background-size: 15rpx 26rpx;display: inline-block;" url="/pages/index/index" open-type="reLaunch">回到首页</navigator>
+        </view>
+      </view>
+    </view>
+  </view>
+  <zanDialog></zanDialog>
+  <dialog wx:if="{{inshowIn}}" :isShow="inshow"></dialog>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import api from '../../../api/api'
+  import zanDialog from '../../../components/zan-dialog'
+  import Dialog from '../../../components/dialog'
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: 'witness关注好礼',
+      backgroundColor: '#f4f4f4',
+    };
+    components = {
+      zanDialog,
+      dialog:Dialog
+    }
+
+    data = {
+      inshowIn:false,
+      inshow:true,
+        dat:[],
+      hbdat:[],
+      rota:'',/*开启红包转动*/
+      packestu:true,/*检查是否为已开启红包*/
+      status:true,
+      hob:false,
+      sta:true,
+      err:true,
+      hx_top:347,/*下面图*/
+      hs_top:0,/*上面图*/
+      hxmdt_top:35,/*logo图*/
+      txt_top:162,/*文字*/
+      opaci:false,
+      xsta:false,/*领取后状态*/
+      htt:wepy.$appConfig.imageUrl,/*图片地址*/
+      actmac:{},
+      text:'',
+    }
+
+    async sendr(){
+        /*红包*/
+      const json = await api.sendRedpacket({
+        query: {
+          marketId:this.actmac.mae,
+          activityId:this.actmac.act
+        }
+      });
+      this.hbdat=json.data;
+        if(json.imei_error_code==0){
+  //      setTimeout(function () {
+            this.sta=false;
+            this.hx_top=2000;
+            this.hs_top=-2000;
+            this.hxmdt_top=-2000;
+            this.txt_top=-2000;
+            this.opaci=0;
+            setTimeout(function () {
+              this.status=false;
+              this.$apply();
+            }.bind(this),300);
+  //        this.$apply();
+  //      }.bind(this),1000)
+        }else{
+          if(json.imei_error_msg.indexOf('NOTENOUGH')>=0){
+            /*活动结束，余额*/
+            this.err=false;
+            this.sta=false;
+            this.txt_top=230;
+          }else{
+            this.err=false;
+            this.showModals(json.imei_error_msg);
+          }
+          this.$apply();
+        }
+    }
+
+    events = {
+      'finishBindPhone': () => {
+        this.finishBindPhone();
+      }
+    };
+    finishBindPhone(e){
+        var set=setInterval(function () {
+          if(wx.getStorageSync('session').mobilePhone){
+            this.inshowIn=false;
+            this.tcred();
+            clearInterval(set)
+          }
+          this.$apply();
+        }.bind(this),300)
+    }
+
+    showModals(e){
+      let stau=e.indexOf(' >> ')>-1;
+      let This=this;
+      wx.showModal({
+        title: '提示',
+        content: stau?e.split(' >> ')[1]:e,
+        confirmText:'去首页',
+        success: function(res) {
+          if (res.confirm) {
+            wx.setStorageSync("isLoadMyA", true);
+            wx.reLaunch({
+              url: '/pages/index/index'
+            })
+          } else if (res.cancel) {
+            This.text=e;
+            This.hob=false;
+            This.$apply();
+          }else{
+            This.text=e;
+            This.hob=false;
+            This.$apply();
+          }
+        }
+      })
+    }
+
+    tcred(){
+      /*点击弹出红包*/
+      if(!this.err){
+        this.showModals(this.text);
+        return;
+      }
+      if(!wx.getStorageSync('session').mobilePhone){
+        this.inshowIn=true;
+        return;
+      }
+      if(this.dat.canUse==1){
+        this.hob=true;
+      }else{
+        /*红包不可领状态*/
+        this.showModals(this.dat.tips);
+      }
+    }
+
+    methods = {
+      rabi(){
+          /*点击领取红包*/
+          if(this.packestu){
+            this.xsta=true;
+            this.rota='rad';
+            this.sendr();
+            this.packestu=false;
+          }
+      },
+      chlbsl(){
+        this.tcred();
+      },
+      deta(){
+          /*点击关闭*/
+          if(this.dat.isJump==0){
+            wx.setStorageSync("isLoadMyA", true);
+            wx.reLaunch({
+              url: '/pages/index/index'
+            })
+          }else{
+              /*跳到活动页*/
+            wx.navigateTo({
+              url:'/'+this.dat.jumpUrl
+            })
+          }
+      },
+      chout(){
+          /*还没有领取红包，点击关闭，活动结束，点击关闭*/
+        this.hob=false;
+        if(!this.sta){
+            /*领取失败*/
+          wx.navigateBack({
+            delta: 1
+          })
+        }
+      }
+    }
+
+    async getposi(e){
+      /*获取红包详情*/
+      const json = await api.red_packet({
+        query: {
+          marketId:e.mae,
+          activityId:e.act
+        }
+      });
+      if(json.imei_error_code==600){
+        setTimeout(function () {
+          this.getposi(e);
+        }.bind(this),500)
+        return;
+      }
+      if(!json.data.isAuth){
+          /*判断是否授权*/
+        this.$parent.verifyAccredit(this.actmac.stu || 0)
+      }
+      if(!json.data.isOpen){
+          /*是否首次来此活动*/
+        await api.recordUserOpenActivity({
+          query: {
+            marketId:e.mae
+          }
+        });
+      }
+      /*修改标题*/
+      wx.setNavigationBarTitle({
+        title: json.data.title
+      })
+
+      this.dat=json.data;
+
+      this.$apply();
+    }
+
+    showAccreditDialog() {
+      this.$invoke('zanDialog', 'showZanDialog', {
+        title: '是否授权',
+        content: '系统检测你还未授权, 打开授权【用户信息】开启更多功能',
+        showCancel: false,
+        buttons:[],
+        openType: 'getUserInfo'
+      })
+        .then(() => {
+        })
+        .catch(() => {
+
+        })
+    }
+
+    onLoad(e) {
+//        console.log(getCurrentPages())
+      wx.setStorageSync("isLoadMyA", true);
+      this.actmac={act:e.activityId || '', mae:e.marketId || '',stu:e.stusta};
+      this.getposi({act:e.activityId || '', mae:e.marketId ||''});
+    }
+  }
+</script>

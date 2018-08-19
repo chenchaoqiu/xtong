@@ -1,0 +1,80 @@
+<style lang="less">
+    page{background: #f4f4f4;font-family: PingFang-SC-Regular; }
+    /** 修改默认的navigator点击态 **/
+    .navigator-hover {
+        color:blue;
+    }
+    /** 自定义其他点击态样式类 **/
+    .other-navigator-hover {
+        color:red;
+    }
+    .edit{width: 690rpx;height: 70rpx;margin: 40rpx auto 40rpx auto;border-bottom: 1rpx solid #999999}
+    .name{font-size: 30rpx;height: 70rpx;line-height: 70rpx;color:#666666}
+    .ensure{width: 690rpx;height: 90rpx;line-height:90rpx;margin: 0 auto;background: #26cad3;color:#ffffff;font-size: 30rpx; }
+    .ensure-no{width: 690rpx;height: 90rpx;line-height:90rpx;margin: 0 auto;background: #999999;color:#ffffff;font-size: 30rpx; }
+</style>
+<template>
+    <view style="height: 1px;width: 100%;background: #f4f4f4; position: fixed;top:0;left: 0"></view>
+    <view class="edit">
+        <input type="text" id="name" class="name" value="{{employeeName}}" bindinput="input_name" maxlength="8"/>
+    </view>
+    <button type="button" class="{{disabled == true ? 'ensure-no' : 'ensure'}}"  disabled="{{disabled}}" @tap="ensure">确认修改</button>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import api from '../../api/api'
+    export default class editName extends wepy.page {
+        config = {
+            navigationBarTitleText: '修改姓名',
+        }
+        components = {}
+
+        data = {
+            "employeeId":"",
+            "employeeName":"",
+            disabled:true,
+        }
+
+        computed = {}
+        methods = {
+            input_name(e){
+                this.name = e.detail.value;
+                console.log(this.name);
+                if(this.name == ""){
+                    this.disabled=true;
+                    console.log(this.disabled)
+                }else{
+                    this.disabled=false;
+                    console.log(this.disabled)
+                }
+            },
+            //确认修改
+            async ensure(){
+                const json = await api.editName({
+                    query: {
+                        employeeId: this.employeeId,
+                        employeeName : this.name,
+                    }
+                });
+                var session= wx.getStorageSync('session',json.data);
+                var editName= wx.setStorageSync('editName',this.name);
+                wx.navigateBack({
+                    url: '/pages/user/userDetail'
+                });
+                this.$apply();
+            }
+        }
+
+        events = {}
+
+        async onLoad(options) {
+            var session= wx.getStorageSync('session');
+            console.log(session);
+            this.employeeId = session.employeeId;
+            this.employeeName = options.employeeName;
+            this.$apply();
+        }
+
+    }
+</script>

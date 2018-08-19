@@ -1,0 +1,205 @@
+<style lang="less">
+    page {background-color: #ebf0ef;font-family: PingFang-SC-Regular; }
+    .servi-title{
+      border-top: 1rpx solid #eee;
+      text-align: center;
+      height:188rpx;
+      background: #fff;
+      >view:first-child{
+        font-size: 36rpx;
+        color: #26cad3;
+        margin-top: 40rpx;
+        overflow: hidden;
+        display: inline-block;
+        image{
+          width: 32rpx;
+          height: 32rpx;
+          margin-right: 20rpx;
+          float: left;
+          margin-top: 15rpx;
+        }
+        text{
+          float: left;
+        }
+      }
+      >view{
+        font-size: 26rpx;
+        color: #666;
+      }
+    }
+  /*门店*/
+  .shop{
+    padding:20rpx 30rpx;
+    margin:20rpx 0;
+    overflow: hidden;
+    /*height:143rpx;*/
+    background: #fff;
+    >view:first-child{
+      width:85.96%;
+      height:100%;
+      border-right: 2rpx solid #f2f2f2;
+      padding:30rpx 0;
+      view:first-child{
+        width:100%;
+        font-size: 30rpx;
+        color: #333;
+      }
+      view:nth-child(2){
+        width:100%;
+        font-size: 28rpx;
+        color: #666;
+        margin-top: 10rpx;
+      }
+    }
+    >view:nth-child(2){
+      width:13.04%;
+      height:100%;
+      line-height: 157rpx;
+      text-align: center;
+      image{
+        width:40rpx;
+        height:40rpx;
+        margin-left: 26rpx;
+      }
+    }
+  }
+  /*服务详情*/
+  .servi-det{
+    padding: 0 30rpx;
+    background: #fff;
+    .bk{
+      padding: 40rpx 0;
+      overflow: hidden;
+      border-top: 1px solid #ddd;
+      image{
+        width:270rpx;
+        height:180rpx;
+        background: #ddd;
+        float: left;
+      }
+      >view{
+        width:400rpx;
+        height:180rpx;
+        float: right;
+        font-size: 30rpx;
+        color: #333;
+        view{
+          height:50%;
+          overflow: hidden;
+          line-height:90rpx;
+        }
+        view:nth-child(2){
+          font-size: 24rpx;
+        }
+      }
+    }
+    .bk:first-child{
+      border:none;
+    }
+  }
+  /*订单号*/
+  .orddet{
+    padding: 50rpx 30rpx;
+    background: #fff;
+    font-size: 26rpx;
+    color: #333;
+    margin-top: 20rpx;
+  }
+  .button{
+    width:100%;
+    height:95rpx;
+    line-height: 95rpx;
+    text-align: center;
+    background: #26cad3;
+    font-size: 36rpx;
+    color: #fff;
+    border-radius: 0;
+    border:none;
+    margin-top: 134rpx;
+  }
+</style>
+<template>
+  <view class="servi-title">
+    <view>
+      <image src="/images/cheok.png"></image>
+      <text>已完成</text>
+    </view>
+    <view>感谢您的光临 witness !</view>
+  </view>
+  <!--门店显示-->
+  <view class="shop">
+    <view class="pull-left">
+      <view class="ellipsis-1">{{dat[0].shopName}}</view>
+      <view class="ellipsis-1">{{dat[0].shopAddress}}</view>
+    </view>
+    <view @tap="phone('{{dat[0].telePhone}}')" class="pull-right">
+      <image src="../../images/moin.png"></image>
+    </view>
+  </view>
+  <!--服务详情-->
+  <view style="font-size: 26rpx;color: #666;height: 108rpx;line-height: 108rpx;text-indent: 30rpx;border-bottom: 1rpx solid #ddd;background: #fff;">服务详情</view>
+  <view class="servi-det">
+    <view wx:for="{{dat[0].itemList}}" class="bk">
+      <image src="{{item.imageUrl}}"></image>
+      <view>
+        <view class="ellipsis-1">{{item.serviceTitle}}</view>
+        <view>
+          <text class="pull-left ellipsis-1">{{item.projectName}}</text>
+          <text class="pull-right">×{{item.num}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+  <!--订单号-->
+  <view class="orddet">
+    <view>预约单号：{{dat[0].serviceWorkNo}}</view>
+    <view style="margin-top: 10rpx;">服务时间：{{dat[0].serviceDate+' '+dat[0].serviceTime}}</view>
+  </view>
+  <button @tap="navigat" class="button">去约一下</button>
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+
+	export default class selectAuto extends wepy.page {
+		config = {
+			navigationBarTitleText: '已完成服务',
+			"enablePullDownRefresh": false,     //关闭系统刷新
+		}
+
+		data = {
+		    dat:[]
+		}
+    async ajax(e){
+      /*删除购物车*/
+      const json = await api.serviceDetail({
+        query: {
+          memberBookingId:e.id,
+        }
+      });
+      this.dat=[json.data];
+      console.log(this.dat)
+      this.$apply();
+    }
+
+		methods = {
+      phone(e){
+          console.log(e)
+        wx.makePhoneCall({
+          phoneNumber:e //仅为示例，并非真实的电话号码
+        })
+      },
+      navigat(){
+        wx.reLaunch({
+          url: '/pages/appointment/my_appointment'
+        })
+      }
+    }
+
+		onLoad(e) {
+        console.log(e)
+      this.ajax({id:e.id});
+		}
+
+	}
+</script>

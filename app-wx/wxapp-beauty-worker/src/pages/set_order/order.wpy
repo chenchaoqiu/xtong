@@ -1,0 +1,541 @@
+<style lang="less">
+    page{
+        padding-bottom: 100rpx;
+    }
+    page > view > view{
+        background: #fff;
+    }
+    .ord_title{
+        height:90rpx;
+        line-height:90rpx;
+        border-bottom: 1rpx solid #ddd;
+        border-top: 1rpx solid #f4f4f4;
+        font-size: 30rpx;
+        color: #666;
+        text-indent: 30rpx;
+    }
+    .ord_det{
+        padding: 0 30rpx;
+        border-bottom: 1rpx solid #ddd;
+        margin-bottom: 20rpx;
+    }
+    .ord_det_bk{
+        padding: 30rpx 0;
+        overflow: hidden;
+        border-top: 1rpx solid #ddd;
+        image{
+            width:270rpx;
+            height:190rpx;
+            float: left;
+            background: #000;
+        }
+        > view{
+            float: right;
+            width:400rpx;
+            height:190rpx;
+            view:nth-child(1){
+                font-size: 30rpx;
+                color: #333;
+            }
+            view:nth-child(2){
+                font-size: 24rpx;
+                color: #666;
+                margin:30rpx 0;
+            }
+            view:nth-child(3){
+                font-size: 30rpx;
+                color: #e4393c;
+                overflow: hidden;
+                text:nth-child(2){
+                    font-size: 26rpx;
+                    color: #26cad3;
+                    width:98rpx;
+                    height:38rpx;
+                    line-height: 38rpx;
+                    text-align: center;
+                    border:1rpx solid #26cad3;
+                    float: right;
+                    margin-top: 4rpx;
+                }
+            }
+        }
+    }
+    .ord_det_bk:first-child{
+        border:none;
+    }
+    .ord_remark{
+        .ord_remark_bk{
+            padding:30rpx;
+            border-top: 1rpx solid #eee;
+            > view{
+                overflow: hidden;
+                line-height: 66rpx;
+               > text{
+                   float: left;
+                   font-size: 28rpx;
+                   color: #666;
+                }
+                switch{
+                    float: right;
+                    height:66rpx;
+                    line-height: 57rpx;
+                    width:82rpx;
+                }
+                text:nth-child(2){
+                    float: right;
+                    font-size: 26rpx;
+                    color: #e4393c;
+                    margin-right: 20rpx;
+                }
+                input{
+                    float: left;
+                    height:66rpx;
+                    line-height:66rpx;
+                    font-size: 28rpx;
+                    color: #333;
+                    width:440rpx;
+                }
+                image{
+                    width:31rpx;
+                    height:28rpx;
+                    float: right;
+                    margin-top: 19rpx;
+                }
+            }
+        }
+    }
+    .wx-switch-input{width:80rpx !important;height:40rpx !important;}
+    .wx-switch-input::before{width:80rpx !important;height: 40rpx !important;background: #ddd !important;}
+    .wx-switch-input::after{width: 36rpx !important;height: 36rpx !important;}//中间小圆球
+    .ord_bot{
+        height:98rpx;
+        line-height:98rpx;
+        position: fixed;
+        bottom:0;
+        left:0;
+        width:100%;
+        padding-left: 30rpx;
+        background: #fff;
+        z-index: 2;
+        text:first-child{
+            font-size: 30rpx;
+            color: #666;
+            text{
+                color: #ff5767;
+            }
+        }
+        text:nth-child(2){
+            float: right;
+            width:260rpx;
+            background: #26cad3;
+            text-align: center;
+            font-size: 32rpx;
+            color: #fff;
+        }
+    }
+    .eixt_tc{
+        position: fixed;
+        top:0;
+        left:0;
+        width:100%;
+        height:100%;
+        background: 0;
+        z-index: 3;
+        .eixt_tc_bk{
+            width:100%;
+            height:100%;
+            background: #000;
+            opacity: .6;
+        }
+        .eixt_tc_text{
+            position: fixed;
+            width:92%;
+            top:50rpx;
+            left:50%;
+            margin-left: -46%;
+            background: #fff;
+            > view{
+                padding:40rpx 35rpx 80rpx;
+                .eixt_Img{
+                    overflow: hidden;
+                    image{
+                        float: right;
+                        width:22rpx;
+                        height:22rpx;
+                    }
+                }
+                .eixt_tc_title{
+                    font-size: 26rpx;
+                    color: #333;
+                }
+                .eixt_tc_txt{
+                    margin-top: 12rpx;
+                    overflow: hidden;
+                    border-bottom: 1rpx solid #999;
+                    padding-bottom: 15rpx;
+                    text{
+                        float: left;
+                        width:50rpx;
+                        height:100rpx;
+                        line-height:100rpx;
+                        text-align: center;
+                        /*border-right: 3rpx solid #c1c1c1;*/
+                        font-size: 50rpx;
+                        color: #333;
+                        font-weight:bold;
+                    }
+                    input{
+                        font-size: 60rpx;
+                        height:100rpx;
+                        line-height:100rpx;
+                        margin-left: 20rpx;
+                        float: left;
+                        width:500rpx;
+                        font-weight: bold;
+                    }
+                }
+                .eixt_tc_ts{
+                    font-size: 24rpx;
+                    color: #999;
+                    margin-top: 10rpx;
+                }
+                .eixt_tc_but{
+                    width:578rpx;
+                    height:84rpx;
+                    line-height:84rpx;
+                    text-align: center;
+                    background: #26cad3;
+                    border-radius: 5rpx;
+                    font-size: 36rpx;
+                    color: #fff;
+                    margin: 50rpx auto 0;
+                }
+            }
+        }
+    }
+</style>
+<template>
+    <view class="ord-top" style="width: 100%;overflow: hidden">
+        <view class="ord_title">商品信息</view>
+        <view class="ord_det">
+            <view wx:for="{{dat.list}}" wx:key="dat" class="ord_det_bk">
+                <image mode="widthFix" src="{{item.defaultPic}}"></image>
+                <view>
+                    <view class="ellipsis-1">{{item.name}}</view>
+                    <view style="overflow: hidden">
+                        <text class="ellipsis-1" style="float:left;width: 85%;">
+                            <text wx:for="{{item.projects}}" wx:key="index" wx:for-index="ind">{{ind!=0?(','+item.projectName):item.projectName}}</text>
+                        </text>
+                        <text style="float: right">x{{item.num}}</text>
+                    </view>
+                    <view>
+                        <text>{{item.totalPrice}}</text>
+                        <text @tap="PriceChange('gj',{{index}})">改价</text>
+                    </view>
+                </view>
+            </view>
+        </view>
+        <view class="ord_remark" style="padding-bottom: {{focus}}rpx">
+            <view class="ord_remark_bk">
+                <view>
+                    <text>使用预付款</text>
+                    <switch checked="{{status}}" color="#26cad3" bindchange="switch1Change"/>
+                </view>
+                <view wx:if="{{status}}">
+                    <text style="font-size: 24rpx;">预付款金额</text>
+                    <text @tap="PriceChange">{{val[1] || '无'}}</text>
+                </view>
+            </view>
+            <view class="ord_remark_bk">
+                <view>
+                    <text>订单备注：</text>
+                    <input maxlength="200" bindfocus="focuses" bindinput="chargeinput('bz')" bindblur="blures" type="text" placeholder="输入备注信息" /><!--focus="{{inpstusa==''?true:false}}" disabled="{{inpstusa}}"-->
+                    <!--<image @tap="remark" src="/images/remark.png"></image>-->
+                </view>
+            </view>
+        </view>
+        <view class="ord_bot">
+            <text>合计：<text>{{dat.totalMoney}}</text></text>
+            <text @tap="order">提交订单</text>
+        </view>
+        <view class="eixt_tc"  wx:if="{{endout}}">
+            <view class="eixt_tc_bk" @tap="nock('no')" animation="{{animationData_yc}}"></view>
+            <view class="eixt_tc_text" animation="{{animationData}}">
+                <view>
+                    <view class="eixt_Img">
+                        <image @tap="nock('no')" src="/images/exit.png"></image>
+                    </view>
+                    <view class="eixt_tc_title">{{gj?'预付款金额':'面议价格'}}</view>
+                    <view class="eixt_tc_txt">
+                        <text>￥</text>
+                        <input focus="true" bindblur="chargeblur" bindinput="chargeinput" type="digit" value="{{value}}" />
+                    </view>
+                    <view wx:if="{{gj}}" class="eixt_tc_ts">不低于{{amountMin.minPayPrice}}元！</view>
+                    <view class="eixt_tc_but" @tap="nock('whey')">确定</view>
+                </view>
+            </view>
+        </view>
+    </view>
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+    import dom from '../../utils/dom'
+    import animo from '../../utils/animove'
+
+	export default class Close extends wepy.page {
+		config = {
+			navigationBarTitleText: '填写订单',
+			backgroundColor: '#f4f4f4',
+			enablePullDownRefresh: false
+		}
+
+		data = {
+            status:false,/*是否要预付款*/
+            inpstusa:'false',/*是否要编写备注*/
+            focus:0,/*输入法bug，修复高度*/
+            yp_focus:0,/*输入法bug，屏幕高度与标签高度差*/
+            animationData:{},/*动画数据版*/
+            animationData_yc:{},/*动画蒙版*/
+            endout:false, /*动画开关*/
+            gj:true,/*true为预付款，false为改价*/
+            value:'',
+            val:[[],''],/*改价，预付款*/
+            index:'',/*记录第几条启动改价*/
+            dat:[],/*列表*/
+            amountMin:0,/*最低预付款minPayPrice: , amountPrice: */
+            val_text:'',/*备注*/
+            val_status:'',/*预存金额*/
+            unstatus:false,/*监听是否点击返回*/
+            yfk_status:false,/*监听预付款不足*/
+		}
+		watch = {
+
+		}
+		sor(){
+		    /*弹框bug修复*/
+            let This=this;
+            wx.getSystemInfo({
+                success: function(res) {
+                    dom.height('.ord-top',function (e) {
+                        let hei=((e-res.windowHeight)<-200)?200-(e-res.windowHeight):100-(e-res.windowHeight);
+                        This.yp_focus=hei;
+                    })
+                }
+            })
+        }
+        async AmountMinPay(){
+		    /*预付款*/
+            let cartItemIds='';
+            for(let i=0;i<this.dat.list.length;i++){
+                cartItemIds +=((i==0?'':',')+this.dat.list[i].cartItemId);
+            }
+            const amount = await api.amountMinPay({
+                query: {
+                    cartItemIds:cartItemIds,
+                }
+            });
+            this.amountMin=amount.data;
+            this.$apply();
+        }
+        async Update(){
+            /*改价*/
+            const amount = await api.cartUpdate({
+                query: {
+                    cartItemId:this.dat.list[this.index].cartItemId,
+                    type:'updatePrice',
+                    price:this.val[0][this.index]
+                }
+            });
+            this.cartlists();
+            this.val[1] = '';
+            this.$apply();
+        }
+        async cartlists(options) {
+            /*列表*/
+            const cartlist = await api.cartlist({
+                query: {
+                }
+            });
+            this.dat=cartlist.data;
+
+            this.$apply();
+        }
+        value_status(e){
+            /*处理金额一些琐事*/
+            if(this.val_status==''){
+                this.val_status=e.val;
+            }
+            if(e.dat.detail.value.split('.').length>2){
+                return this.val_status;
+            }else{
+                if(!(/^\d{1,9}(\.|\.\d{1,2})?$/ .test(e.dat.detail.value)) && e.dat.detail.value!=''){
+                    return this.val_status;
+                }
+                this.val_status=e.dat.detail.value
+            }
+        }
+		methods = {
+            PriceChange(e,e1){
+                this.index=e1;
+                if(e=='gj'){
+                    this.gj=false;
+                    this.value = this.val[0][this.index] || '';
+                }else{
+                    this.AmountMinPay();
+                    this.gj=true;
+                    this.value = this.val[1] || '';
+                }
+                this.endout=true;
+                setTimeout(function () {
+                    animo.shwoIN(this);
+                    this.$apply();
+                }.bind(this),30)
+            },
+            switch1Change(e){
+                /*预付款开关*/
+                this.value = this.val[1] || '';
+                this.status=e.detail.value;
+                if(this.status){
+                    this.AmountMinPay();
+                    this.gj=true;
+                    this.endout=true;
+                    this.$apply();
+                    setTimeout(function () {
+                        animo.shwoIN(this);
+                        this.$apply();
+                    }.bind(this),30)
+                }
+            },
+//            remark(){
+//                /*编写备注开关*/
+//                this.inpstusa='';
+//                this.$apply();
+//            },
+            focuses(e){
+                this.focus=(this.yp_focus>0?this.yp_focus:100);
+                setTimeout(function () {
+                    wx.pageScrollTo({
+                        scrollTop: 20000,
+                        duration: 300
+                    })
+                },100)
+            },
+            blures(e){
+                this.val_text=e.detail.value;
+                this.focus=0;
+            },
+            async nock(e,e1,e2){
+//                this.value='';
+                setTimeout(function () {
+                    var This=this;
+                    if(e=='whey'){
+                            if(this.gj) {
+                                /*预付款*/
+                                if(this.value>=this.amountMin.minPayPrice){
+                                    this.val[1] = this.value;
+                                }
+                                if(this.yfk_status){
+                                    return;
+                                }
+                            }else{
+                                /*改价*/
+                                this.val[0][this.index] = this.value;
+                                this.Update();
+                            }
+                    }
+                    dom.height('.eixt_tc_text',function (e) {
+                        animo.yc({
+                            This:This,
+                            height:e
+                        })
+                    })
+                    setTimeout(function () {
+                        if(this.val[1]==''){
+                            this.status=false;
+                        }
+                        this.endout=false;
+                        this.val_status='';
+                        this.$apply();
+                    }.bind(this),300)
+                    this.$apply();
+                }.bind(this),100)
+            },
+            chargeinput(e1,e){
+                if(e1=='bz' && !(/^[a-zA-Z\u4E00-\u9FA5\d\\s]*$/.test(e.detail.value))){
+                    return this.val_text;
+                }
+                if(e1=='bz'){
+                    this.val_text=e.detail.value;
+                }else{
+                    /*input 框输入金额*/
+                    if(this.gj){
+                        if(e1.detail.value>this.amountMin.amountPrice){
+                            this.val_status=this.amountMin.amountPrice
+                            return this.amountMin.amountPrice;
+                        }
+                        return this.value_status({val:this.val[1] || '',dat:e1})
+                    }else{
+                        return this.value_status({val:this.val[0][this.index] || '',dat:e1})
+                    }
+                }
+
+            },
+            chargeblur(e){
+                /*input 框输入金额失去焦点*/
+                this.yfk_status=false;/*重置状态*/
+                if(e.detail.value<this.amountMin.minPayPrice && this.gj){
+                    this.yfk_status=true;
+                    wx.showToast({
+                        title: '预付款不能低于最低值',
+                        icon: 'none',
+                        duration: 2000
+                    })
+                }else if(e.detail.value!=''){
+                    this.value=parseFloat(e.detail.value).toFixed(2);
+                }else{
+                    this.value='';
+                }
+            },
+            async order(){
+                /*提交*/
+                let cartItemIds='';
+                for(let i=0;i<this.dat.list.length;i++){
+                    cartItemIds +=((i==0?'':',')+this.dat.list[i].cartItemId);
+                }
+                const orderadd = await api.orderadd({
+                    query: {
+                        cartItemIds:cartItemIds,
+                        payMoney:this.val[1]?this.val[1]:this.dat.totalMoney,
+                        payMoneyType:this.val[1]?2:1,
+                        remark:this.val_text
+                    }
+                });
+                if(orderadd.imei_error_code==0){
+                    this.unstatus=true;
+                    wx.redirectTo({
+                        url: '/pages/settle_accounts_code/settle_accounts_code?id='+orderadd.data.moneySn
+                    })
+                }
+                this.$apply();
+            }
+		}
+        async onLoad(options) {
+            this.cartlists();
+		    this.sor();
+        }
+        async onUnload(){
+            if(!this.unstatus){
+                /*let cartItemIds='';
+                for(let i=0;i<this.dat.list.length;i++){
+                    cartItemIds +=((i==0?'':',')+this.dat.list[i].cartItemId);
+                }
+                const updateOriginPrice = await api.updateOriginPrice({
+                    query: {
+                        cartItemIds:cartItemIds,
+                    }
+                });*/
+            }
+        }
+	}
+</script>

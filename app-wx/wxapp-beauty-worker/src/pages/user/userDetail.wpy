@@ -1,0 +1,171 @@
+<style lang="less">
+    page{background: #f4f4f4;font-family: PingFang-SC-Regular; }
+    /** 修改默认的navigator点击态 **/
+    .navigator-hover {
+        color:blue;
+    }
+    /** 自定义其他点击态样式类 **/
+    .other-navigator-hover {
+        color:red;
+    }
+    .user{width: 100%;height: 140rpx;background: #ffffff;}
+    .user-inner{padding-top:28rpx;margin:0 30rpx;display: flex;display: -webkit-flex; }
+    .user-logo{display: block;width: 84rpx;height: 84rpx;border-radius: 50%;overflow: hidden}
+    .user-wenzi{height: 84rpx;margin-left: 30rpx;flex: 1;-webkit-flex: 1;display: flex;display: -webkit-flex;
+        flex-direction: column;-webkit-flex-direction: column;justify-content: space-between;-webkit-justify-content: space-between}
+    .user-wenzi text{flex: 1;-webkit-flex: 1}
+    .item-title{height: 78rpx;font-size: 30rpx;color:#484848;}
+    .item-list{width: 690rpx;height:90rpx;margin: 0 auto;display: flex;display: -webkit-flex;
+        justify-content: space-between;-webkit-justify-content: space-between;align-items:center;-webkit-align-items: center;
+        background: #fff;border-bottom: 1rpx solid #e5e5e5;}
+    .wenzi{font-family: ;font-size: 30rpx;color:#333333;}
+    .refresh{width: 140rpx;height: 44rpx;border:1rpx solid #f4f4f4!important;border-radius: 10rpx;font-size: 20rpx;
+        color:#666666;margin-top: 20rpx;text-align: center}
+    button{padding:0!important;background: #fff!important;border-radius: 10rpx!important;}
+</style>
+<template>
+    <view style="height: 1px;width: 100%;background: #f4f4f4; position: fixed;top:0;left: 0"></view>
+    <!--个人资料-->
+    <view class="user">
+        <view class="user-inner">
+            <!--<image class="user-logo" src="{{userInfo.avatarUrl}}"></image>-->
+            <view class="user-logo">
+                <open-data type="userAvatarUrl"></open-data>
+            </view>
+            <view class="user-wenzi">
+                <text style="font-size:30rpx;color:#333333; font-family: PingFang-SC-Regular;">{{employeeName}}</text>
+                <text style="font-size:24rpx;color:#666666;flex: 1" >{{mobilePhone}}</text>
+            </view>
+            <button class="refresh" @tap="shuaxin">
+                <image src="../../images/refresh.png" style="display: block;float:left;width: 26rpx;height: 26rpx;margin-top: 8rpx;margin-left: 10rpx; "></image>
+                <text style="display: block;float:left;padding-left: 10rpx;height: 40rpx;line-height: 44rpx;">刷新资料</text>
+            </button>
+        </view>
+    </view>
+    <!--基本信息-->
+    <view class="item-title">
+        <text style="display: block;margin-top: 30rpx;margin-left: 30rpx;">基本信息</text>
+    </view>
+    <navigator class="item-list" url="/pages/user/editName?employeeName={{employeeName}}">
+        <text class="wenzi" style="padding-left: 20rpx;">员工姓名</text>
+        <view class="wenzi">
+            <text class="wenzi" style="display: block;float: left;color:#666666">{{employeeName}}</text>
+            <image src="../../images/icon-in.png" style="display: block;float: left;width: 17rpx;height: 30rpx;padding-left: 20rpx;padding-right: 20rpx;margin-top: 8rpx;"></image>
+        </view>
+    </navigator>
+    <view class="item-list" url="">
+        <text class="wenzi" style="padding-left: 20rpx;">岗位</text>
+        <view class="wenzi">
+            <text class="wenzi" style="padding-right: 20rpx;color:#666666">{{roleName}}</text>
+        </view>
+    </view>
+    <view class="item-list" url="">
+        <text class="wenzi" style="padding-left: 20rpx;">服务门店</text>
+        <view class="wenzi">
+            <text class="wenzi" style="padding-right: 20rpx;color:#666666">{{shopName}}</text>
+        </view>
+    </view>
+    <navigator class="item-list" url="/pages/user/editId?authCode={{authCode}}">
+        <text class="wenzi" style="padding-left: 20rpx;">员工身份码</text>
+        <view class="wenzi">
+            <!--<text class="wenzi" style="display: block;float: left;padding-right: 20rpx; color:#666666">{{authCode}}</text>-->
+            <image src="../../images/icon-in.png" style="display: block;float: left;width: 17rpx;height: 30rpx;padding-right: 20rpx;margin-top: 8rpx;"></image>
+        </view>
+    </navigator>
+    <zanDialog></zanDialog>
+</template>
+
+<script>
+    import wepy from 'wepy'
+    import api from '../../api/api'
+    import zanDialog from '@/components/zan-dialog'
+    export default class userDetail extends wepy.page {
+        config = {
+            navigationBarTitleText: '个人资料',
+            "enablePullDownRefresh": false,     //关闭系统刷新
+        }
+        components = {
+            zanDialog
+        }
+
+        data = {
+            "employeeName":"",
+            "mobilePhone":"",
+            "roleName":"",
+            "shopName":"",
+            "authCode":"",
+            headerImg:'',
+            userInfo:[],
+            showDialog: true,
+            isNoAccredit: false,
+        }
+
+        computed = {}
+        methods = {
+            async getUserInfo() {
+//                let {userInfo} = await wepy.getUserInfo();
+                let {userInfo}= wx.getStorageSync('session');
+                this.userInfo = userInfo;
+                this.$apply();
+            },
+            shuaxin(){
+                wx.showToast({
+//                    title: '',
+                    icon : 'loading',
+                    duration : 1000
+                });
+            }
+        }
+
+        events = {}
+        onShow(){
+            this.ajax();
+        }
+        async ajax(){
+            var session= wx.getStorageSync('session', json);
+//            let {userInfo} = await wepy.getUserInfo();
+//            this.userInfo = userInfo;
+//            this.headerImg = wx.getStorageSync('userInfo').userInfo.avatarUrl;
+            var employeeId = session.employeeId;
+            console.log(employeeId);
+            const json = await api.getUserDetail({
+                query: {
+                    employeeId: employeeId,
+                }
+            });
+            console.log(json);
+            this.data = json.data;
+            this.employeeName = json.data.employeeName;
+            this.mobilePhone = json.data.mobilePhone;
+            this.roleName = json.data.roleName;
+            this.shopName = json.data.shopName;
+            this.authCode = json.data.authCode;
+            this.$apply();
+        }
+        async onLoad() {
+            this.$parent.verifyAccredit(1);
+        }
+        showAccreditDialog() {
+            this.$invoke('zanDialog', 'showZanDialog', {
+                title: '温馨提醒',
+                content: '我们请求获得您的授权允许，只收集您在微信自愿提供的昵称、头像等信息，为您提供更多功能操作。',
+                showCancel: true,
+                buttons:[
+                    {
+                        type: 'confirm',
+                        text: '好的',
+                        color: '#26cad3',
+                        openType:'getUserInfo',
+                    }
+                ],
+//                openType: 'getUserInfo'
+            })
+                .then(() => {
+
+                })
+                .catch(() => {
+
+                })
+        }
+    }
+</script>

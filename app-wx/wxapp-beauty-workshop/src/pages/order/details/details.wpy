@@ -1,0 +1,401 @@
+<style lang="scss">
+  page {
+    background-color: #ebf0ef;
+    border-top:1px solid #ddd;
+    padding-bottom: 118rpx;
+  }
+  page > view{
+    background: #fff;
+  }
+  .order-det,.order-fund,.deta,.order-key{
+    margin-top: 20rpx;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+    font-size: 28rpx;
+    color: #666;
+  }
+  .deta-top{
+    height:95rpx;
+    line-height: 95rpx;
+    border-bottom: 1px solid #ddd;
+    font-size: 30rpx;
+    color: #003333;
+    padding: 0 25rpx;
+  }
+  .deta-top image{
+    width:30rpx;
+    height:28rpx;
+    margin-top: 33.5rpx;
+    margin-right: 10rpx;
+  }
+  .deta-xq{
+    padding: 0 25rpx;
+  }
+  .data-x-bk{
+    min-height:247rpx;
+    border-top: 1px solid #eee;
+    overflow: hidden;
+  }
+  .data-x-bk:first-child{
+    border:none;
+  }
+  .data-x-bk image{
+    width:277rpx;
+    height:187rpx;
+    margin-top: 30rpx;
+  }
+  .deta-x-t{
+    width:376rpx;
+    height:187rpx;
+    margin-top: 30rpx;
+    overflow: hidden;
+    position: relative;
+    line-height: 37rpx;
+  }
+  .posi{
+    position: absolute;
+    bottom: 0;
+    left:0;
+  }
+  .deta-x-tit{
+    font-size: 30rpx;
+    color: #333;
+  }
+  .order-det{
+    padding:38rpx 25rpx;
+  }
+  .order-det view{
+    margin-top: 10rpx;
+  }
+  .order-det view:first-child{
+    margin-top: 0;
+  }
+  .order-fund{
+    padding:38rpx 25rpx;
+    color: #333;
+  }
+  .order-key{
+    height:100rpx;
+    line-height: 100rpx;
+    padding:0 25rpx;
+    color: #333;
+  }
+  .order-key image{
+    width: 40rpx;
+    height:40rpx;
+    margin-top: 30rpx;
+    margin-right: 20rpx;
+  }
+  .but{
+    position: fixed;
+    bottom: 0;
+    left:0;
+    width:100%;
+    height:98rpx;
+    line-height: 98rpx;
+    text-align: center;
+    background: #e4393c;
+    font-size: 36rpx;
+    color: #fff;
+  }
+  .monyx{
+    text-align: right;
+    font-size: 34rpx;
+    color: #e4393c;
+    height: 107rpx;
+    line-height: 107rpx;
+    padding: 0 25rpx;
+  }
+</style>
+<template>
+  <!--详情列表-->
+  <view class="deta">
+    <!--头部-->
+    <view class="deta-top">
+      <image class="pull-left" src="../../../images/shop1.png"></image>
+      <text class="pull-left">{{dat[0].shopName}}</text>
+      <text class="pull-right" style="font-size: 28rpx;color: #e4393c;"
+      >{{dat[0].orderStatus==0?'待付款':(dat[0].orderStatus==1?'购买成功':'待结尾款')}}</text>
+    </view>
+    <!--产品详情-->
+    <view class="deta-xq">
+      <view wx:for="{{dat[0].orderDetailVOItems}}" wx:key="{{index}}" class="data-x-bk">
+        <!--图片-->
+        <image class="pull-left" src="{{item.imageUrl}}"></image>
+        <view class="deta-x-t pull-right">
+          <!--产品标题-->
+          <view class="deta-x-tit ellipsis-2">{{item.name}}</view>
+          <!--服务项目-->
+          <view class="{{dat[0].orderStatus==2?'ellipsis-1':'ellipsis-2'}}" style="font-size: 24rpx;color: #999;">
+            <text wx:for="{{item.orderDetailVOItemProjects}}" wx:key="{{index}}">{{index!=0?'+'+item.projectName:item.projectName}}</text>
+          </view>
+          <!--产品价格1-->
+          <view wx:if="{{dat[0].orderStatus==2}}" class="posi">
+            <view style="color: #666">
+              <text style="font-size: 26rpx;">售 价：</text>
+              <text style="font-size: 24rpx;">￥</text>
+              <text style="font-size: 30rpx;">{{item.subTotalPrice}}</text></view>
+            <view>
+              <text style="font-size: 26rpx;color: #333;">已付定金：</text>
+              <text style="font-size: 30rpx;color: #e4393c;">￥{{item.paidPrice}}</text>
+            </view>
+          </view>
+          <!--产品价格2-->
+          <view wx:if="{{dat[0].orderStatus!=2}}" class="posi">
+            <view>
+              <text style="font-size: 30rpx;color: #222;"><text style="font-size: 24rpx;">￥</text> {{item.subTotalPrice}}</text>
+              <text style="font-size: 22rpx;color: #999;margin-left: 14rpx;text-decoration: line-through;">￥{{item.marketPrice}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <!--订单号详情-->
+  <view class="order-det">
+    <view>订单编号：<text style="color: #555;">{{dat[0].orderSn}}</text></view>
+    <view>创建时间：<text style="color: #555;">{{dat[0].addTime}}</text></view>
+    <view wx:if="{{dat[0].orderStatus==1}}">付款时间：<text style="color: #555;">{{dat[0].payTime}}</text></view>
+  </view>
+  <!--订单价格-->
+  <view class="order-fund">
+    <view style="overflow: hidden">
+      <text class="pull-left">项目总价</text>
+      <text class="pull-right">￥{{dat[0].orderAmount}}</text>
+    </view>
+    <view style="overflow: hidden">
+      <text class="pull-left">已优惠</text>
+      <text class="pull-right">-￥{{dat[0].discountPrice}}</text>
+    </view>
+    <view wx:if="{{dat[0].orderStatus==1}}" style="overflow: hidden">
+      <text class="pull-left">实付款</text>
+      <text class="pull-right" style="color: #e4393c">￥{{dat[0].orderAmount-dat[0].discountPrice}}</text>
+    </view>
+    <view wx:if="{{dat[0].orderStatus==2}}" style="overflow: hidden">
+      <text class="pull-left">已交定金</text>
+      <text class="pull-right" style="color: #e4393c">￥{{dat[0].paidTotalPrice}}</text>
+    </view>
+    <view wx:if="{{dat[0].prePayTotalPrice > 0}}" style="overflow: hidden">
+      <text class="pull-left">预付款</text>
+      <text class="pull-right" style="color: #e4393c">￥{{dat[0].prePayTotalPrice}}</text>
+    </view>
+  </view>
+  <view wx:if="{{dat[0].orderStatus!=1}}" class="monyx">
+    <text style="color: #333;">需付款：</text>￥{{dat[0].orderStatus==0?dat[0].needPayTotalPrice:dat[0].unpaidTotalPrice}}
+  </view>
+  <!--支付方式-->
+  <view wx:if="{{dat[0].orderStatus==1}}" class="order-key">
+    <text class="pull-left">支付方式：</text>
+    <text wx:if="{{dat[0].payType.length<2}}" class="pull-right">{{payway[dat[0].payType-1]}}</text>
+    <image wx:for="{{dat[0].payType}}" class="pull-right" src="{{img[item-1]}}"></image>
+
+  </view>
+  <!--动作按钮-->
+  <view @tap="pay_mony({{dat[0].orderStatus}},{{dat[0].orderSn}})" class="but"
+  >{{!scenes?(dat[0].orderStatus==0?'去支付':(dat[0].orderStatus==1?'去预约':'结尾款')):(scenes.Type==1?'去支付':'确定')}}</view>
+  <dialog wx:if="{{inshowIn}}" :isShow="inshow"></dialog>
+</template>
+<script>
+	import wepy from 'wepy'
+  import api from '../../../api/api'
+  import pay from '../../../utils/pay'
+  import Dialog from '../../../components/dialog'
+
+  export default class Cart extends wepy.page {
+		config = {
+			navigationBarTitleText: '订单详情',
+			backgroundColor: '#f4f4f4'
+		};
+    components = {
+      dialog:Dialog
+    }
+		data = {
+      inshowIn:false,
+      inshow:true,
+      scenes:false,
+      payway:['微信支付','支付宝支付','pos机支付','余额支付','现金支付','门店收款码'],
+      img:['../../../images/wx.png','../../../images/zfb.png','../../../images/pos.png','../../../images/mony.png','../../../images/cash.png','../../../images/mdskm.png'],
+      url:[
+        '/pages/cart/order/order',
+        '/pages/appointment/add_appointment',
+        '/pages/order/details/details'
+      ],
+      dat:[/*{
+        orderStatus:1,/!*0、未支付；1、已购买；2、有待结尾款*!/
+        payType:[1,2,5],/!*1.微信支付；2、支付宝；3、pos机；4、余额;5、现金*!/
+        shopName:'witness科技亮白中信店',
+        orderDetailVOItems:[{
+          imageUrl:'../../../images/1.png',
+          name:'P-水晶P-水晶P-水晶P-水晶P-水晶',
+          orderDetailVOItemProjects:[{
+            projectName:'服务次数 ×3'
+          }],
+          subTotalPrice:100,
+          marketPrice:666,
+          paidPrice:'200'
+        }],
+        orderSn:201802031731,
+        addTime: "2018-02-03 17:52:54",
+        payTime: "2018-02-03 17:52:54",
+        orderAmount:240,/!*总价*!/
+        discountPrice:40,/!*优惠劵*!/
+        paidTotalPrice:0,/!*已付金额*!/
+        unpaidTotalPrice:'200',
+      }*/],
+      imageUrl: wepy.$appConfig.imageUrl,
+		};
+
+    onShareAppMessage(res){
+      if (res.from === 'button') {
+        // 来自页面内转发按钮
+//        console.log(res.target)
+      }else{
+        return {
+          title: '亲爱的 推荐你一个女生必备的小程序 要关注哦！',
+          imageUrl: this.imageUrl + 'share_img.png',
+          path: '/pages/index/index?shareMemberCompanyId='+wx.getStorageSync('session').memberCompanyId
+        }
+      }
+    }
+
+    async ajxa(e){
+      /*加载列表*/
+      const json = await api.getOrderDet({
+        query: {
+          orderSn:e.orderSn || '',
+          moneySn:e.moneySn || '',
+          qRCodePayType:e.Type || '',
+        }
+      });
+      if(json.imei_error_code==600){
+        setTimeout(function () {
+          this.ajxa(e);
+        }.bind(this),500)
+        return;
+      }
+      if(json.imei_error_code==200 && e.scene){
+          /*扫码进来，识别是否为已支付，已支付直接跳首页*/
+          setTimeout(function () {
+            wx.reLaunch({
+              url:'/pages/index/index'
+            })
+          },1000)
+      }
+      this.dat.push(json.data)
+      this.$apply();
+    }
+
+    async scene(e){
+      /*扫码进来，获取订单号，第一步*/
+      const json = await api.scene({
+        query: {
+          scene:e
+        }
+      });
+      if(json.imei_error_code==200){
+        /*扫码进来，识别scene是否有效，没有直接跳首页*/
+        setTimeout(function () {
+          wx.reLaunch({
+            url:'/pages/index/index'
+          })
+        },1000)
+      }
+      this.ajxa({moneySn:json.data.moneySn,Type:json.data.qRCodePayType,scene:e});
+
+      this.scenes={moneySn:json.data.moneySn,Type:json.data.qRCodePayType};
+
+      this.$apply();
+    }
+
+    async confirmPay(e,e1){
+      /*扫码进来，如果是微信、现金支付、pos支付、余额支付时，直接调起该接口结算，第二步*/
+      const json = await api.confirmPay({
+        query: {
+          moneySn:e.moneySn,
+          qRCodePayType:e.Type,
+        }
+      });
+      if(e.Type>=2 && e.Type<=5){
+        /*当qRCodePayType值为2现金支付 3pos支付 4余额支付时*/
+        /*支付成功*/
+        wx.redirectTo({
+          url:'/pages/order/order'
+        })
+      }else{
+        this.wxpay({
+          monS:e.moneySn,
+          orderSn:false,
+          url:'/pages/order/order',
+        })
+      }
+      this.$apply();
+    }
+
+    wxpay(e){
+      /*调起微信签名与支付*/
+      pay.wxPay({
+        monS:e.monS,
+        This:this,
+        api:api,
+        url:e.url || 1,
+        navstuta:e.url ? false : true,
+        oreS:e.orderSn
+      });
+    }
+
+    async createOrderMoney(e){
+      /*生成流水订单号*/
+      const json = await api.createOrderMoney({
+        query: {
+          orderSn:e.orderSn,
+          type:(e.type == 2 ? e.type-1:e.type),
+        }
+      });
+      this.wxpay({monS:json.data.moneySn,oreS:e.orderSn});
+      this.$apply();
+    }
+    events = {
+      'finishBindPhone': () => {
+        this.finishBindPhone(this.dat[0].orderSn);
+      }
+    };
+    finishBindPhone(e){
+      this.confirmPay(this.scenes,e);
+      this.inshowIn=false;
+    }
+		methods = {
+      pay_mony(e,e1){
+        if(e==1){
+          /*去预约*/
+          wx.navigateTo({
+            url: this.url[e]
+          })
+          return ;
+        }
+        /*支付流程*/
+        if(this.scenes){
+          /*当qRCodePayType值为2现金支付 3pos支付 4余额支付时*/
+          if(!wx.getStorageSync('session').mobilePhone){
+            this.inshowIn=true;
+          }else{
+            this.finishBindPhone(e1);
+          }
+        }else{
+          /*正常流程*/
+          this.createOrderMoney({orderSn:e1,type:e});
+        }
+      }
+		};
+
+
+    onLoad(e) {
+      if(e.scene){
+        /*‘扫码’进来的*/
+        this.scene(e.scene);
+      }else{
+        /*通过‘我的订单’里面进来的*/
+        this.ajxa({orderSn:e.orderid,scene:e.scene});
+      }
+    }
+	}
+</script>

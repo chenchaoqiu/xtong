@@ -1,0 +1,472 @@
+<style lang="less">
+    ::-webkit-scrollbar{
+        display: none;
+        width:0px;
+    }
+    page{background: #fff}
+    .header {
+        /*margin-top: 20rpx;*/
+    }
+    .user-info-wrap {
+        background-color: #fff;
+        /*height: 190rpx;*/
+        border-top: 1rpx solid #ddd;
+        padding: 22rpx 20rpx 21rpx 24rpx;
+    }
+    .user-info-wrap .weui-cell {
+        padding: 0;
+
+    }
+    .user-info-wrap .weui-cell__ft_in-access {
+        color: #333;
+        font-size: 26rpx;
+        padding-right:16px;
+
+    }
+    .user-phone {
+        font-size: 30rpx;
+        color: #333;
+    }
+    .user-name {
+        font-size: 36rpx;
+        color: #333;
+        /*margin-bottom: 18rpx;*/
+    }
+    .userinfo-avatar {
+        width: 130rpx;
+        height: 130rpx;
+        margin: 20rpx 40rpx 20rpx 0;
+        /*border:1px solid #E6E6E6;*/
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    .phone-img {
+        width: 16rpx;
+        height: 24rpx;
+        margin-right: 10rpx;
+        vertical-align: middle;
+        margin-bottom: 6rpx;
+    }
+    .user-code {
+        width: 42rpx;
+        height: 42rpx;
+        margin-right: 20rpx;
+    }
+    .logo-code-warp {
+        height: 42rpx;
+    }
+    .icon {
+        margin-right: 30rpx;
+        vertical-align: middle;
+        width: 40rpx;
+        height: 40rpx;
+        margin-bottom:8rpx;
+    }
+    .block {
+        background-color: #fff;
+        border-top: 1rpx solid #ddd;
+    }
+    .block>.weui-cell {
+        padding: 20rpx 30rpx;
+        padding-right: 20rpx;
+    }
+    .sp-mt-40 {
+        margin-top: 40rpx;
+    }
+    .sp-mt-20 {
+      margin-top: 20rpx;
+    }
+    .main {
+        padding-bottom: 104rpx;
+    }
+    .border {
+        border-top: 1px solid #ddd;
+        margin-top: 20rpx;
+    }
+    .envelope-bg {
+        margin: 0 50rpx;
+        height: 10rpx;
+        background: url(data:image/gif;base64,R0lGODlh/wAKANUAAP+5uf68vJfq//Xz8/X09O709e/09vfq6v+6urXt+83w+eXz9+Py9pzr/tPw+K/s+/rR0d3y+Pjm5vXu7qfr/KLr/erz9fzDw77u+vvIyPzIyLft+9fy+Pji4q/t/Pjf3/bx8abs/fbm5vvNzf3Dw53q/vL19fL09fT19fvLy/nb2/2/v8Lv+vbp6Znq//Xw8PrU1P+4uJbq//X19QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH/C1hNUCBEYXRhWE1QPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMwNjcgNzkuMTU3NzQ3LCAyMDE1LzAzLzMwLTIzOjQwOjQyICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtbG5zOnhtcD0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLyIgeG1wTU06T3JpZ2luYWxEb2N1bWVudElEPSJ4bXAuZGlkOjA1MTVhNWJiLTk1YzAtOTU0Yy1hNGMxLWE4ODRjNmZiM2U1OSIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpGNUU4QTJFNUM4OEMxMUU1OTFCRkJFNzM2QzA5NzA2QiIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpGNUU4QTJFNEM4OEMxMUU1OTFCRkJFNzM2QzA5NzA2QiIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxNSAoV2luZG93cykiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDphMDUzMjVlMS1lNmU4LWM5NGEtODdiMC1hMWY2YjZhNTJjZTkiIHN0UmVmOmRvY3VtZW50SUQ9ImFkb2JlOmRvY2lkOnBob3Rvc2hvcDo1OGU2ODY1Yy1jMGI4LTExZTUtOTJkZC1lM2UxNjg0YWY1ZTEiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz4B//79/Pv6+fj39vX08/Lx8O/u7ezr6uno5+bl5OPi4eDf3t3c29rZ2NfW1dTT0tHQz87NzMvKycjHxsXEw8LBwL++vby7urm4t7a1tLOysbCvrq2sq6qpqKempaSjoqGgn56dnJuamZiXlpWUk5KRkI+OjYyLiomIh4aFhIOCgYB/fn18e3p5eHd2dXRzcnFwb25tbGtqaWhnZmVkY2JhYF9eXVxbWllYV1ZVVFNSUVBPTk1MS0pJSEdGRURDQkFAPz49PDs6OTg3NjU0MzIxMC8uLSwrKikoJyYlJCMiISAfHh0cGxoZGBcWFRQTEhEQDw4NDAsKCQgHBgUEAwIBAAAh+QQAAAAAACwAAAAA/wAKAAAGwMCZcEgsGo/IpBKZijmf0Kh0Sq1aqaKldsvdJmTgsHhMLpvPaHN3zeZKrvC4PK5p2+/GSHrP7/M9eIFtBBdzhodyABOCjF0oFH6Rkn0CFo2XSiqIm5xSMJigSAqTpKVkLKGpQiABna6bAQOqqgYlprekDSezoRCvv4YfvKkYuMaRDsOYBwDAzlckyqALAsfWaSHSlxnP3VQt2pcP1+RmDOGCHd7rUCPojBzl8mIb73gDK+zsCC/2eCYV5s1zUYBIEAA7) repeat-x;
+        background-size: 128px;
+    }
+    .weui-cells_after-title .arrows {
+        vertical-align: inherit;
+        margin-bottom: 2rpx;
+    }
+  .bangding{display: block;width: 100rpx;height: 50rpx;color: #26cad3;text-align: center;border: 1px solid #26cad3;border-radius: 10rpx;font-size: 30rpx;}
+  .list{width: 100%;height: 124rpx;line-height: 124rpx;display: flex;display: -webkit-flex}
+  .list image{display: block;width: 52rpx;height: 44rpx;margin: 40rpx 24rpx 0}
+  .list .des{flex: 1;-webkit-flex: 1}
+  .margin-b0{margin-bottom: 0}
+    .nav-list {
+      width: 100%;
+      background-color: #ffffff;
+      .nav-foot-wrap {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+        text-align: center;
+        margin-top: 56rpx;
+        .cell {
+          display: table-cell;
+          width: 33.33%;
+          text-align: center;
+          height: 104rpx;
+          vertical-align: middle;
+          line-height: 1;
+          .img-wrap {
+            position: relative;
+            height: 100%;
+            .emphasis {
+              position: absolute;
+              left: 50%;
+              margin-left: -70rpx;
+              top: -50rpx;
+            }
+          }
+          .nav-title {
+            font-size: 30rpx;
+            color: #666;
+            margin-top: 24rpx;
+          }
+          .active {
+            color: #26CAD3;
+          }
+          image {
+            width: 56rpx;
+            height: 56rpx;
+          }
+        }
+      }
+    }
+</style>
+<template>
+    <view class="container">
+        <view class="header">
+            <view class="weui-cell user-info-wrap" @tap="toPage">
+                <view class="weui-cell__hd">
+                    <view class="weui-cell">
+                        <image wx:if="{{res.userHeadImgUrl}}" class="userinfo-avatar" src="{{res.userHeadImgUrl}}"></image>
+                        <view class="userinfo-avatar" wx:else>
+                          <open-data   type="userAvatarUrl" ></open-data>
+                        </view>
+                    </view>
+                </view>
+                <block >
+                    <view class="weui-cell__bd">
+                        <view class="weui-cell__bd">
+                          <view class="user-name " wx:if="{{res.memberName}}" >{{res.memberName}}</view>
+                          <open-data class="user-name " type="userNickName" wx:if="{{!res.memberName}}" ></open-data>
+                        </view>
+                        <view class="user-phone" wx:if="{{res.mobilePhone}}">
+                          <image class="phone-img" src="../../images/phone.png" />{{res.mobilePhone}}
+                        </view>
+                    </view>
+                </block>
+                <view>
+                    <image class="arrows" src="../../images/arrows.png"/>
+                </view>
+            </view>
+        </view>
+        <view class="main">
+            <view style="width: 100%;height: 20rpx;background: #ebf0ef" wx:if="{{!res.mobilePhone}}"></view>
+            <view class="weui-cells_after-title block" wx:if="{{!res.mobilePhone}}">
+              <view  class="weui-cell weui-cell_access" >
+                <view class="weui-cell__hd">
+                  <image src="../../images/phone.png" style="width: 26rpx;height: 40rpx; margin-right: 10rpx;vertical-align: middle;margin-bottom: 6rpx;"/>
+                </view>
+                <view class="weui-cell__bd size-28 color-33">找不到订单或者优惠券？绑定手机号码试试</view>
+                <view>
+                  <text class="bangding" @tap="bindph">绑定</text>
+                </view>
+              </view>
+            </view>
+              <!--关注公众号 -->
+              <!--<view wx:if="{{res.mobilePhone != ''}}" style="width: 100%;height: 20rpx;background: #ebf0ef" ></view>-->
+              <block wx:if="{{subscribeStatus == 1}}">
+                <image  @tap="poptips" src="{{yimageUrl}}gz-gzh.png" style="display: block;width: 100%;height: 300rpx;overflow: hidden"/>
+              </block>
+              <block wx:if="{{subscribeStatus != 1 && GetAdList.length !=0}}">
+                <image src="{{GetAdList.imageList[0]}}" style="display: block;width: 100%;height: 300rpx;" @tap="jumpAd({{GetAdList.referType}},{{GetAdList.referValue}},{{GetAdList.activityType}},{{GetAdList.activityId}})"/>
+              </block>
+
+          <view class="nav-list">
+            <view class="nav-foot-wrap">
+              <navigator url="/pages/share/shareMoney/shareMoney"  class="cell" hover-class="none">
+                <image src="../../images/icon-sharemoney.png"></image>
+                <view class="nav-title">分享金</view>
+              </navigator>
+              <navigator class="cell" url="/pages/share/myBeautyCircle/myBeautyCircle" hover-class="none">
+                <image src="../../images/icon-beautycircle.png"></image>
+                <view class="nav-title">美丽圈</view>
+              </navigator>
+              <navigator url="/pages/share/invitationCode/invitationCode"  class="cell" hover-class="none">
+                <image src="../../images/icon-ic.png"></image>
+                <view class="nav-title">邀请码</view>
+              </navigator>
+            </view>
+            <view class="nav-foot-wrap">
+              <navigator url="/pages/order/order"  view class="cell" hover-class="none">
+                <image src="../../images/icon-myorder.png"></image>
+                <view class="nav-title">我的订单</view>
+              </navigator>
+              <navigator class="cell" url="/pages/myServices/myServices" hover-class="none">
+                <image src="../../images/icon-mypj.png"></image>
+                <view class="nav-title">我的项目</view>
+              </navigator>
+              <view class="cell" @tap="scancode">
+                <image src="../../images/icon-newscan.png"></image>
+                <view class="nav-title">扫一扫</view>
+              </view>
+            </view>
+            <view class="nav-foot-wrap">
+              <navigator url="/pages/about_us/about_us"  class="cell" hover-class="none">
+                <image src="../../images/icon-aboutus.png"></image>
+                <view class="nav-title">关于我们</view>
+              </navigator>
+              <navigator class="cell" url="/pages/goSend/goSend" hover-class="none" wx:if="{{toGift == 1}}">
+                <image src="../../images/icon-gogive.png"></image>
+                <view class="nav-title">去转赠</view>
+              </navigator>
+              <view class="cell" wx:else></view>
+              <view class="cell"></view>
+            </view>
+            <view class="nav-foot-wrap">
+              <view class="cell"></view>
+              <view class="cell"></view>
+              <view class="cell"></view>
+            </view>
+          </view>
+        </view>
+        <view class="footer">
+            <view class="nav-foot-wrap">
+                <navigator url="/pages/index/index?reset=true" open-type="redirect" view class="cell">
+                    <image src="../../images/home.png"></image>
+                    <view class="nav-title">首页</view>
+                </navigator>
+                <navigator class="cell" url="/pages/appointment/my_appointment" open-type="redirect">
+                    <image src="../../images/time.png"></image>
+                    <view class="nav-title">预约</view>
+                </navigator>
+                <navigator url="/pages/selectAuto/selectAuto" open-type="redirect" class="cell">
+                  <image src="../../images/optimization.png"></image>
+                  <view class="nav-title">美购</view>
+                </navigator>
+                <view class="cell">
+                    <image src="../../images/my_a.png"></image>
+                    <view class="nav-title active">我的</view>
+                </view>
+            </view>
+        </view>
+    </view>
+    <zanDialog></zanDialog>
+    <dialog wx:if="{{inshowIn}}" :isShow="inshow"></dialog>
+    <!--关注公众号弹出框-->
+    <view wx:if="{{isGzShow}}" class="dialog-logo">
+      <view class="modal-wrap">
+        <view class="centen" style="padding:0 30rpx;">
+          <view class="title-1">提示</view>
+          <view class="title-2">关注【witness公众号】，实时接收更多优惠通知，进入客服消息后，发送“1”获得关注链接，</view>
+          <view class="btn-wrap">
+            <button class="logo-btn" open-type="contact" @tap="send">好的</button>
+          </view>
+        </view>
+      </view>
+    </view>
+
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+	import zanDialog from '../../components/zan-dialog'
+  import Dialog from '../../components/dialog'
+
+	export default class Index extends wepy.page {
+		config = {
+			navigationBarTitleText: '我的',
+			backgroundColor: '#fff'
+		};
+		components = {
+			zanDialog,
+      dialog:Dialog
+		};
+    onShareAppMessage(res){
+      if (res.from === 'button') {
+        // 来自页面内转发按钮
+//        console.log(res.target)
+      }else{
+        return {
+          title: '亲爱的 推荐你一个女生必备的小程序 要关注哦！',
+          path: '/pages/my_info/index?shareMemberCompanyId='+wx.getStorageSync('session').memberCompanyId,
+          imageUrl: this.imageUrl + 'share_img.png'
+        }
+      }
+    }
+		async onLoad() {
+//			this.getUserInfo();
+			this.$parent.verifyAccredit();
+			this.GetAd();//请求广告素材接口
+		}
+
+		onShow() {
+			let eInfo = wx.getStorageSync('eInfo');
+			if (eInfo) {
+				this.res = eInfo;
+				this.$apply();
+			}
+			this.getUserInfo();//重新调用个人信息接口，
+      this.$apply();
+		}
+
+		data = {
+      imageUrl: wepy.$appConfig.imageUrl,
+      yimageUrl: wepy.$appConfig.imageUrl,
+      isGzShow:false,//关注公众号弹出框
+      inshowIn:false,
+			showDialog: true,
+			accredit: false,
+			res: {
+				memberName: '',
+				mobilePhone: '',
+				userHeadImgUrl: '',
+			},
+            isNoAccredit: false,
+      subscribeStatus:'',//是否关注过公众号
+      GetAdList:[],//广告素材集合
+      indicatorDots:false,
+      toGift:'',
+		};
+
+		watch = {
+			/*num (curVal, oldVal) {
+				console.log(`旧值：${oldVal}，新值：${curVal}`)
+			}*/
+		};
+    //		点击绑定手机
+    bindph(){
+      this.inshowIn=true;
+      this.$apply();
+    }
+    //点击公众号授权框
+    poptips(){
+      this.isGzShow = true; //弹出框
+      this.$apply();
+    }
+    scancode(){
+      /*扫面二维码*/
+      wx.scanCode({
+        success: (res) => {
+          console.log(res);
+          var path =res.path;
+//					console.log(path);
+          let inShop = path.indexOf('SHOP'); //判断key是否是门店码扫码进来的
+          if(inShop == -1){
+            wx.navigateTo({
+              url: '/'+path ,
+            });
+          }else{
+            wx.setStorageSync("isLoadMyA",true);
+            wx.redirectTo({
+              url: '/'+path ,//跳首页
+            });
+          }
+
+        }
+      })
+    }
+    //点击授权手机
+    events = {
+      'finishBindPhone': () => {
+        this.inshowIn = false;
+        this.getUserInfo();//刷新接口
+        this.$apply();
+      }
+    };
+    methods = {
+        //广告素材跳转
+      jumpAd(e1,e2,e3,e4){
+          //用来刷新首页
+        wx.setStorageSync("isLoadMyA",true);
+        //e1(referType,跳转类型)，e2(referValue,跳转id),e3(活动模板，1套餐营销，2新人领取红包，3好友助力),e4(活动id，新人领取红包要用)
+        // e1=1跳转到疗程卡详情页面;e1=2:跳转到实体商品详情页（暂无）;e1=3:打开H5页面， e1=4，打开活动页面，refer_value的值对应market_id,
+        if (e1 == 1) {
+          wx.navigateTo({
+            url: '/pages/productDetails/productDetails?salePackageId=' + e2
+          })
+        } else if (e1 == 2) {
+          //跳转到实体商品详情页（暂无）
+        } else if (e1 == 3) {
+          wx.navigateTo({
+            url: '/pages/index/hpage?id=' + e2
+          })
+        } else if (e1 == 4) {
+            if(e3 == 1){//套餐营销
+              wx.navigateTo({
+                url: '/pages/activity/activity?marketId=' + e2
+              })
+            }else if(e3 == 2){//新人领取红包
+              wx.navigateTo({
+                url: '/pages/activity/redpacket/red-packet?activityId=' + e4 + '&marketId='+ e2 +'&stusta=1'
+              })
+            }else if(e3 == 3){//好友助力
+              wx.navigateTo({
+                url: '/pages/activity/share?marketId=' + e2
+              })
+            }
+        }
+      },
+      send() {
+//        api.sendSubscribeMessage();
+        this.isGzShow = false;
+        this.$apply();
+      },
+      toPage() {
+        wx.getStorageSync('session').mobilePhone && this.$navigate('/pages/my_info/info');
+      }
+    };
+		showAccreditDialog() {
+			this.$invoke('zanDialog', 'showZanDialog', {
+				title: '是否授权',
+				content: '系统检测你还未授权, 打开授权【用户信息】开启更多功能',
+				showCancel: true,
+				buttons:[],
+				openType: 'getUserInfo'
+			})
+				.then(() => {
+				})
+				.catch(() => {
+
+				})
+		}
+		//获取广告素材
+    async GetAd() {
+      const {data} = await api.GetAd({
+        query: {
+          positionCode:'CLIENT_PAGE_MINE',
+        }
+      });
+      this.GetAdList = data.list[0];
+      console.log(this.GetAdList);
+      this.$apply();
+    }
+
+		async getUserInfo() {
+			const {data} = await api.getUserInfo({
+				query: {
+
+				}
+			});
+      this.toGift = data.toGift;
+//      wx.setStorageSync('eInfo', data);
+      if(data.mobilePhone){
+          wx.setStorageSync('eInfo', data);
+        this.res.mobilePhone = data.mobilePhone;
+      }
+      this.subscribeStatus = data.subscribeStatus;
+//			if (data.userHeadImgUrl) {
+//				this.res.userHeadImgUrl = data.userHeadImgUrl;
+//			}
+			this.$apply();
+		}
+	}
+</script>

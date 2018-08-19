@@ -1,0 +1,457 @@
+<style lang="less">
+    .list-warpper {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+    }
+
+    .list-scroll {
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+    }
+    .list-scroll.top{
+        padding-top: 90rpx;
+    }
+
+    /* 样式控制  */
+
+    .list-title {
+        background: #f5f5f5;
+        color: #666;
+        font-size: 36rpx;
+        padding: 10rpx;
+        padding-left: 30rpx;
+        padding-top: 15rpx;
+    }
+
+    .list-name {
+        position: relative;
+        font-size: 28rpx;
+        padding: 15rpx;
+        padding-left: 30rpx;
+        color: #999;
+    }
+
+    .list-name.border::after {
+        content: "";
+        position: absolute;
+        left: 30rpx;
+        right: 0;
+        top: 0;
+        height: 1px;
+        background: #f5f5f5;
+    }
+
+    .list-right-wrapper {
+        position: absolute;
+        top: 100rpx;
+        right: 10rpx;
+        padding: 10rpx 0;
+        border-radius: 20rpx;
+        z-index: 2;
+    }
+
+    .right-item {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 2rpx 10rpx;
+        font-size: 26rpx;
+        color: #666;
+    }
+
+    .list-search {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: 90rpx;
+        padding: 10rpx 30rpx;
+        box-sizing: border-box;
+        z-index: 20;
+        background: #FFF;
+    }
+
+    .search-title {
+        flex-shrink: 0;
+        font-size: 28rpx;
+        padding-right: 10rpx;
+    }
+
+    .list-search-box {
+        display: flex;
+        align-items: center;
+        padding: 0 30rpx;
+        width: 100%;
+        height: 70rpx;
+        background: #f5f5f5;
+        border-radius: 90rpx;
+        font-size: 28rpx;
+        box-sizing: border-box;
+    }
+
+    .list-search-box input {
+        width: 100%;
+        padding-left: 10rpx;
+    }
+
+    .search-button {
+        /* width: 100rpx; */
+        flex-shrink: 0;
+        height: 60rpx;
+        line-height: 60rpx;
+        font-size: 28rpx;
+        margin-left: 10rpx;
+    }
+
+    /* 热门城市横排显示样式  */
+
+    .list-horizontal {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 10rpx;
+        padding-right: 50rpx;
+    }
+
+    .list-horizontal .list-name {
+        padding: 5rpx 20rpx;
+        border: 1px #ccc solid;
+        border-radius: 10rpx;
+        margin: 10rpx;
+
+
+        /* margin-right: 20rpx; */
+    }
+    .list-name {
+        padding: 24rpx 30rpx;
+        padding-right: 68rpx;
+        padding-bottom: 0;
+        .flex-box {
+            border-bottom: 1rpx solid #ddd;
+            padding-bottom: 24rpx;
+            .right {
+                padding-left: 24rpx;
+            }
+        }
+        .user-logo {
+            width: 100rpx;
+            height: 100rpx;
+            border-radius: 100%;
+            display: block;
+            background-color: #27CAD3;
+        }
+        .name {
+            font-size: 30rpx;
+            color: #333;
+        }
+        .money {
+            font-size: 28rpx;
+        }
+    }
+
+
+    /* 无数据  */
+    .nodata {
+        padding-top: 400rpx;
+        text-align: center;
+        font-size: 32rpx;
+        color: #ddd;
+    }
+    .wrapper {
+        height: 100vh;
+    }
+    /* 关闭滚动条  */
+    ::-webkit-scrollbar{
+        width: 0;
+        height: 0;
+        color: transparent;
+    }
+
+    .list-search {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: flex;
+        align-items: center;
+        width: 100%;
+        height: 90rpx;
+        padding: 10rpx 30rpx;
+        box-sizing: border-box;
+        z-index: 20;
+        background: #FFF;
+    }
+
+    .search-title {
+        flex-shrink: 0;
+        font-size: 28rpx;
+        padding-right: 10rpx;
+    }
+
+    .list-search-box {
+        display: flex;
+        align-items: center;
+        padding: 0 30rpx;
+        width: 100%;
+        height: 70rpx;
+        background: #f5f5f5;
+        border-radius: 90rpx;
+        font-size: 28rpx;
+        box-sizing: border-box;
+    }
+
+    .list-search-box input {
+        width: 100%;
+        padding-left: 10rpx;
+    }
+
+    .search-button {
+        /* width: 100rpx; */
+        flex-shrink: 0;
+        height: 60rpx;
+        line-height: 60rpx;
+        font-size: 28rpx;
+        margin-left: 10rpx;
+    }
+    .list-item-wrap {
+        background-color: #fff;
+    }
+</style>
+<template>
+    <view class='wrapper'>
+        <view class='list-warpper'>
+            <view wx:if="{{config.search}}" class='list-search'>
+                <view class='list-search-box'>
+                    <icon type="search" size="15" />
+                    <input placeholder="搜索（共{{beautyCircleNum}}位好友）" bindinput='input' />
+                </view>
+                <!--<button class='search-button' catchtap='searchMt'>搜索</button>-->
+            </view>
+
+            <block wx:if="{{list.length != 0 }}">
+                <scroll-view class="list-scroll {{config.search?'top':''}}" scroll-y="true" scroll-into-view="{{jumpNum}}" scroll-with-animation="{{config.animation}}">
+                    <view id="{{'index'+index}}" wx:for="{{list}}" wx:key="key">
+                        <view class='list-title'>{{item.title}}</view>
+                        <view class="list-item-wrap">
+                            <view class='list-name' wx:for="{{item.item}}" wx:for-item="itemUser"  wx:for-index="idx" wx:key="city" data-detail="{{itemUser}}" catchtap='detailMt'>
+                                <!--{{city.name}}-->
+                                <view class="flex-box" style="{{item.item.length === 1 ? 'border: none' : ''}}">
+                                    <view>
+                                        <image class="user-logo" src="{{itemUser.headImgUrl}}"></image>
+                                    </view>
+                                    <view class="right">
+                                        <view class="name">{{itemUser.name}}</view>
+                                        <view class="money">分享金：￥<text class="color-33">{{itemUser.rebateMoney}}</text></view>
+                                    </view>
+                                </view>
+                            </view>
+                        </view>
+                    </view>
+                </scroll-view>
+                <view class='list-right-wrapper'>
+                    <view class='right-item' wx:for="{{rightArr}}" wx:key="rightArr" data-id="{{'index'+index}}" catchtap='jumpMt'>
+                        {{rightArr[index]}}
+                    </view>
+                </view>
+            </block>
+            <block wx:else>
+                <view class='nodata'>
+                  <view>当前还没有好友</view>
+                  <view>赶紧邀请好友加入美丽圈哦！</view>
+                </view>
+            </block>
+        </view>
+    </view>
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../../api/api'
+
+	export default class MyBeautyCircle extends wepy.page {
+		config = {
+			navigationBarTitleText: '我的美丽圈',
+			backgroundColor: '#ebf0ef',
+			disableScroll: true
+		};
+
+		onLoad() {
+            this.getBeautyCircleList();
+		}
+
+		data = {
+			config: {
+				horizontal: false, // 第一个选项是否横排显示（一般第一个数据选项为 热门城市，常用城市之类 ，开启看需求）
+				animation:true ,// 过渡动画是否开启
+				search:true ,// 是否开启搜索
+			},
+			list: [],
+			cacheList: [],
+			rightArr: [],
+			jumpNum: '',//跳转到那个字母
+			myCityName: '请选择', // 默认我的城市
+            value: '',
+			imageUrl: wepy.$appConfig.imageUrl,
+      beautyCircleNum: 0
+
+		};
+
+		onShareAppMessage(res){
+			if (res.from === 'button') {
+				// 来自页面内转发按钮
+//        console.log(res.target)
+			}else{
+				return {
+					title: '亲爱的 推荐你一个女生必备的小程序 要关注哦！',
+					path: '/pages/index/index?shareMemberCompanyId='+wx.getStorageSync('session').memberCompanyId,
+					imageUrl: this.imageUrl + 'share_img.png'
+				}
+			}
+		}
+
+		watch = {
+			/*num (curVal, oldVal) {
+				console.log(`旧值：${oldVal}，新值：${curVal}`)
+			}*/
+		};
+
+		methods = {
+			jumpMt(e) {
+				let jumpNum = e.currentTarget.dataset.id;
+				this.setData({ jumpNum });
+			},
+			// 列表点击事件
+			detailMt(e) {
+				let detail = e.currentTarget.dataset.detail;
+			},
+			bindtap(e){
+				console.log(e.detail)
+			},
+			input(e){
+				let value = e.detail.value;
+
+				if (!value) {
+					this.resetRight(this.cacheList);
+					return
+				}
+
+				let data = this.cacheList;
+				let newData = [];
+				for (let i = 0; i < data.length; i++) {
+					let itemArr = [];
+					for (let j = 0; j < data[i].item.length; j++) {
+						if (data[i].item[j].name.indexOf(value) > -1) {
+							let itemJson = {};
+							for (let k in data[i].item[j]) {
+								itemJson[k] = data[i].item[j][k];
+							}
+							itemArr.push(itemJson);
+						}
+					}
+					if (itemArr.length === 0) {
+						continue;
+					}
+					newData.push({
+						title: data[i].title,
+						type: data[i].type ? data[i].type : "",
+						item: itemArr
+					})
+				}
+				this.resetRight(newData);
+
+
+			},
+			searchMt(){
+					if (!this.value) {
+						this.resetRight(this.cacheList);
+						return
+                    }
+
+					let data = this.list;
+					let newData = [];
+					for (let i = 0; i < data.length; i++) {
+						let itemArr = [];
+						for (let j = 0; j < data[i].item.length; j++) {
+							if (data[i].item[j].name.indexOf(this.value) > -1) {
+								let itemJson = {};
+								for (let k in data[i].item[j]) {
+									itemJson[k] = data[i].item[j][k];
+								}
+								itemArr.push(itemJson);
+							}
+						}
+						if (itemArr.length === 0) {
+							continue;
+						}
+						newData.push({
+							title: data[i].title,
+							type: data[i].type ? data[i].type : "",
+							item: itemArr
+						})
+					}
+					this.resetRight(newData);
+			}
+		};
+
+		resetRight(data) {
+			let rightArr = []
+			for (let i in data) {
+				rightArr.push(data[i].title.substr(0, 1));
+			}
+			this.rightArr = rightArr;
+			this.list = data;
+		}
+
+		async getBeautyCircleList() {
+			const {imei_error_code,data:{list,beautyCircleNum}} = await api.getBeautyCircleList({query:{}});
+			/*let list =  [
+				{
+					"title":"A",
+					"item":[
+						{
+							"headImgUrl":"https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTIRuTcEOHBgWic0PywOLTrMaXBS5rKicGEtaia03W5rAebp73vR2GYZgfsEguicBX8maLJibWucVnISXyw/132",
+							"rebateMoney":5,
+							"name":"1326544566",
+							"key":"A"
+						}
+					]
+				},
+				{
+					"title":"H",
+					"item":[
+						{
+							"headImgUrl":"https://image.baidu.com/search/detail?ct=503316480&z=undefined&tn=baiduimagedetail&ipn=d&word=%E7%BE%8E%E5%A5%B3&step_word=&ie=utf-8&in=&cl=2&lm=-1&st=undefined&cs=2679661307,2769169565&os=3331831751,2936190890&simid=1882037110,877951950&pn=19&rn=1&di=19165041960&ln=3978&fr=&fmq=1530581551682_R&fm=&ic=undefined&s=undefined&se=&sme=&tab=0&width=undefined&height=undefined&face=undefined&is=0,0&istype=0&ist=&jit=&bdtype=13&spn=0&pi=0&gsm=0&hs=2&objurl=http%3A%2F%2Fscimg.jb51.net%2Fallimg%2F170117%2F106-1F11G02P2604.jpg&rpstart=0&rpnum=0&adpicid=0",
+							"rebateMoney":18,
+							"name":"hahah",
+							"key":"H"
+						}
+					]
+				},
+				{
+					"title":"W",
+					"item":[
+						{
+							"headImgUrl":"https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTK5IVL0g09xIjtKxAJYicKhNohic1eIIxCLibibwbts0pczC2EsxibpsHHcR53thCxKzQrG1Vh2BSuu7eA/132",
+							"rebateMoney":8,
+							"name":"ww",
+							"key":"W"
+						}
+					]
+				}
+			];
+			this.list = list;
+			this.cacheList = list;
+			this.resetRight(list);
+			this.$apply();*/
+			if (imei_error_code == 0) {
+				this.list = list;
+				this.cacheList = list;
+				this.beautyCircleNum = beautyCircleNum;
+				this.resetRight(list);
+				this.$apply();
+            }
+		}
+	}
+</script>

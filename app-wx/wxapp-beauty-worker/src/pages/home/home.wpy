@@ -1,0 +1,317 @@
+<style lang="scss">
+    page {
+        background-color: #f4f4f4;
+    }
+    .page-top {
+        margin-top: 2rpx;
+    }
+    .page-body {
+        padding: 0 30rpx;
+        padding-bottom: 20rpx;
+    }
+    .user-info-wrap {
+        background-color: #fff;
+        height: 190rpx;
+        padding: 0 30rpx;
+    }
+    .user-info-wrap .weui-cell {
+        padding: 0;
+
+    }
+    .user-info-wrap .weui-cell__ft_in-access {
+        color: #333;
+        font-size: 26rpx;
+        padding-right:16px;
+
+    }
+    .user-phone {
+        font-size: 26rpx;
+        color: #666;
+    }
+    .user-name {
+        font-size: 32rpx;
+        color: #333;
+        margin-bottom: 5px;
+    }
+    .userinfo-avatar {
+        width: 126rpx;
+        height: 126rpx;
+        margin: 20rpx 20rpx 20rpx 0;
+        border-radius: 50%;
+        border:1px solid #E6E6E6;
+        display: inline-block;
+        overflow: hidden;
+    }
+    .module {
+        margin-top: 40rpx;
+    }
+    .module-title {
+        color: #333;
+        font-size: 30rpx;
+        margin-bottom: 20rpx;
+    }
+    .weui-flex__item {
+        background-color: #fff;
+        text-align: center;
+        padding: 20rpx 0;
+    }
+    .weui-flex__item +.weui-flex__item {
+        margin-left: 12rpx;
+    }
+    .shop-info-modal .title {
+        color: #666;
+        font-size: 30rpx;
+    }
+    .number {
+        color: #26cad3;
+        font-size: 40rpx;
+        margin-top: 40rpx;
+    }
+    .number .unit {
+        color: #999;
+        font-size: 20rpx;
+        padding-left: 2px;
+    }
+    .shop-num,
+    .describe,
+    .new-num {
+        color: #666;
+        font-size: 26rpx;
+        margin-top: 40rpx;
+    }
+    .shop-num text,
+    .new-num text {
+        color: #26cad3;
+    }
+    .new-num {
+        margin-top: 14rpx;
+    }
+    .sum {
+        color: #333;
+        font-size: 26rpx;
+        margin-top: 14rpx;
+    }
+    .work-modal .title {
+        font-size: 32rpx;
+        color: #333;
+    }
+    .work-modal .data {
+        margin-top: 20rpx;
+        color: #666;
+        font-size: 26rpx;
+    }
+    .work-modal .weui-flex__item {
+        padding: 32rpx 0;
+    }
+    .work-modal .logo {
+        width: 40rpx;
+        height: 40rpx;
+    }
+</style>
+<template>
+    <view class="page-top user-info-wrap">
+        <view class="weui-cell">
+            <view class="weui-cell__hd">
+                <navigator class="weui-cell" url="/pages/user/userDetail" hover-class="none">
+                    <!--<image class="userinfo-avatar" src="{{userInfo.avatarUrl}}"></image>-->
+                    <open-data class="userinfo-avatar" type="userAvatarUrl"></open-data>
+                </navigator>
+            </view>
+            <navigator class="weui-cell__bd" url="/pages/user/userDetail" hover-class="none">
+                <view class="user-name">{{employeeName}}（{{roleName}}）</view>
+                <view class="user-phone">{{mobilePhone}}</view>
+            </navigator>
+            <navigator class="weui-cell__ft weui-cell__ft_in-access" url="{{url}}" hover-class="none">
+                业绩
+            </navigator>
+        </view>
+    </view>
+
+    <view class="page-body">
+        <view class="module shop-info-modal">
+            <view class="module-title">{{res.shopName}}</view>
+            <view class="weui-flex">
+                <view class="weui-flex__item">
+                    <text class="title">今日预约</text>
+                    <view class="number ellipsis-1">{{res.bookNumber}}<text class="unit">人</text></view>
+                    <view class="shop-num">到店 <text>{{res.arriveNumber}}</text>人</view>
+                    <view class="new-num">新客 <text>{{res.newClientMember}}</text>人</view>
+                </view>
+                <view class="weui-flex__item">
+                    <text class="title">今日销售</text>
+                    <view class="number">{{res.totalPrice}}<text class="unit">元</text></view>
+                    <view class="describe">实收</view>
+                    <view class="sum">{{res.totalReallyPrice}}元</view>
+                </view>
+                <view class="weui-flex__item">
+                    <text class="title">消耗项目</text>
+                    <view class="number">{{res.consumeNumber}}<text class="unit">个</text></view>
+                    <view class="describe">耗卡人数</view>
+                    <view class="sum">{{res.consumeMemberNumber}}人</view>
+                </view>
+            </view>
+        </view>
+
+        <view class="module work-modal">
+            <view class="module-title">工作台</view>
+            <view class="weui-flex">
+                <navigator class="weui-flex__item" url="/pages/order_ope/order_ope" hover-class="navigator-hover">
+                    <text class="title">预约查询</text>
+                    <view><text class="data">（{{res.unconfirmedBook}}人）</text></view>
+                </navigator>
+                <navigator class="weui-flex__item" url="/pages/order_ope/order_ope?num=1" hover-class="navigator-hover">
+                    <text class="title">未到店</text>
+                    <view><text class="data">（{{res.bookedNumber}}人）</text></view>
+                </navigator>
+                <navigator class="weui-flex__item" url="/pages/order_ope/order_ope?num=2" hover-class="navigator-hover">
+                    <text class="title">已到店</text>
+                    <view><text class="data">（{{res.bookingNumber}}人）</text></view>
+                </navigator>
+            </view>
+        </view>
+
+        <view class="module work-modal">
+            <view class="module-title">业务中心</view>
+            <view class="weui-flex">
+                <navigator class="weui-flex__item" url="/pages/cart/billing" hover-class="navigator-hover">
+                    <view><image class="logo" src="/images/bills.png"/></view>
+                    <text class="title">开单</text>
+                </navigator>
+                <navigator class="weui-flex__item" url="/pages/customer/customerList" hover-class="navigator-hover">
+                    <view> <image class="logo" src="/images/refund.png"/></view>
+                    <text class="title">还款</text>
+                </navigator>
+                <view class="weui-flex__item" @tap="scan">
+                    <view> <image class="logo" src="/images/scan.png"/></view>
+                    <text class="title">扫一扫</text>
+                </view>
+            </view>
+        </view>
+
+    </view>
+
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+
+	export default class Home extends wepy.page {
+		config = {
+			navigationBarTitleText: '首页',
+			backgroundColor: '#f4f4f4'
+		};
+
+		onLoad() {
+			wx.setStorageSync('editName', false);
+			this.getUserInfo();
+			this.getHomeData();
+		}
+
+		onShow() {
+			let name = wx.getStorageSync('editName');
+			if (name) {
+				this.employeeName = name;
+            }
+        }
+
+		onReady() {
+
+        }
+
+		onPullDownRefresh() {
+			wx.showNavigationBarLoading(); //在标题栏中显示加载
+			this.getUserInfo();
+			this.getHomeData();
+		}
+
+		data = {
+			shopName: '',
+			employeeName: '',
+			mobilePhone: '',
+			roleName: '',
+			userInfo: {},
+			roleType: '',
+			url: '/pages/user/userDetail',
+			res: {
+				unconfirmedBook: 0,
+				bookedNumber: 0,
+				bookingNumber: 0,
+				newClientMember: 0, //新客人数
+				consumeMemberNumber: 0,// 耗卡人数
+				totalNeedPay: 0,            // 今日销售欠款
+				totalPrice: 0,            // 今日销售
+				bookNumber: 0,            // 预约数量
+				totalReallyPrice: 0,        // 今日销售实收
+				arriveNumber: 0,            // 到店人数
+				consumeNumber: 0,            // 耗卡数量
+				totalConsumePrice: 0
+			},
+		};
+
+		watch = {
+			/*num (curVal, oldVal) {
+				console.log(`旧值：${oldVal}，新值：${curVal}`)
+			}*/
+		};
+
+		methods = {
+			scan() {
+                wx.scanCode({
+                    success: (res) => {
+//                        console.log(res);
+                        var path =res.path;
+
+                        wx.navigateTo({
+                            url: '/'+path ,
+                        });
+                    }
+                })
+				/*wx.showModal({
+					title: '温馨提示',
+					content: '老板说了此模块暂不可使用',
+					success: function(res) {
+						if (res.confirm) {
+							console.log('用户点击确定');
+						} else if (res.cancel) {
+							console.log('用户点击取消');
+						}
+					}
+				})*/
+			}
+		};
+
+		async getHomeData() {
+			const {data} = await api.getHomeData();
+			wx.hideNavigationBarLoading(); //完成停止加载
+			wx.stopPullDownRefresh() //停止下拉刷新
+			if (data) {
+				this.res = data;
+			}
+			this.$apply();
+		}
+
+		async getUserInfo() {
+			var session= wx.getStorageSync('session');
+			var employeeId = session.employeeId;
+
+			const {data} = await api.getUserDetail({
+				query: {
+					employeeId: employeeId,
+				}
+			});
+
+			if (data) {
+				this.employeeName = data.employeeName;
+				this.mobilePhone = data.mobilePhone;
+				this.roleName = data.roleName;
+				this.shopName = data.shopName;
+				if (data.roleType == 1) {
+					this.url = '/pages/user/managerPerformance';
+				} else {
+					this.url = '/pages/user/userPerformance';
+				}
+			}
+			this.$apply();
+		}
+	}
+</script>

@@ -1,0 +1,191 @@
+<style lang="less">
+    page{background: #f4f4f4;font-family: PingFang-SC-Regular; }
+    /** 修改默认的navigator点击态 **/
+    .navigator-hover {
+        color: blue;
+    }
+    /** 自定义其他点击态样式类 **/
+    .other-navigator-hover {
+        color: red;
+    }
+    .custom{width: 100%;height: 140rpx;background: #ffffff;}
+    .custom-inner{padding-top:28rpx;margin-left: 30rpx;display: flex;; }
+    .custom-logo{display: block;margin-left: 20rpx;width: 84rpx;height: 84rpx;border:1rpx solid #c9c9c9;border-radius: 50%}
+    .custom-wenzi{height: 84rpx;margin-left: 30rpx;flex: 1}
+    .phone-new{display: flex;flex-direction: row;}
+    .phone-right{width: 88rpx;border-left: 1rpx solid #e5e5e5;}
+    .item-title{height: 78rpx;font-size: 30rpx;color:#484848;}
+    .imformation-basic{width: 690rpx;height: 260rpx;background: #ffffff;margin: 0 auto;border-top:1rpx solid #fff}
+    .text-list{margin-top: 30rpx;margin-left: 20rpx;font-size: 30rpx;line-height: 30rpx;}
+    .imformation-card{background: #ffffff;width: 690rpx;margin: 0 auto}
+    .cart-top{border-bottom: 1rpx solid #e5e5e5}
+    .detail-list{display: flex;flex-direction: row;padding: 30rpx 0 30rpx 20rpx;}
+    .detail-right{flex: 1;margin-left: 14rpx;display: flex;flex-direction: column;justify-content:space-between;}
+    .cart-bottom{padding-left: 20rpx;padding-right: 20rpx;}
+    .cart-bottom-item{display: flex;flex-direction: row;justify-content: space-around;padding-bottom: 25rpx;padding-top: 25rpx;}
+    .bottom-item-des{font-size: 24rpx;flex:1;color:#99999!important;}
+    .imformation-debt{background: #ffffff;width: 690rpx;margin: 0 auto;background: #ffffff;margin-bottom: 10rpx;position: relative}
+    .debt-item{font-size: 30rpx;padding: 30rpx 20rpx 0 20rpx;}
+    .bg-num{display: block;width: 48rpx;height: 66rpx;position: absolute;top:0;right: 20rpx;}
+    .num{display: block;position: absolute;top:0;right: 34rpx;color:#ffffff}
+</style>
+<template>
+    <view style="height: 1px;width: 100%;background: #f4f4f4; "></view>
+    <!--顾客信息-->
+    <view class="custom">
+        <view class="custom-inner">
+            <image class="custom-logo" src=""></image>
+            <view class="custom-wenzi">
+                <text style="font-size:30rpx;color:#333333; font-family: PingFang-SC-Regular;">王晓娜</text>
+                <view class="phone-new">
+                    <text style="font-size:24rpx;color:#666666;flex: 1" >18888888888</text>
+                    <view class="phone-right">
+                        <image class="icon" src="icon-phone-new.png" style="display: block;width: 26rpx;height: 34rpx;padding:0 30rpx;"></image>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <!--基本信息-->
+    <view class="item-title">
+        <text style="display: block;margin-top: 30rpx;margin-left: 30rpx;">基本信息</text>
+    </view>
+    <view class="imformation-basic">
+        <view class="text-list">
+            <text style="color:#999999">开户时间：</text>
+            <text style="color:#333333">2018-02-01</text>
+        </view>
+        <view class="text-list">
+            <text style="color:#999999">消费次数：</text>
+            <text style="color:#333333">10次（2018-01-08）</text>
+        </view>
+        <view class="text-list">
+            <text style="color:#999999">顾客来源：</text>
+            <text style="color:#333333">线下拓客</text>
+        </view>
+        <view class="text-list">
+            <text style="color:#999999">账户余额：</text>
+            <text style="color:#ff5767">10.52W元</text>
+        </view>
+    </view>
+    <!--卡项信息-->
+    <view class="item-title" style="">
+        <text style="display: block;margin-top: 30rpx;margin-left: 30rpx;">卡项信息</text>
+    </view>
+    <view class="imformation-card">
+        <view class="cart-top">
+            <text style="font-size: 26rpx;line-height: 26rpx;color:#999999;padding-left: 20rpx;margin-top: 30rpx;">购买时间：</text><text style="font-size: 26rpx;color:#333333">2017-11-11</text>
+            <view class="detail-list">
+                <image style="width: 200rpx;height: 140rpx;border: 1rpx solid #e5e5e5; border-radius: 10rpx;" class="" src=""></image>
+                <view class="detail-right">
+                    <text style="display: block;color:#333333;font-size: 30rpx;line-height: 30rpx;">这个是错误的页面</text>
+                    <text style="display: block;font-size: 32rpx;color:#ff5767">900元</text>
+                </view>
+            </view>
+        </view>
+        <view class="cart-bottom">
+            <text style="font-size: 26rpx;color:#66666">小气泡水痒清透护理</text>
+            <view class="cart-bottom-item">
+                <view class="bottom-item-des" style="border-right: 1rpx solid #e5e5e5;text-align: left;color:#999999">使用5/12次</view>
+                <view class="bottom-item-des" style="border-right:1rpx solid #e5e5e5;text-align: center;color:#999999">有效期360天</view>
+                <view class="bottom-item-des" style="text-align: right;color:#999999">20天前消费过</view>
+            </view>
+        </view>
+    </view>
+    <!--欠款信息-->
+    <view class="item-title" style="">
+        <text style="display: block;margin-top: 30rpx;margin-left: 30rpx;">欠款信息</text>
+    </view>
+    <view class="imformation-debt">
+        <image class="bg-num" src="bg-num.png"></image>
+        <text class="num">1</text>
+        <view class="debt-item">
+            <text style="color:#999999">订单编号:</text>
+            <text style="color:#333333;padding-left: 20rpx;">这个是错误的页面</text>
+        </view>
+        <view class="debt-item">
+            <text style="color:#999999">购买时间:</text>
+            <text style="color:#333333;padding-left: 20rpx;">20171-10-12 14:00</text>
+        </view>
+        <view class="debt-item" style="padding-bottom: 30rpx;">
+            <text style="color:#999999">欠款金额:</text>
+            <text style="color:#ff5767;padding-left: 20rpx;">200元</text>
+            <button style="float: right;width: 160rpx;height: 60rpx;line-height:60rpx;font-size: 30rpx;background: #ff5767;color:#ffffff">还款</button>
+        </view>
+    </view>
+    <view class="imformation-debt">
+        <image class="bg-num" src="bg-num.png"></image>
+        <text class="num">2</text>
+        <view class="debt-item">
+            <text style="color:#999999">订单编号:</text>
+            <text style="color:#333333;padding-left: 20rpx;">201710120045</text>
+        </view>
+        <view class="debt-item">
+            <text style="color:#999999">购买时间:</text>
+            <text style="color:#333333;padding-left: 20rpx;">20171-10-12 14:00</text>
+        </view>
+        <view class="debt-item" style="padding-bottom: 30rpx;margin-bottom: 260rpx;">
+            <text style="color:#999999">欠款金额:</text>
+            <text style="color:#ff5767;padding-left: 20rpx;">200元</text>
+            <button style="float: right;width: 160rpx;height: 60rpx;line-height:60rpx;font-size: 30rpx;background: #ff5767;color:#ffffff">还款</button>
+        </view>
+    </view>
+</template>
+
+<script>
+    import wepy from 'wepy'
+
+    export default class Customer extends wepy.page {
+        config = {
+            navigationBarTitleText: '顾客信息'
+        }
+        components = {}
+
+        data = {
+            iconType: [
+                'search'
+            ],
+            array: [{
+                mode: 'aspectFit',
+                src: 'logo.png',
+                name: '陈伟皆',
+                time: '2018/1/24',
+                stopsum: '859'
+            }, {
+                mode: 'aspectFit',
+                src: 'logo.png',
+                name: '谢达思',
+                time: '2018/1/24',
+                stopsum: '85'
+            }, {
+                mode: 'aspectFit',
+                src: 'logo.png',
+                name: '毛伟业',
+                time: '2018/1/24',
+                stopsum: '85'
+            }, {
+                mode: 'aspectFit',
+                src: 'logo.png',
+                name: '伟皆傻逼',
+                time: '2018/1/24',
+                stopsum: '85'
+            }, {
+                mode: 'aspectFit',
+                src: 'logo.png',
+                name: '你好暂时没想到哦！',
+                time: '2018/1/24',
+                stopsum: '85'
+            }]
+        }
+
+        computed = {}
+        methods = {}
+
+        events = {}
+
+        onLoad() {
+
+        }
+    }
+</script>

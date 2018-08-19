@@ -1,0 +1,238 @@
+<style lang="scss">
+    .wrap {
+        margin-top: 20rpx;
+    }
+    .cell {
+        display:-webkit-box;
+        display:-webkit-flex;
+        display: flex;
+        height: 108rpx;
+        padding-left: 30rpx;
+        padding-right: 24rpx;
+        border-bottom: 1rpx solid #ddd;
+        background-color: #fff;
+        -webkit-box-align:center;
+        -webkit-align-items:center;
+        align-items:center;
+    }
+    .logo-code-warp {
+        height: 42rpx;
+    }
+    .user-code {
+        width: 42rpx;
+        height: 42rpx;
+        margin-right: 20rpx;
+    }
+    .cell>.label {
+        width: 148rpx;
+    }
+    .user-birthday,
+    .user-constellation {
+        -webkit-box-flex:1;
+        -webkit-flex:1;
+        flex:1;
+        padding-top: 3rpx;
+        color: #666;
+        padding-right: 20rpx;
+    }
+    .picker-wrap {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: #fff;
+    }
+    .picker-item {
+        line-height: 50px;
+        padding-left: 35rpx;
+        .unit {
+            margin-left: 70rpx;
+        }
+    }
+    .picker-header {
+        height: 50px;
+        line-height: 50px;
+        padding: 0 30rpx;
+        color: #3492F9;
+        font-size: 30rpx;
+        border-bottom: 1rpx solid #D3CDCD;
+    }
+    .indicator {
+        height: 50px;
+        color: #333;
+    }
+</style>
+<template>
+    <view class="wrap">
+        <view class="cell" @tap="selectBirthday">
+            <view class="size-30 color-33 label">生日</view>
+            <view class="flex-1 size-28 user-birthday">{{year}}-{{month}}-{{day}}</view>
+        </view>
+        <view class="cell">
+            <view class="size-30 color-33 label">星座</view>
+            <view class="flex-1 size-28 user-constellation">{{constellation}}</view>
+        </view>
+    </view>
+
+    <block wx:if="{{isShow}}">
+        <view class="picker-wrap" animation="{{animationData}}">
+            <view class="picker-header clearfix">
+                <view class="pull-left" @tap="isNo">取消</view>
+                <view class="pull-right" @tap="isOk">确定</view>
+            </view>
+            <picker-view indicator-class="indicator" style="width: 100%; height: 250px;" value="{{value}}" bindchange="bindChange">
+                <picker-view-column>
+                    <view wx:for="{{years}}" wx:key="index" class="picker-item">{{item}}<text class="unit">年</text></view>
+                </picker-view-column>
+                <picker-view-column>
+                    <view wx:for="{{months}}" wx:key="index" class="picker-item" style="padding: 0; text-align: center">{{item}}<text class="unit">月</text></view>
+                </picker-view-column>
+                <picker-view-column>
+                    <view wx:for="{{days}}" wx:key="index" class="picker-item">{{item}}<text class="unit">日</text></view>
+                </picker-view-column>
+            </picker-view>
+        </view>
+    </block>
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+	import {getAstro} from '../../utils/util'
+
+	const date = new Date()
+	const years = []
+	const months = []
+	let days = []
+	let d = new Date(new Date(1940+'/'+date.getMonth()+2+'/'+1)- 1000*3600*24).getDate();
+
+	for (let i = 1940; i <= date.getFullYear(); i++) {
+		years.push(i)
+	}
+
+	for (let i = 1; i <= 12; i++) {
+		months.push(i)
+	}
+
+	for (let i = 1; i <=31; i++) {
+		days.push(i)
+	}
+
+	export default class SelectBirthday extends wepy.page {
+		config = {
+			navigationBarTitleText: '选择出身日期',
+			backgroundColor: '#ebf0ef',
+			disableScroll: true
+		};
+
+		async onLoad() {
+			let birthday = wx.getStorageSync('eInfo').birthday;
+
+			if (birthday) {
+				let dates = birthday.split('-');
+				this.year = dates[0];
+				this.month = dates[1];
+				this.day = dates[2];
+				this.value = [years.indexOf((dates[0] - 0)),months.indexOf((dates[1] - 0)),days.indexOf((dates[2] - 0))];
+				this.constellation = getAstro(this.month,this.day) + '座';
+            }
+
+		}
+
+		data = {
+			years: years,
+			year: '',
+			months: months,
+			month: '',
+			days: days,
+			day: '',
+			value: [0],
+			isShow: false,
+			constellation: '',
+			animationData: {}
+
+		};
+
+		watch = {
+			/*num (curVal, oldVal) {
+				console.log(`旧值：${oldVal}，新值：${curVal}`)
+			}*/
+		};
+
+		methods = {
+			selectBirthday() {
+				this.isShow = true;
+				this.onShow();
+			},
+			bindChange(e) {
+				this.days = [];
+				const val = e.detail.value;
+				let y = this.data.months[val[0]] + 1 == 13 ? this.years[val[0]] +1 : this.years[val[0]];
+				let m = this.months[val[1]] - 0 + 1 >= 13 ? 1 : this.months[val[1]] - 0 + 1;
+				d = new Date(new Date(y+'/'+ m +'/1').getTime() - 1000*3600*24).getDate();
+
+				for (let i =1 ; i <=d; i++) {
+					this.days.push(i)
+				}
+
+				this.day = this.days[val[2]];
+				this.month = this.months[val[1]];
+				this.year = this.years[val[0]];
+				this.$apply();
+				this.constellation = getAstro(this.month,this.day) + '座';
+			},
+			isOk() {
+                this.updateUserInfo();
+			},
+			isNo() {
+				this.onHide();
+			}
+		};
+		onShow() {
+			var animation = wx.createAnimation({
+				duration: 500,
+				timingFunction: 'ease',
+			})
+			setTimeout(function () {
+				this.isShow = true;
+				this.$apply();
+			}.bind(this),500)
+			this.animation = animation;
+			animation.translateY(0).step();
+			this.animationData = animation.export();
+		}
+		onHide() {
+			var animation = wx.createAnimation({
+				duration: 500,
+				timingFunction: 'ease',
+			})
+
+			this.animation = animation;
+			animation.translateY(300).step();
+			this.animationData = animation.export();
+			setTimeout(function () {
+				this.isShow = false;
+				this.$apply();
+			}.bind(this),500)
+		}
+		async updateUserInfo() {
+			const {imei_error_code} = await api.updateUserInfo({
+                query:{
+	                birthday: this.year + '-' + this.month + '-' + this.day
+                }
+            });
+
+			if (imei_error_code == 0) {
+				let eInfo = wx.getStorageSync('eInfo');
+				eInfo.birthday = this.year + '-' + this.month + '-' + this.day;
+				wx.setStorageSync('eInfo',eInfo);
+				this.onHide();
+            } else {
+				wx.showToast({
+					title: '网络延迟，请重试',
+					icon : 'none',
+					duration : 1500
+				});
+            }
+
+		}
+	}
+</script>

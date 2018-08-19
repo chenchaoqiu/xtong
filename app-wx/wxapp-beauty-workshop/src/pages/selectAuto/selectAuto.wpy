@@ -1,0 +1,321 @@
+<style lang="scss">
+    page {background-color: #ebf0ef;font-family: PingFang-SC-Regular; }
+    ::-webkit-scrollbar{
+      width: 0;
+      height: 0;
+      color: transparent;
+    }
+    .color-mian{color:#26cad3}
+    .color-fuzhu{color:#e4393c}
+    .color-333{color:#333333}
+    .color-999{color:#999999}
+    .font-30{font-size: 30rpx;}
+    .font-24{font-size: 24rpx;}
+    .swiper-tab{
+        height: 80rpx;line-height: 80rpx;width: 100%; overflow: hidden;background: #ffffff;
+        font-size: 28rpx; white-space: nowrap;position: fixed;top: 0; left: 0;
+        z-index: 99;color:#999999
+    }
+    .swiper-box{margin-top: 80rpx;}
+    .swiper-tab-list{margin:0 22rpx;display: inline-block;text-align: center;width: 140rpx;height: 80rpx;}
+    .swiper-tab-list.active{position: relative;color: #26cad3;}
+    .swiper-tab-list.active:after{ content: "";display: block;height: 4rpx;width: 110rpx;background: #26cad3;position: absolute; bottom: 0rpx;left: 14rpx;border-radius: 16rpx;}
+    .list{width: 100%;margin-top: 20rpx;background: #ffffff;}
+    .list-con{padding: 40rpx 0rpx;margin:0 40rpx;display: flex;display: -webkit-flex;}
+    .con-img{width: 280rpx;height: 187rpx;}
+    .con-r{flex: 1;-webkit-flex: 1;margin-left: 40rpx;display: flex;display: -webkit-flex;;flex-direction: column;-webkit-flex-direction: column;justify-content: space-between;-webkit-justify-content:space-between;overflow: hidden}
+    .title{margin-top: 5rpx;line-height: 40rpx;display: -webkit-box;  -webkit-box-orient: vertical;  -webkit-line-clamp: 2;
+        overflow: hidden;}
+    .des{margin-top: 10rpx;display: -webkit-box;  -webkit-box-orient: vertical;  -webkit-line-clamp: 1;
+        overflow: hidden;}
+    .price{}
+    .refresh{text-align: center;color: #999999;font-size: 30rpx;}
+    .loadmore{text-align: center;color: #999999;font-size: 30rpx;padding-top: 20rpx;padding-bottom: 80rpx;}
+</style>
+<template>
+    <!--swiper-tab-->
+    <scroll-view scroll-x="true" class="swiper-tab" scroll-left="{{scrollLeft}}" >
+        <view style="display: inline" wx:for="{{categoryList}}" wx:key="categoryListIndex">
+            <view class="swiper-tab-list {{currentTab==index ? 'active' : ''}}" data-current="{{item.categoryId-1}}" bindtap="swichNav({{index}})">{{item.categoryName}}</view>
+        </view>
+    </scroll-view>
+    <!--<swiper current="{{currentTab}}" class="swiper-box" duration="300" style="height:{{winHeight-96}}px;" bindchange="bindChange"  >-->
+    <swiper current="{{currentTab}}" class="swiper-box" duration="300" style="height:{{winHeight}}rpx;" bindchange="bindChange"  >
+        <swiper-item  style="overflow-y: scroll" wx:for="{{categoryList}}" wx:key="categoryListIn">
+            <view class="refresh" hidden="{{hideHeader}}">刷新中...</view>
+            <scroll-view scroll-y="true" style="height: {{winHeight}}rpx;" bindscrolltoupper="upper" bindscrolltolower="lower" upper-threshold="-20" lower-threshold="30" >
+                <block wx:for="{{newArr[currentTab]}}"  wx:if="{{newArr[currentTab].length !=0}}" wx:key="productListIndex">
+                    <navigator  url="/pages/productDetails/productDetails?salePackageId={{item.salePackageId}}" hover-class="none" class="list" >
+                        <view class="list-con" >
+                            <view class="con-img">
+                                <image src="{{item.coverImageUrl}}" style="width: 280rpx;height: 187rpx;display: block;margin: 0 auto"></image>
+                            </view>
+                            <view class="con-r">
+                                <text class="ellipsis-2 font-30 color-333" style="line-height: 36rpx;">{{item.courseCardName}}</text>
+                                <text class="des font-24 color-999">{{item.courseCardShortName}}</text>
+                                <view class="price">
+                                    <text class="font-30" style="font-size: 28rpx;color: #e4393c">￥{{item.courseCardPrice}}</text>
+                                    <text class=" font-24 color-999" style=";text-decoration: line-through;padding-left: 15rpx;">￥{{item.marketPrice}}</text>
+                                </view>
+                            </view>
+                        </view>
+                    </navigator>
+                </block>
+                <view class="loadmore" wx:if="{{newArr[currentTab].length !=0}}">{{loadArr[currentTab]}}</view>
+                <view wx:if="{{newArr[currentTab].length ==0}}" class="font-30 color-999" style="text-align: center;padding-top: 400rpx;">哎呀 空空如也 换个页面继续看</view>
+            </scroll-view>
+        </swiper-item>
+    </swiper>
+
+    <view class="footer">
+        <view class="nav-foot-wrap">
+            <navigator class="cell " url="/pages/index/index?reset=true" hover-class="none" open-type="redirect">
+                <image src="../../images/home.png"></image>
+                <view class="nav-title ">首页</view>
+            </navigator>
+            <!--<navigator  class="cell" url="/pages/cart/cart"  hover-class="none">-->
+                <!--<view class="img-wrap">-->
+                    <!--<image class="emphasis" style="width: 140rpx; height: 140rpx" src="../../images/cart.png"></image>-->
+                <!--</view>-->
+            <!--</navigator>-->
+            <navigator class="cell" url="/pages/appointment/my_appointment" open-type="redirect" hover-class="none">
+                <image src="../../images/time.png"></image>
+                <view class="nav-title">预约</view>
+            </navigator>
+            <view class="cell" >
+              <image src="../../images/optimization_a.png"></image>
+              <view class="nav-title active">美购</view>
+            </view>
+            <navigator class="cell" url="/pages/my_info/index" open-type="redirect" hover-class="none">
+                <image src="../../images/my.png"></image>
+                <view class="nav-title">我的</view>
+            </navigator>
+        </view>
+    </view>
+</template>
+<script>
+	import wepy from 'wepy'
+	import api from '../../api/api'
+	export default class selectAuto extends wepy.page {
+		config = {
+			navigationBarTitleText: '美购',
+			"enablePullDownRefresh": false,     //关闭系统刷新
+		}
+
+		data = {
+			winWidth: "",
+			winHeight: "",
+			currentTab: 0,
+			categoryList: [],  //分类列表
+			contentlistTem: [],  //pages等于1
+			productList: [],   //分类商品列表
+			salePackageId: [],//销售包id
+			page: 1,
+			pageSize: 0,
+			scrollLeft: 0,
+			isReset: true,
+			hideHeader: true,
+			loadmore: '',
+			index: 0,
+			load: false,
+      cateArr : '',//分类数组
+      newArr:[],//列表数组
+      lenArr:[],
+      loadArr:[],
+      imageUrl: wepy.$appConfig.imageUrl,
+		}
+    onShareAppMessage(res){
+      if (res.from === 'button') {
+        // 来自页面内转发按钮
+//        console.log(res.target)
+      }else{
+        return {
+          title: '亲爱的 推荐你一个女生必备的小程序 要关注哦！',
+          path: '/pages/selectAuto/selectAuto?shareMemberCompanyId='+wx.getStorageSync('session').memberCompanyId,
+          imageUrl: this.imageUrl + 'share_img.png'
+        }
+      }
+    }
+
+		watch = {
+			index(n, o) {
+
+        this.scrollLeft = n * 92 ;
+        this.$apply();
+
+
+			}
+		}
+		//         点击tab切换
+		swichNav(e) {
+			setTimeout(function () {
+				if (this.data.currentTab === (e.target ? e.target.dataset.wpyswichnavA : e)) {
+					return false;
+				} else {
+					this.currentTab = e.target ? e.target.dataset.wpyswichnavA : e;
+          if (this.newArr[this.currentTab]) {
+            this.$apply();
+          } else {
+            this.getDoneList();
+            this.$apply();
+          }
+				}
+			}.bind(this),10)
+			this.$apply();
+//      this.checkCor();
+		}
+//            滑动切换
+		bindChange(e) {
+			this.checkCor(e);
+      this.swichNav(e.detail.current); //调用上面tab切换，用来请求列表
+			this.$apply();
+		}
+
+		//判断当前滚动超过一屏时，设置tab标题滚动条。
+		checkCor(e) {
+			this.index = e.detail.current;
+		}
+
+		methods = {}
+
+		//        获取分类列表
+		async getCategoryList() {
+			const getCategoryList = await api.getCategoryList({
+				query: {
+//          shopId: 1, //门店id
+				}
+			});
+			var oldcategoryList = getCategoryList.data.list;      //列表list
+			this.categoryList = oldcategoryList; //根据sortOrder倒序
+//      console.log(this.categoryList.length);
+			this.getDoneList();  //按分类筛选商品列表接口
+			this.$apply();
+		}
+
+//    刷新
+		upper() {
+//			this.isReset = false;
+			this.hideHeader = false;
+			wx.showNavigationBarLoading(); //在标题栏中显示加载
+			//模拟加载
+
+			setTimeout(function () {
+				this.getDoneList(false);
+				wx.hideNavigationBarLoading(); //完成停止加载
+				wx.stopPullDownRefresh() //停止下拉刷新
+//                this.isReset = true;
+				this.hideHeader = true;
+			}.bind(this), 1500);
+			this.$apply();
+		}
+
+//    下拉加载更多
+		lower() {
+//            if (!this.isReset) {
+//            	return
+//            }
+
+      if (this.newArr[this.currentTab].length < this.lenArr[this.currentTab]) {
+        this.page = this.page + 1;
+        console.log(this.page);
+        this.getDoneList(true);
+        this.loadmore = '加载更多';
+      } else {
+        this.loadmore = '没有更多了';
+
+        return;
+      }
+      this.$apply();
+
+		}
+
+		//按分类筛选商品列表接口
+		async getDoneList(e) {
+			if (!e) {
+				this.page = 1;
+			}
+			const getProductList = await api.getProductList({
+				query: {
+//          shopId:1, //门店Id
+					categoryId: this.categoryList[this.currentTab].categoryId, //分类id
+					pageNo: this.page,//   第几页
+					pageSize: 8,   //显示几条
+				}
+			});
+//			console.log(getProductList.data.list);
+
+			if (e) {
+				this.productList = this.productList.concat(getProductList.data.list);
+        this.newArr[this.currentTab] = this.productList;
+        if(this.newArr[this.currentTab].length < this.lenArr[this.currentTab]){
+          this.loadArr[this.currentTab] = '加载更多';
+        }else{
+          this.loadArr[this.currentTab] = '没有更多了';
+        }
+
+			} else {
+				this.productList = getProductList.data.list;  //商品列表
+        this.newArr[this.currentTab] = this.productList;
+				this.pageSize = getProductList.data.totalSize;
+        this.lenArr[this.currentTab] = getProductList.data.totalSize;
+        if(this.newArr[this.currentTab].length < this.lenArr[this.currentTab]){
+          this.loadArr[this.currentTab] = '加载更多';
+        }else{
+          this.loadArr[this.currentTab] = '没有更多了';
+        }
+			}
+			for (var i in this.productList) {
+				this.salePackageId = this.productList[i].salePackageId; //销售包id
+//        console.log(this.salePackageId);
+			}
+			this.$apply();
+		}
+
+		scancode() {
+			/*扫面二维码*/
+			wx.scanCode({
+				success: (res) => {
+					console.log(res)
+				}
+			})
+		}
+
+		async onLoad(options) {
+			this.index = options.currentTab;
+
+//      this.salePackageId = options.salePackageId;  //页面跳转传过来的salePackageId
+			// 获取系统信息
+//			wx.getSystemInfo({
+//				success: function (res) {
+//					this.winWidth = res.windowWidth;
+//					this.winHeight = res.windowHeight;
+//				}.bind(this)
+//			});
+
+      // 获取高度
+      wx.getSystemInfo({
+        success: function (res) {
+          this.winWidth = res.windowWidth;
+          var winHeight = res.windowHeight;
+          var rpxR = 750 / this.winWidth;
+//          this.winHeight = winHeight * rpxR;
+          //下面swiper的高度
+          this.winHeight = winHeight * rpxR - 185;
+        }.bind(this)
+      });
+
+
+			this.getCategoryList();  //获取分类列表
+			this.currentTab = options.currentTab || 0; //跳转进入的currentTab
+		}
+
+		onReady(){
+			setTimeout(function () {
+				this.scrollLeft = ~~Math.floor(this.index / 4) * 370;
+				console.log(this.scrollLeft);
+				this.$apply();
+			}.bind(this),200)
+
+		}
+	}
+</script>

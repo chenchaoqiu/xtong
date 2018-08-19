@@ -1,0 +1,433 @@
+<style lang="scss">
+  page {
+    background-color: #f2f2f4;
+    border-top:1px solid #eee;
+    padding-bottom: 138rpx;
+  }
+  page > view{
+    background: #fff;
+  }
+  .shop-posi{
+    margin:0 0 20rpx;
+    height:219rpx;
+    padding:0 24rpx;
+  }
+  .shop-posi image:nth-child(1){
+    float: left;
+    height: 118rpx;
+    width: 118rpx;
+    margin-top: 50.5rpx;
+  }
+  .shop-posi > view{
+    width:467rpx;
+    float: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 30rpx;
+    color: #333;
+    /*height:76rpx;*/
+    margin-top: 62.5rpx;
+    margin-left: 20rpx;
+  }
+  .shop-posi view view{
+    /*height:38rpx;*/
+  }
+  .shop-posi image:nth-child(3){
+    float: right;
+    width:19rpx;
+    height:34rpx;
+    margin-top: 92.5rpx;
+  }
+  .order-list{
+    /*border-top:1px solid #ddd;*/
+    padding: 0 24rpx;
+    /*border-bottom:1px solid #ddd;*/
+  }
+  .order-list-x{
+    min-height:247rpx;
+    border-top:1px solid #ddd;
+  }
+  .order-list-x:first-child{
+    border:none;
+  }
+  .order-list-x image{
+    float: left;
+    width:280rpx;
+    height:186rpx;
+    margin-top: 30.5rpx;
+  }
+  .order-list-x > view{
+    float: right;
+    width:397rpx;
+    height:186rpx;
+    margin-top: 30.5rpx;
+    position: relative;
+  }
+  .order-list-x view view:nth-child(1){
+    font-size: 30rpx;
+    color: #333;
+    line-height: 38rpx;
+    overflow: hidden;
+    /*display:-webkit-box;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:2;*/
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    height: 62rpx;
+  }
+  .order-list-x view view:nth-child(2){
+    font-size: 26rpx;
+    color: #999;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .order-list-x view view:nth-child(3){
+    position: absolute;
+    bottom: 0;
+    left:0;
+    width:100%;
+    line-height:50rpx;
+  }
+  .order-list-x view:nth-child(3) text:nth-child(1){
+    font-size: 30rpx;
+    color: #333;
+  }
+  /*.order-list-x view:nth-child(3) text:nth-child(2){*/
+  /*font-size: 26rpx;*/
+  /*color: #333;*/
+  /*float: right;*/
+  /*}*/
+  .order-list-x .order_timer{
+    min-width:170rpx;
+    height:46rpx;
+    /*border:1px solid #ddd;*/
+    /*border-radius: 10rpx;*/
+    float: right;
+    color: #333;
+    font-size: 30rpx;
+    margin-top: 5rpx;
+    /*float: right;*/
+  }
+  .order-list-x .order_timer image{
+    float: left !important;
+    width:46rpx;
+    height:100%;
+    margin-top:0;
+  }
+  .order-list-x .order_timer text:nth-child(2){
+    float: left !important;
+    min-width:58rpx;
+    max-width: 126rpx;
+    height:100%;
+    line-height: 46rpx;
+    border:none;
+    font-size: 28rpx;
+    overflow: hidden;
+    padding: 0 5rpx;
+    text-align: center;
+  }
+  .count{
+    border-top:1px solid #ddd;
+    padding: 0 24rpx;
+    font-size: 26rpx;
+    color: #333;
+    height:104rpx;
+    line-height: 104rpx;
+  }
+  .count text:nth-child(2){
+    color: #333;
+    float: right;
+  }
+  .go-order{
+    position: fixed;
+    bottom:0;
+    left:0;
+    height:104rpx;
+    line-height:104rpx;
+    border-top:1px solid #ddd;
+    width:100%;
+    text-align: right;
+  }
+  .go-order > text,.go-order form{
+    /*display: inline-block;*/
+    font-size: 28rpx;
+    float: right;
+  }
+  .go-order form{
+    width:180rpx;
+    height:68rpx;
+    line-height: 68rpx;
+    text-align: center;
+    background: #26cad3;
+    font-size: 30rpx;
+    color: #fff;
+    margin:18rpx 24rpx 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .go-order form button{
+    position: absolute;
+    top:-20px;
+    left:-20px;
+    background: 0;
+    padding: 0;
+    height:200%;
+    width:200%;
+  }
+</style>
+<template>
+  <view>
+    <!--门店切换-->
+    <navigator wx:if="{{recentlyShop[0].address}}" @tap="shopgo()" class="shop-posi" url="/pages/shop/shop" open-type="navigateTo">
+      <image src="{{recentlyShop[0].shopLogo}}"></image>
+      <view>
+        <view class="ellipsis-1" style="font-family: '黑体';margin-bottom:8rpx;">{{recentlyShop[0].shopName || shopli}}</view>
+        <view class="ellipsis-1" style="font-size: 26rpx;color: #666;">{{recentlyShop[0].address || '您还未选择服务门店'}}</view>
+      </view>
+      <image src="../../../images/xzshop.png"></image>
+    </navigator>
+    <navigator wx:if="{{!recentlyShop[0].address}}" style="text-align: center;line-height: 219rpx;" @tap="shopgo()" class="shop-posi" url="/pages/shop/shop" open-type="navigateTo">
+      <text></text>
+      <text style="font-size: 36rpx;color: #666;">你还没有选择门店哦！</text>
+      <image src="../../../images/xzshop.png"></image>
+    </navigator>
+  </view>
+  <view style="font-size: 26rpx;color: #666;height: 108rpx;line-height: 108rpx;text-indent: 30rpx;border-bottom: 1rpx solid #ddd">订单信息</view>
+  <view class="order-list">
+    <!--项目列表-->
+    <view class="order-list-x" wx:for="{{dat}}" wx:key="{{index}}">
+      <image src="{{item.defaultPic}}"></image>
+      <view>
+        <view>{{item.name}}</view>
+        <view><text wx:for="{{item.projects}}" wx:key="{{index}}">{{index!=0?'+'+item.projectName:item.projectName}}</text></view>
+        <view>
+          <text><text style="font-size: 30rpx;">￥</text>{{item.price}}</text>
+          <!--<text>×{{item.num}}</text>-->
+          <view class="order_timer">
+            <!--数量控制-->
+            <image @tap="reduce({{index}})" src="/images/strong-rate.png"></image>
+            <text>{{item.num}}</text>
+            <image @tap="add({{index}})" src="/images/strong-add.png"></image>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="count">
+    <!--项目金额详情-->
+    <view>
+      <text>小计：</text>
+      <text>￥{{money}}</text>
+    </view>
+  </view>
+  <view class="go-order">
+    <!--去付款-->
+    <form bindsubmit="formSubmit" report-submit="true"><button formType="submit" @tap="go_order"></button><text>立即支付</text></form>
+    <text>合计：<text style="color: #e4393c;font-size: 36rpx;"><text style="font-size: 32rpx;">￥</text>{{money}}</text></text>
+  </view>
+</template>
+<script>
+  import wepy from 'wepy'
+  import api from '../../../api/api'
+  import pay from '../../../utils/pay'
+
+  export default class Cart extends wepy.page {
+    config = {
+      navigationBarTitleText: '填写订单',
+      backgroundColor: '#f4f4f4'
+    };
+    components = {
+
+    }
+    data = {
+      recentlyShop:[],
+      favourable:0,/*优惠金额*/
+      prices:0,/*订单总额*/
+      dat:[],
+      shopli:'',
+      zt:false,/*判断是否切换门店返回的值*/
+      shopId:'',/*门店Id*/
+      productId:[],/*产品Id*/
+      money:0,
+      imageUrl: wepy.$appConfig.imageUrl,
+    };
+
+    onShareAppMessage(res){
+      if (res.from === 'button') {
+        // 来自页面内转发按钮
+//        console.log(res.target)
+      }else{
+        return {
+          title: '亲爱的 推荐你一个女生必备的小程序 要关注哦！',
+          imageUrl: this.imageUrl + 'share_img.png',
+          path: '/pages/index/index?shareMemberCompanyId='+wx.getStorageSync('session').memberCompanyId
+        }
+      }
+    }
+
+    async delajx(e){
+      /*填写订单*/
+      const json = await api.getCar({
+        query: {
+          cartItemIds:e.id,
+        }
+      });
+      this.dat=json.data.list;
+      this.prices = json.data.totalMoney;
+      this.shopli = json.data.shop.name;
+      this.mone();
+      if(this.shopId==''){
+        this.shopId = json.data.shop.id;
+      }
+      this.$apply();
+    }
+    async delajx1(e){
+      /*删除购物车*/
+      const json = await api.getCarupdate({
+        query: {
+          cartItemId:e.id,
+          type:e.type,
+          num:e.num || '',
+        }
+      });
+      this.$apply();
+    }
+
+    async getposi(e){
+      /*获取最近去的门店*/
+      const json = await api.tabShop({
+        query: {
+          longitude:e.lo,
+          latitude:e.la,
+          shopId:this.shopId,
+          money:0
+        }
+      });
+      this.recentlyShop = json.data.recentlyShop;
+      this.$apply();
+    }
+
+    async setOrder(e){
+      /*创建订单*/
+      const json = await api.setOrder({
+        query: {
+          key:wx.getStorageSync('KEY') || '',
+          cartItemIds:e,
+          shopId:this.shopId || 0,
+        }
+      });
+      /*支付流程*/
+      pay.wxPay({
+        monS:json.data.moneySn,
+        This:this,
+        api:api,
+        url:'/pages/order/order',
+        oreS:json.data.parentSn,
+        success(){
+          wx.removeStorageSync('KEY');
+        }
+      });
+//      this.wxPay(json.data.moneySn);
+      this.$apply();
+    }
+    mone(){
+      /*结算余额*/
+      this.money=0;
+      for(var j in this.dat){
+        this.money=(this.money*10**3+(this.dat[j].price*10**3)*this.dat[j].num)/10**3;
+      }
+      console.log(this.money)
+//      this.money = this.money.toFixed(2);
+    }
+
+    methods = {
+      async formSubmit(e){
+        const json = await api.collect({
+          query: {
+            formIdArray:e.detail.formId
+          }
+        });
+        console.log(e.detail.formId)
+      },
+      go_order(){
+        this.setOrder(this.productId)
+      },
+      shopgo(){
+        this.zt=true;
+      },
+      add(e){
+        /*加法*/
+        clearTimeout(this.setout);
+        this.dat[e].num+=1;
+
+        this.setout=setTimeout(function () {
+          /*控制过多发起请求*/
+          this.delajx1({id:this.dat[e].cartItemId,type:'update',num:this.dat[e].num});
+        }.bind(this),300)
+
+        this.mone();
+      },
+      reduce(e){
+        /*减法*/
+        clearTimeout(this.setout);
+        switch(this.dat[e].num) {
+          case 0:
+            /*删除*/
+            this.$invoke('prom','promShow',{size:e});
+            break;
+          default:
+            this.dat[e].num -= 1;
+            if(!this.dat[e].num)this.dat[e].num=1;
+
+            this.setout=setTimeout(function () {
+              /*控制过多发起请求*/
+              this.delajx1({id:this.dat[e].cartItemId,type:'update',num:this.dat[e].num});
+            }.bind(this),300)
+
+            this.mone();
+        }
+      }
+    };
+    onShow(){
+      if(this.zt){
+        var posi = wx.getStorageSync('posi');
+        if(posi=='')return;
+        this.shopId = posi[2]
+        this.recentlyShop[0] = {address:posi[0],shopName:posi[3],shopLogo:posi[5]};
+        this.$apply();
+      }
+    }
+
+    onLoad(e) {/*2,38*/
+      wx.setStorageSync('posi', '')
+      this.productId = e.id;
+      this.shopId = e.shopId || '';
+      var That=this;
+      if(!wx.getStorageSync('shopEdit')){
+        wx.getLocation({
+          type: 'gcj02', //返回可以用于wx.openLocation的经纬度
+          success: function(res) {
+            var latitude = res.latitude
+            var longitude = res.longitude
+            That.getposi({lo:longitude,la:latitude})
+          }
+        })
+      }else{
+        this.recentlyShop=[wx.getStorageSync('shopEdit')];
+        if(!this.recentlyShop[0].address){
+          wx.getLocation({
+            type: 'gcj02', //返回可以用于wx.openLocation的经纬度
+            success: function(res) {
+              var latitude = res.latitude
+              var longitude = res.longitude
+              That.getposi({lo:longitude,la:latitude})
+            }
+          })
+        }
+      }
+      this.delajx({id:e.id?e.id.split(','):''})
+    }
+  }
+</script>
